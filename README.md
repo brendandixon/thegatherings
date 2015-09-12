@@ -29,9 +29,8 @@ Some solutions exist, but they come as part of a full-church office suite. By fo
 everything, they lose the focus on the one thing. Choosing a solution impacts, not just managing
 groups, but all aspects of church life. And, as churches grow, the full-suite can get expensive.
 
-## The Goal of this Project
+## The Goals of this Project
 
 *The Gatherings* will addresses all of these and more. And it will do so through an open-source
-approach. Churches can set-up and run *The Gatherings* on their own, host it
-in the "cloud" (such as [Microsoft Azure](https://azure.microsoft.com) or
-[AWS](https://aws.amazon.com)), 
+approach. *The Gatherings* will have a "zero-height" bar to adoption. Churches will only have to
+choose *if* they want to use *The Gatherings.*
