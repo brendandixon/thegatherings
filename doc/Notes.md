@@ -1,3 +1,4 @@
 # Notes
 
-1. Review Devise (http://devise.plataformatec.com.br, https://github.com/plataformatec/devise)
+- Models cannot be ActiveRecord-based. They may use ActiveRecord, but the consumers should be unaware. This will
+ease transition, if needed, to a non-SQL store.

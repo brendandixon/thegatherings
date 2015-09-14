@@ -2,7 +2,7 @@
 
 ## For Members
 
-- "Connect Me" guided finder
+- "Connect Me" guided group finder
 - Search for Groups by location, tag words, name, leader, day / time, child-friendly, target ages
 - Easy / secure login via Facebook, Google, and other major OAuth2 providers
 - Secure management of personal information
