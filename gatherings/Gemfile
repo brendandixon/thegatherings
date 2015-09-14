@@ -22,6 +22,7 @@ gem 'capistrano-rails', group: :development # Use Capistrano for deployment
 
 group :development, :test do
   gem 'byebug'                          # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'rspec', '~> 3.3.0'               # Use Rspec for testing, see https://relishapp.com/rspec
 end
 
 group :development do
