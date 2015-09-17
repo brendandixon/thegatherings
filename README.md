@@ -1,5 +1,7 @@
 # The Gatherings
 
+[![Stories in Ready](https://badge.waffle.io/brendandixon/thegatherings.svg?label=ready&title=Ready)](http://waffle.io/brendandixon/thegatherings)
+
 Making groups
 - Easy to Find
 - Easy to Connect
