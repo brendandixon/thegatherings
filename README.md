@@ -12,7 +12,7 @@ Making groups
 *The Gatherings* is an open-source project intended to address just one problem common in many
 churches: Managing their community of groups.
 
-Many churches promote "small groups" of varying kinds: Weekly nights in homes, Sunday classes,
+Many churches promote "community groups" of varying kinds: Weekly nights in homes, Sunday classes,
 weekend outing groups, and more. All of these and each of these are useful in promoting community
 and impacting community.
 
@@ -33,6 +33,7 @@ groups, but all aspects of church life. And, as churches grow, the full-suite ca
 
 ## The Goals of this Project
 
-*The Gatherings* will addresses all of these and more. And it will do so through an open-source
-approach. *The Gatherings* will have a "zero-height" bar to adoption. Churches will only have to
+*The Gatherings* will address all of these and more. *The Gatherings* will exist in two forms: A
+free-to-use hosted form and as an open-source platform sophisticated Churches may download and
+deploy. *The Gatherings* will have a "zero-height" bar to adoption. Churches will only have to
 choose *if* they want to use *The Gatherings.*

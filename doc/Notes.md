@@ -1,4 +1,8 @@
 # Notes
 
-- Models cannot be ActiveRecord-based. They may use ActiveRecord, but the consumers should be unaware. This will
-ease transition, if needed, to a non-SQL store.
+- Comments
+-- http://web.livefyre.com/comments/
+-- https://publishers.disqus.com/engage
+-- http://www.intensedebate.com/
+
+- Should we allow Updates or force a Copy-on-Write model for all data?
