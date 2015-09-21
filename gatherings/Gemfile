@@ -1,33 +1,49 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.4'                    # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'mysql2', '~> 0.3.13'               # Fast MySQL gem
-gem 'sass-rails', '~> 5.0'              # Use SCSS for stylesheets
-gem 'haml', '~> 4.0.7'                  # Use HAML for views, see http://haml.info
-gem 'devise', '~> 3.5.2'                # Use Devise for authN, see http://devise.plataformatec.com.br
-gem 'cancan', '~> 1.6.10'               # Use Cancan for authZ, see http://www.rubydoc.info/gems/cancan/1.6.10
-gem 'uglifier', '>= 1.3.0'              # Use Uglifier as compressor for JavaScript assets
-gem 'coffee-rails', '~> 4.1.0'          # Use CoffeeScript for .coffee assets and views
+#--------------------------------------------------------------------------------------------------
+# Core
+gem 'rails', '4.2.4'                      # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'mysql2', '~> 0.3'                    # Fast MySQL gem
+gem 'sass-rails', '~> 5.0'                # Use SCSS for stylesheets
+gem 'haml', '~> 4.0'                      # Use HAML for views, see http://haml.info
+gem 'uglifier', '>= 1.3'                  # Use Uglifier as compressor for JavaScript assets
+gem 'coffee-rails', '~> 4.1'              # Use CoffeeScript for .coffee assets and views
 
-gem 'jquery-rails'                      # Use jquery as the JavaScript library
-gem 'jbuilder', '~> 2.0'                # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'sdoc', '~> 0.4.0', group: :doc     # bundle exec rake doc:rails generates the API under doc/api.
+gem 'jquery-rails'                        # Use jquery as the JavaScript library
+gem 'jbuilder', '~> 2.0'                  # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'sdoc', '~> 0.4', group: :doc         # bundle exec rake doc:rails generates the API under doc/api.
 
-gem 'unicorn'                           # Use Unicorn as the app server
+gem 'unicorn'                             # Use Unicorn as the app server
 gem 'capistrano-rails', group: :development # Use Capistrano for deployment
 
-# gem 'therubyracer', platforms: :ruby  # See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'bcrypt', '~> 3.1.7'              # Use ActiveModel has_secure_password
-# gem 'turbolinks'                      # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+#--------------------------------------------------------------------------------------------------
+# AuthN / AuthZ
+gem 'devise', '~> 3.5'                    # Use Devise for authN, see http://devise.plataformatec.com.br
+
+gem 'omniauth', '~> 1.2'                  # Use OmniAuth for authN, see https://github.com/intridea/omniauth
+gem 'omniauth-oauth', '~> 1.1'            # Use OmniAuth for OAuth2
+gem 'omniauth-oauth2', '~> 1.3'           # Use OmniAuth for OAuth2
+
+# See https://github.com/intridea/omniauth/wiki/List-of-Strategies for strategies
+gem 'omniauth-facebook', '~> 2.0'         # Use OmniAuth for Facebook, see https://github.com/mkdynamic/omniauth-facebook
+gem 'omniauth-google-oauth2', '~> 0.2'    # Use OmniAuth for Google, see https://github.com/zquestz/omniauth-google-oauth2
+gem 'omniauth-linkedin', '~> 0.2'         # Use OmniAuth for LinkedIn, see https://github.com/decioferreira/omniauth-linkedin-oauth2
+gem 'omniauth-twitter', '~> 1.2'          # Use OmniAuth for Twitter, see https://github.com/arunagw/omniauth-twitter
+
+gem 'cancan', '~> 1.6'                    # Use Cancan for authZ, see http://www.rubydoc.info/gems/cancan/1.6.10
+
+# gem 'therubyracer', platforms: :ruby    # See https://github.com/rails/execjs#readme for more supported runtimes
+# gem 'bcrypt', '~> 3.1.7'                # Use ActiveModel has_secure_password
+# gem 'turbolinks'                        # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 
 group :development, :test do
-  gem 'byebug'                          # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'rspec', '~> 3.3.0'               # Use Rspec for testing, see https://relishapp.com/rspec
+  gem 'byebug'                            # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'rspec', '~> 3.3'                   # Use Rspec for testing, see https://relishapp.com/rspec
 end
 
 group :development do
-  gem 'web-console', '~> 2.0'           # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'spring'                          # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'foreman'                         # Foreman to run dependent processes. Read more: https://github.com/ddollar/foreman
+  gem 'web-console', '~> 2.0'             # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'spring'                            # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'foreman'                           # Foreman to run dependent processes. Read more: https://github.com/ddollar/foreman
 end
 

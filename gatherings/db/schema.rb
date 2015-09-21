@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150920044830) do
+ActiveRecord::Schema.define(version: 20150921010509) do
 
   create_table "communities", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -30,5 +30,40 @@ ActiveRecord::Schema.define(version: 20150920044830) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
+
+  create_table "members", force: :cascade do |t|
+    t.string   "email",                  limit: 255, default: "", null: false
+    t.string   "encrypted_password",     limit: 255, default: "", null: false
+    t.string   "reset_password_token",   limit: 255
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          limit: 4,   default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
+    t.string   "confirmation_token",     limit: 255
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email",      limit: 255
+    t.integer  "failed_attempts",        limit: 4,   default: 0,  null: false
+    t.string   "unlock_token",           limit: 255
+    t.datetime "locked_at"
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.string   "provider",               limit: 255
+    t.string   "uid",                    limit: 255
+    t.string   "uuid",                   limit: 255
+    t.string   "name",                   limit: 255
+  end
+
+  add_index "members", ["confirmation_token"], name: "index_members_on_confirmation_token", unique: true, using: :btree
+  add_index "members", ["email"], name: "index_members_on_email", unique: true, using: :btree
+  add_index "members", ["name"], name: "index_members_on_name", using: :btree
+  add_index "members", ["provider"], name: "index_members_on_provider", using: :btree
+  add_index "members", ["reset_password_token"], name: "index_members_on_reset_password_token", unique: true, using: :btree
+  add_index "members", ["uid"], name: "index_members_on_uid", using: :btree
+  add_index "members", ["unlock_token"], name: "index_members_on_unlock_token", unique: true, using: :btree
+  add_index "members", ["uuid"], name: "index_members_on_uuid", using: :btree
 
 end
