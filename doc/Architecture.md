@@ -3,28 +3,30 @@
 ## Communities, Gatherings, and Members
 
 Gatherings builds on two core concepts: Communities and Gatherings. Gatherings always belong to one
-Community. Communities may be affiliated with one another, either through a parent Community or
-directly.
+Community. Communities have at least one Campus. Gatherings may be affiliated with a Campus. Even
+though a Community must have at least one Campus, Campuses are not a top-level concept, such as
+Gatherings or their owning Community, but an optional affiliation for a Gathering. A Member may
+filter Gatherings to a particular Campus, but they do not seek for Gatherings through a Campus (in a
+RESTful sense).
 
 Members attend Gatherings, however, they do not belong to a Gathering but to the Community to which
 the Gathering itself belongs. Members may belong to multiple Gatherings and to multiple Communities.
 Membership, in this sense, is not ownership, but an affiliation. To participate in a Gathering, a
 Member must affiliate with a Community.
 
-Members register with TheGatherings and then affiliate with a Community (through joining a 
-Gathering -- see below).
+Members register with theGatherings and then affiliate with a Community, possibly preferring a
+Campus.
 
 ## Identity, Access, and Authorization
 
 Member identity is an OAuth2 token. For Members who lack or are not willing to login via a supported
-OAuth2 provider (e.g., Facebook, Google), TheGatherings will provide an OAuth2 provider with which the
+OAuth2 provider (e.g., Facebook, Google), theGatherings will provide an OAuth2 provider with which the
 Member must register. Either way, once registered, a Member will have an account (fed from their
 OAuth provider).
 
-Members (like all other elements) are never deleted. They can Leave a Community and / or Gathering.
-When leaving, they may opt to be Remembered. Remembered Members can re-join without an Invitation.
-Members who have left will require a new Invitation (and are, for all intents and purposes, new
-Members).
+Members are never deleted. They can Leave a Community and / or Gathering. When leaving, they may opt
+to be Remembered. Remembered Members can re-join without an Invitation. Members who have left will
+require a new Invitation (and are, for all intents and purposes, new Members).
 
 Members have access to their Communities and its Gatherings. A Member must authorize each Community.
 
@@ -48,29 +50,37 @@ is accepting the Invitation.*
 
 ## Discussions, Opportunities, Resources, and Tags
 
-Beyond the core elements of Communities, Gatherings, and Members, TheGatherings will include
+Beyond the core elements of Communities, Gatherings, and Members, theGatherings will include
 several other key items:
 
 - Opportunities: Collections of service opportunities, scoped to a Community
-- Resources: A loose collection of things useful to Gatherings, scoped to a TheGatherings
+- Resources: A loose collection of things useful to Gatherings, scoped to a theGatherings
 - Tags: A free-form (that is, without a taxonomy) collection of terms used to describe Gatherings,
 Opportunities, and Resources
 - Discussions: Moderated dicussions associated with a Gathering, Opportunity, or Resource
 
-## Data Management
+## Data Management, Scale, and Deployments
 
-Data in TheGatherings divides into three clumps: A Community and its Gatherings, Members, and
-Resources. Each is the unit of scale. As a result, Communities and Gatherings "know" Members by
-their external identifier. Similarly, a Member "knows" their Communities and Gatherings through
-their external identifiers.
+Data in theGatherings divides into three core clumps: A Community and its Campuses and Gatherings,
+Members, and Resources. Each is the unit of scale. All public entities will use stable, public
+identifiers (such as UUIDs). This prevents having to create additional identifiers when Members
+affiliate with a Community and so forth.
 
-External identifiers are paths. A Community, when created, obtains a unique path name (derived
-from its public name -- though the Administrator may choose another unique string). The path for a
-Gathering begins with its Community's path followed by a path name, unique only within the 
-owning Community, derived from its name (or selected by the Gathering Leader). Once created, paths
-cannot change.
+Data in each clump knows of data from another clump by its public, or external, identifier. Once
+created public identifiers cannot change. Public identifiers are UUIDs replacing the default
+primary key.
 
-No data is ever deleted or updated. All Community, Gathering, and Member records contain, at least,
-two timestamps: active_on and inactive_on. Deleting a record sets the "inactive on" timestamp.
+While clumps create units of scale, due to security issues, all clumps must be part of a single
+Deployment. A Deployment is a logical entity. Deployments cannot share any data.
 
-All timestamps are UTC ISO8601 UTC text strings (i.e., YYYY-MM-DDTHH:MM:SSZ).
+All Community, Gathering, and Member records contain, at least, two timestamps: active_on and
+inactive_on.
+
+### Dates and Times
+
+All timestamps are stored in UTC using the Time::DATE_FORMATS[:db] format (i.e.,
+"%Y-%m-%d %H:%M:%S").
+
+Communities, Gatherings, and Members all have an associated time zone. Gatherings inherit theirs
+from the owning Community (though it may be later changed). If the time zone of the Member differs
+from the Community or Gathering, then dates and times displayed will include the time zone.

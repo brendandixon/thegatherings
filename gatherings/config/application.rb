@@ -15,8 +15,18 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module Gatherings
+module TheGatherings
   class Application < Rails::Application
+    class << self
+      attr_accessor :jquery_version
+      attr_accessor :jquery_ui_version
+      attr_accessor :globalize_version
+
+      attr_accessor :modernizr_version
+
+      attr_accessor :default_time_zone
+    end
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
@@ -31,5 +41,12 @@ module Gatherings
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # Add Extensions to the autoload path
+    config.autoload_paths << Rails.root.join("lib")
+
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
   end
 end
+
+TheGatherings::Application.default_time_zone = "Pacific Time (US & Canada)"

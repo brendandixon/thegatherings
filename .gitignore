@@ -1,6 +1,7 @@
 *.rbc
 capybara-*.html
-.rspec
+# Share RSpec command-line options
+# .rspec
 /log
 /tmp
 /db/*.sqlite3

@@ -1,0 +1,26 @@
+%section
+  .row
+    .small-12.columns
+      %h2= t(:title_html, scope: [:welcome, :connected])
+      = render partial: 'shared/spacer'
+      = form_tag(welcome_complete_signup_step_url(@welcome), method: :patch) do
+        .row
+          .small-10.small-centered.columns
+            .row
+              .small-4.columns.text-center.card
+                .field.radius.button.secondary{data: {card: 'card'}}
+                  = label_tag :connected, t(:positive, scope: [:common])
+                  = radio_button_tag :connected, :positive, false, class: 'hide'
+              .small-4.columns.text-center.card.end
+                .field.radius.button.secondary{data: {card: 'card'}}
+                  = label_tag :connected, t(:negative, scope: [:common])
+                  = radio_button_tag :connected, :negative, false, class: 'hide'
+
+        = render partial: 'shared/spacer'
+        .row
+          .small-2.columns
+            .actions
+              = link_to t(:previous, scope: [:common]), welcome_signup_step_url(@welcome, back: true), class: 'button small radius', style: 'width:100%;'
+          .small-2.columns.end
+            .actions
+              = submit_tag t(:next, scope: [:common]), class: 'button small radius', style: 'width:100%;'

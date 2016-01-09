@@ -1,0 +1,24 @@
+%section
+  .row
+    .small-12.columns
+      %h2= t(:title_html, scope: [:gatherings, @sequence_step])
+      = render 'shared/spacer'
+      = form_for(@gathering, as: :gathering, url: community_gathering_complete_step_url(@community, @gathering, mode: params[:mode]), method: :patch) do |f|
+        .row
+          .small-12.columns
+            .field
+              = f.label Gathering.human_attribute_name :name
+              = f.text_field :name, autofocus: true
+        .row
+          .small-12.columns
+            .fields
+              = f.label Gathering.human_attribute_name :description
+              = f.text_area :description
+
+        = render 'shared/spacer'
+        .row
+          .small-2.columns.end
+            .actions
+              = f.submit t(:next, scope: [:common]), class: 'button small radius'
+
+  = render partial: 'shared/errors', locals: {resource: @gathering}

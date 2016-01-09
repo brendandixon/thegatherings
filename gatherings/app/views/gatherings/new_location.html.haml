@@ -1,0 +1,56 @@
+%section
+  .row
+    .small-12.columns
+      %h2= t(:title_html, scope: [:gatherings, @sequence_step])
+      = form_for(@gathering, as: :gathering, url: community_gathering_complete_step_url(@community, @gathering.id, mode: params[:mode])) do |f|
+        .row
+          .small-10.small-centered.columns
+            %fieldset
+              %legend=  t(:time, scope: [:gatherings, @sequence_step])
+              .row
+                .small-3.columns
+                  .row
+                    .small-8.columns
+                      .field
+                        = f.collection_select :meeting_day, Gathering.meeting_days, :last, :first
+                    .small-4.text-center.columns.end
+                      %p= t(:at, scope: [:common])
+                .small-4.columns
+                  .row
+                    .small-6.columns
+                      .field
+                        = f.select :meeting_time, options_for_select(Gathering.meeting_times, f.object.meeting_time.to_formatted_s(Gathering::TIME_DB_FORMAT))
+                    .small-6.text-center.columns
+                      %p= "#{t(:conjunction, scope: [:common])} #{t(:last, scope: [:common])}"
+                .small-3.columns.end
+                  .row
+                    .small-4.columns
+                      .field
+                        = f.collection_select :meeting_duration, Gathering.meeting_durations, :last, :first
+                    .small-4.columns.end
+                      %p= t(:minutes, scope: [:common])
+              .row
+                .small-4.columns
+                  .field
+                    = f.label Gathering.human_attribute_name :meeting_starts
+                    = f.text_field :meeting_starts, data: {datefield: true}
+                .small-4.columns.end
+                  .field
+                    = f.label Gathering.human_attribute_name :meeting_ends
+                    = f.text_field :meeting_ends, data: {datefield: true}
+
+            %fieldset
+              %legend= t(:place, scope: [:gatherings, @sequence_step])
+              = render partial: 'shared/addressed', locals: {form: f, resource: @gathering}
+
+        = render 'shared/spacer'
+        .row
+          .small-2.columns
+            .actions
+              = link_to t(:previous, scope: [:common]), community_gathering_step_url(@community, @gathering, mode: params[:mode], back: true), class: 'button small radius', style: 'width:100%;'
+          .small-2.columns.end
+            .actions
+              = f.submit t(:next, scope: [:common]), class: 'button small radius', style: 'width:100%;'
+
+  = render partial: 'shared/errors', locals: {resource: @gathering}
+  = render template: 'shared/bind_dates'

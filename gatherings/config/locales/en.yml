@@ -20,4 +20,170 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  address:
+    street: "Street"
+    city: "City"
+    state: "State"
+    postal_code: "Zipcode"
+    time_zone: "Time Zone"
+  activerecord:
+    attributes:
+      community:
+        name: "Name"
+      gathering:
+        description: "Description"
+        inactive_on: "Stops Meeting (optional)"
+        meeting_day: "Meeting Day"
+        meeting_duration: "Meetings Last (in minutes)"
+        meeting_ends: "and the last meeting on (not required)"
+        meeting_starts: "The first meeting occurs on"
+        meeting_time: "Meeting Time"
+      member:
+        email: "Email"
+        first_name: "First Name"
+        last_name: "Last Name"
+        one: "Member"
+        other: "Members"
+        password: "Password"
+        password_confirmation: "Confirm Password"
+        phone: "Cell Number"
+        postal_code: "Zipcode"
+    models:
+      community:
+        other: "Communities"
+      gathering:
+        one: "Gathering"
+        other: "Gatherings"
+      member:
+        one: "Member"
+        other: "Members"
+  tags:
+    age_groups:
+      fifties: "50s"
+      forties: "40s"
+      plus: "Beyond"
+      sixties: "60s"
+      thirties: "30s"
+      twenties: "20s"
+      title: "Ages:"
+    genders:
+      men_only: "Men Only"
+      mixed: "A Mix of Women and Men"
+      women_only: "Women Only"
+      title: "Makeup:"
+    life_stages:
+      college: "Still in College"
+      early_career: "Just starting a Career"
+      established_career: "Established in a Career"
+      post_career: "In their Post Career"
+      post_college: "Recent College Graduates"
+      title: "Life Situation:"
+    relationships:
+      divorced: "Recovering from a Divorce"
+      early_family: "Just starting a Family"
+      empty_nester: "Savoring an Empty Nest"
+      established_family: "Established with a Family"
+      single: "Enjoying Singleness"
+      young_married: "Recently Married"
+      title: "Relational Status:"
+  charts:
+    age_groups:
+      title: "Age Groups"
+    life_stages:
+      title: "Life Stages"
+    relationships:
+      title: "Relational Status"
+    genders:
+      title: "Gender Mix"
+  errors:
+    gathering:
+      missing_contact: "Either a phone number or email is required."
+    messages:
+      invalid_zipcode: "The provided zipcode appears wrong."
+      not_saved:
+        one: "We were unable to create your account due to an error."
+        other: "We were unable to create your account due to %{count} errors."
+      too_many: "has too many values, only %{limit} are allowed."
+      unknown_tag: "#{tag} is not a known #{group}."
+  common:
+    about: "About"
+    application: "theGatherings"
+    at: "at"
+    cancel: "Cancel"
+    create: "Create"
+    conjunction: "and"
+    disjunction: "or"
+    edit: "Edit"
+    finish: "Finish"
+    friday: "Friday"
+    last: "run for"
+    monday: "Monday"
+    minutes: "minutes"
+    negative: "No"
+    next: "Continue"
+    positive: "Yes"
+    previous: "Go Back"
+    privacy: "Privacy Policy"
+    promo: "We meet. We encourage. We support. We pray. We laugh. We worship. We fit. We serve. We find our place in His place. We are the body."
+    saturday: "Saturday"
+    signin: "Sign in "
+    signout: "Sign out"
+    signup: "Sign up"
+    sunday: "Sunday"
+    tagline: "Be the Body"
+    tuesday: "Tuesday"
+    thursday: "Thursday"
+    wednesday: "Wednesday"
+  communities:
+    edit:
+      title: "Edit the %{name} Community"
+    index:
+      title: "Communities"
+    new:
+      title: "Create a Community"
+    report:
+      button: "Report"
+      title: "%{name} Report"
+    show:
+      title: "%{name} Community"
+    title: "Communities"
+  gatherings:
+    age_group:
+      title_html: "Those attending the Gathering will be in their&#8230;"
+    create:
+      title_html: "What would you like to name your Gathering?"
+    edit:
+      title: "Edit the %{name} Gathering"
+    gender:
+      title_html: "Who will attend your Gathering? (Pick one)"
+    index:
+      title: "%{name} Gatherings"
+    life_stage:
+      title_html: "The Gathering members will be&#8230;"
+    relationship:
+      title_html: "What kind of relationships will the Gathering cater to?"
+    location:
+      place: "And meet at"
+      time: "Meetings take place on"
+      title_html: "When and where will your Gathering meet?"
+    new:
+      title: "Create a Gathering"
+    show:
+      title: "%{name} Gathering"
+    title: "Gatherings"
+  members:
+  welcome:
+    age_group:
+      title_html: "Others in your Gathering would be in their&#8230;"
+    connected:
+      title_html: "Do you presently attend a Gathering?"
+    find: "Find a Gathering"
+    gender:
+      title_html: "You are most comfortable if the Gathering has&#8230;"
+    join: "Join theGatherings"
+    life_stage:
+      title_html: "You prefer a Gathering whose members are&#8230;"
+    relationship:
+      title_html: "The Gathering members will be&#8230;"
+    signup:
+      title_html: "Signup Members"

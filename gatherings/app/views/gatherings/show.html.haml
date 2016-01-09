@@ -1,0 +1,31 @@
+%section
+  .row
+    .small-12.columns
+      %h2= t(:title, scope: [:gatherings, :show], name: @gathering.name)
+
+      = render partial: 'shared/spacer'
+      .row
+        .small-10.small-centered.columns.end
+          %h3= @gathering.name
+      .row
+        .small-10.small-centered.columns.end
+          %p= @gathering.description
+
+      = render partial: 'shared/spacer'
+      .row
+        .small-10.small-centered.columns.end
+          - %w(age_group life_stage relationship gender).each do |t|
+            .row
+              .small-3.columns
+                = t(:title, scope: [:tags, t.pluralize])
+              .small-9.columns
+                = @gathering.send("#{t}_list").map{|i| t(i, scope: [:tags, t.pluralize])}.join(', ')
+
+      = render partial: 'shared/spacer'
+      .row
+        .small-2.columns
+          .actions
+            = link_to t(:edit, scope:[:common]), community_gathering_step_url(@community, @gathering, mode: :edit), class: 'button small radius'
+        .small-10.columns.end
+          .right
+            = link_to t(:title, scope:[:gatherings]), community_gatherings_path(@community)

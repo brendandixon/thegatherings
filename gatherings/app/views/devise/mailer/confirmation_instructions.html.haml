@@ -1,0 +1,11 @@
+%section
+  .row
+    .small-10.columns.small-centered
+      %p
+        Welcome
+        = @email
+
+      .row
+        .small-12.columns
+          .text-centered
+            = link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token), class: 'button'

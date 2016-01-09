@@ -1,0 +1,18 @@
+- matrix, columns, column_width = matrix_layout(collection.length, 2, 4, 12)
+- matrix.each do |m|
+  .row
+    - slice = m.map{|i| collection[i]}
+    - if slice.length <= 1
+      .columns.text-center.card{class: "small-#{column_width}"}
+        = '&nbsp;'.html_safe
+    = form.collection_check_boxes resource_member, slice, :first, :last do |b|
+      .columns.text-center.card{class: "small-#{column_width}"}
+        - if b.value.present?
+          - selected = resource_list.include?(b.value)
+          .field.radius.button{data: {card: 'card'}, class: selected ? 'success' : 'secondary'}
+            = b.label(style: 'text-align:center;') do
+              = b.check_box selected ? {class: 'hide', checked: 'checked'} : {class: 'hide'}
+              = b.text
+    - if slice.length < columns
+      .columns.text-center.card.end{class: "small-#{column_width}"}
+        = '&nbsp;'.html_safe

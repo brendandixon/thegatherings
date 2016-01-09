@@ -1,5 +1,24 @@
 Rails.application.routes.draw do
+  root 'welcome#index'
+  get 'welcome', to: 'welcome#index', as: :welcome
+
+  get "welcome/signup", to: "welcome#sequence_begin_step", as: :welcome_signup
+  get "welcome/signup(/:id)", to: "welcome#sequence_begin_step", as: :welcome_signup_step
+  patch "welcome/signup(/:id)", to: "welcome#sequence_complete_step", as: :welcome_complete_signup_step
+
   devise_for :members
+  resources :members
+  get 'communities', to: 'communities#index', as: :member_root
+
+  resources :communities do
+    get 'gatherings/:mode(/:id)', to: "gatherings#sequence_begin_step", as: :gathering_step, constraints: {mode: /create|edit/}
+    patch 'gatherings/:mode(/:id)', to: "gatherings#sequence_complete_step", as: :gathering_complete_step, constraints: {mode: /create|edit/}
+
+    get 'report', to: "communities#report", as: :report
+
+    resources :gatherings, only: [:index, :show, :destroy]
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
