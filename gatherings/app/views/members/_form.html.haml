@@ -1,3 +1,4 @@
+- exclude_password = false if exclude_password.blank?
 - method = :post if method.blank?
 = form_for(resource, as: resource_name, url: resource_path, method: method) do |f|
   .row
@@ -26,7 +27,7 @@
         = f.label Member.human_attribute_name :postal_code
         = f.text_field :postal_code, maxlength: 5
 
-  - unless member_signed_in?
+  - unless exclude_password
     .row
       .small-6.columns
         .field
@@ -43,7 +44,7 @@
         = f.submit t(:signup, scope: [:common]), class: 'button small radius'
     - unless member_signed_in?
       .small-10.columns.clearfix
-        .right
+        .float-right
           = render "devise/shared/links"
 
   = render partial: 'shared/errors', locals: {resource: resource}

@@ -18,10 +18,9 @@ Bundler.require(*Rails.groups)
 module TheGatherings
   class Application < Rails::Application
     class << self
+      attr_accessor :globalize_version
       attr_accessor :jquery_version
       attr_accessor :jquery_ui_version
-      attr_accessor :globalize_version
-
       attr_accessor :modernizr_version
 
       attr_accessor :default_time_zone
@@ -44,8 +43,6 @@ module TheGatherings
 
     # Add Extensions to the autoload path
     config.autoload_paths << Rails.root.join("lib")
-
-    config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
   end
 end
 

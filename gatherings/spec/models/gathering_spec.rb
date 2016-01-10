@@ -2,7 +2,7 @@
 #
 # Table name: gatherings
 #
-#  id               :string(36)       primary key
+#  id               :string(36)       not null, primary key
 #  community_id     :string(36)       not null
 #  name             :string(255)
 #  description      :text(65535)

@@ -1,5 +1,9 @@
 # Notes
 
+## Random
+
+- Make responding to invitations easy. Make finding / sending group descriptions easy.
+
 ## Other Packages
 
 ### Cloud-based

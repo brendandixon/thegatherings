@@ -12,7 +12,8 @@
  *
  */
 
-@import "foundation_and_overrides";
+@import 'foundation_and_settings';
+@import 'foundation-icons';
 
 .outline {
   div, canvas {
@@ -30,12 +31,12 @@
 
     &.success {
       label {
-        color: $secondary-color;
+        color: $white;
       }
     }
 
     label {
-      color: $charcoal;
+      color: $light-gray;
       font-size: 110%;
       font-weight: bold;
       height: 20%;
@@ -63,10 +64,10 @@
     margin: 0 4px;
 
     &.active {
-      border: 1px solid $jet;
+      border: 1px solid $dark-gray;
 
       a {
-        background-color: $silver;
+        background-color: $light-gray;
       }
     }
   }

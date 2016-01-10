@@ -1,0 +1,23 @@
+# See https://gist.github.com/eoinkelly/5778004
+# shim:
+#   'jquery_ujs':
+#     - 'jquery'
+
+# Any module that does require('jquery') will actually get
+# jquery-with-rails-ujs.js instead. We also make an exception for jquery_ujs.js
+# and jquery-with-rails-ujs.js themselves - they need to get the real jQuery.
+# map:
+#   '*':
+#     'jquery': 'jquery-with-rails-ujs'
+#   'jquery_ujs': 
+#     'jquery': 'jquery' 
+#   'jquery-with-rails-ujs': 
+#     'jquery': 'jquery' 
+
+paths:
+  Chartjs: "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min"
+  foundation: "https://cdn.jsdelivr.net/foundation/6.1.1/foundation.min"
+  # Note: Loading locally causes a missing jQuery variable error...hmmm
+  # foundation: "foundation-sites/dist/foundation.min"
+  jquery: "https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min"
+  jquery-ui: "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min"

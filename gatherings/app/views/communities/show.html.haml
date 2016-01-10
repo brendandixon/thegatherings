@@ -23,7 +23,7 @@
         .small-3.columns
           = link_to t(:button, scope:[:communities, :report]), community_report_url(@community), class: 'button small radius', style: 'width: 100%'
         .small-3.columns
-          .right
+          .float-right
             = link_to t(:edit, scope: [:common]), edit_community_path(@community)
             &nbsp; | &nbsp;
             = link_to t(:title, scope: [:communities]), communities_path

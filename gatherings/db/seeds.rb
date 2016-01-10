@@ -7,24 +7,77 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 Time.use_zone "Pacific Time (US & Canada)" do
-  options = {
-    active_on: DateTime.current,
-    street_primary: "3302 NW 73rd Street",
+
+  Community.create({name: "Bethany Community Church"})
+  bcc = Community.first
+
+  Campus.create({
+    community: bcc,
+    name: "Bethany Greenlake",
+    phone: "206.524.9000",
+    email: "staff@churchbcc.org",
+    street_primary: "8023 Green Lake Dr N",
     city: "Seattle",
     state: "WA",
-    postal_code: "98117",
+    postal_code: "98103",
     time_zone: Time.zone.name
-  }
+  })
+  Campus.create({
+    community: bcc,
+    name: "Bethany North",
+    phone: "206.316.8377",
+    email: "north@churchbcc.org",
+    street_primary: "16743 Aurora Ave. N.",
+    city: "Shoreline",
+    state: "WA",
+    postal_code: "98133",
+    time_zone: Time.zone.name
+  })
+  Campus.create({
+    community: bcc,
+    name: "Bethany West Seattle",
+    phone: "206.524.9000",
+    email: "staff@churchbcc.org",
+    time_zone: Time.zone.name
+  })
+  Campus.create({
+    community: bcc,
+    name: "Bethany Northeast",
+    phone: "206.524.9000",
+    email: "staff@churchbcc.org",
+    time_zone: Time.zone.name
+  })
+  Campus.create({
+    community: bcc,
+    name: "Bethany Ballard",
+    phone: "206.524.9000",
+    email: "staff@churchbcc.org",
+    street_primary: "8023 Green Lake Dr N",
+    city: "Seattle",
+    state: "WA",
+    postal_code: "98103",
+    time_zone: Time.zone.name
+  })
+  Campus.create({
+    community: bcc,
+    name: "Bethany Eastside",
+    phone: "206.524.9000",
+    email: "staff@churchbcc.org",
+    street_primary: "8023 Green Lake Dr N",
+    city: "Seattle",
+    state: "WA",
+    postal_code: "98103",
+    time_zone: Time.zone.name
+  })
 
-  Community.create({name: "Bethany Greenlake"}.merge(options))
-  Community.create({name: "Bethany Ballard"}.merge(options))
-  Community.create({name: "Bethany Northshore"}.merge(options))
-
-  options.delete(:active_on)
-  options = options.merge({
-              community_id: Community.find_by(name: "Bethany Ballard").id,
+  options = {
+              community: bcc,
+              street_primary: "3302 NW 73rd Street",
+              city: "Seattle",
+              state: "WA",
+              postal_code: "98117",
               meeting_starts: 'January 12, 2016',
-            })
+            }
   Gathering.create({name: 'Ballard Small Group', description: "The Ballard Small Group gathering.", meeting_day: 'thursday'}.merge(options)) do |g|
       g.age_group_list = 'thirties, forties, fifties, sixties'
       g.life_stage_list = 'established_career, post_career'

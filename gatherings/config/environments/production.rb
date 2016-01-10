@@ -77,3 +77,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 end
+
+TheGatherings::Application.globalize_version = '1.0.0'
+TheGatherings::Application.jquery_version = '2.1.4'
+TheGatherings::Application.jquery_ui_version = '1.11.4'
+TheGatherings::Application.modernizr_version = '3.2.0'

@@ -1,0 +1,5 @@
+%section
+  .row
+    .small-10.columns.small-centered
+      %h2= I18n.t :join, scope: [:welcome]
+      = render partial: 'members/form', locals: {resource: @member, resource_name: :member, resource_path: member_complete_signup_step_url(@member), method: :patch}

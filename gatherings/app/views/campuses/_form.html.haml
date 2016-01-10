@@ -1,0 +1,23 @@
+= form_for @campus do |f|
+  .row
+    .small-12.columns
+      .field
+        = f.label Campus.human_attribute_name :name
+        = f.text_field :name, autofocus: true
+
+  = render 'shared/spacer'
+  = render partial: 'shared/addressed', locals: {form: f, resource: @campus}
+
+  = render 'shared/spacer'
+  .row
+    .small-4.columns
+      .actions
+        = f.submit I18n.t(:next, scope:[:common]), class: 'button small radius', style: 'width:100%'
+    .small-8.columns.clearfix
+      .float-right
+        %ul.menu
+          - if !@campus.new_record?
+            %li= link_to I18n.t(:cancel, scope:[:common]), @campus
+          %li= link_to I18n.t(:title, scope:[:campuses]), campuses_path
+
+  = render partial: 'shared/errors', locals: {resource: @campus}

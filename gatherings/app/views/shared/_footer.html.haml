@@ -1,17 +1,18 @@
 %footer
   = render 'shared/spacer'
-  = render 'shared/spacer'
   .row
     .small-12.columns
       .row
         .small-6.columns
           %p © Copyright theGatherings
         .small-6.columns
-          %ul.inline-list.right
+          %ul.float-right.menu
+            - if member_signed_in?
+              %li
+                = link_to I18n.t(:signout, scope: [:common]), destroy_member_session_path, method: :delete
+              %li
+                = link_to I18n.t(:account, scope: [:common]), edit_member_registration_url
             %li
               = link_to I18n.t(:about, scope: [:common]), "javascript:void()"
             %li
               = link_to I18n.t(:privacy, scope: [:common]), "javascript:void()"
-            - if member_signed_in?
-              %li
-                = link_to I18n.t(:signout, scope: [:common]), destroy_member_session_path, method: :delete

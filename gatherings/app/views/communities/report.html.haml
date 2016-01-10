@@ -8,41 +8,41 @@
         .small-10.small-centered.columns
           .row
             .small-12.columns
-              %ul.tabs{id: :tabs, data: {tab: true}}
-                %li.tab-title.active
+              %ul.tabs{id: :tabs, data: {tabs: true}}
+                %li.tabs-title.is-active
                   = link_to "Age Groups", "#age_groups"
-                %li.tab-title
+                %li.tabs-title
                   = link_to "Life Stages", "#life_stages"
-                %li.tab-title
+                %li.tabs-title
                   = link_to "Relational Status", "#relationships"
-                %li.tab-title
+                %li.tabs-title
                   = link_to "Gender Mix", "#genders"
 
           .row
             .small-12.columns
-              .tabs-content
-                #age_groups.content.active
+              .tabs-content{data: {tabs_content: "tabs"}}
+                #age_groups.tabs-panel.is-active
                   .row
                     .small-12.columns
                       %canvas.chart{data: {chart: :age_groups}}
                   .row
                     .small-12.small-centered.columns
                       = t(:title, scope: [:charts, :age_groups])
-                #life_stages.content
+                #life_stages.tabs-panel
                   .row
                     .small-12.columns
                       %canvas.chart{data: {chart: :life_stages}}
                   .row
                     .small-12.small-centered.columns
                       = t(:title, scope: [:charts, :life_stages])
-                #relationships.content
+                #relationships.tabs-panel
                   .row
                     .small-12.columns
                       %canvas.chart{data: {chart: :relationships}}
                   .row
                     .small-12.small-centered.columns
                       = t(:title, scope: [:charts, :relationships])
-                #genders.content
+                #genders.tabs-panel
                   .row
                     .small-12.columns
                       %canvas.chart{data: {chart: :genders}}
@@ -56,7 +56,7 @@
           .actions.left
             = link_to t(:title, scope:[:gatherings, :new]), community_gathering_step_url(@community, mode: :create), class: 'button small radius'
         .small-6.columns.end
-          .right
+          .float-right
             = link_to t(:title, scope: [:gatherings]), community_url(@community)
 
-  = render template: 'shared/bind_charts'
+= render template: 'shared/bind_charts'

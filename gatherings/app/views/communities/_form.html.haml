@@ -6,16 +6,13 @@
         = f.text_field :name, autofocus: true
 
   = render 'shared/spacer'
-  = render partial: 'shared/addressed', locals: {form: f, resource: @community}
-
-  = render 'shared/spacer'
   .row
     .small-4.columns
       .actions
         = f.submit I18n.t(:next, scope:[:common]), class: 'button small radius', style: 'width:100%'
     .small-8.columns.clearfix
-      .right
-        %ul.inline-list
+      .float-right
+        %ul.menu
           - if !@community.new_record?
             %li= link_to I18n.t(:cancel, scope:[:common]), @community
           %li= link_to I18n.t(:title, scope:[:communities]), communities_path

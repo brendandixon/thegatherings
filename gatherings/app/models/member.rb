@@ -2,7 +2,7 @@
 #
 # Table name: members
 #
-#  id                     :string(36)       primary key
+#  id                     :string(36)       not null, primary key
 #  first_name             :string(255)
 #  last_name              :string(255)
 #  email                  :string(255)      default(""), not null

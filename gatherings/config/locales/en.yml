@@ -107,6 +107,7 @@ en:
       unknown_tag: "#{tag} is not a known #{group}."
   common:
     about: "About"
+    account: "Account"
     application: "theGatherings"
     at: "at"
     cancel: "Cancel"

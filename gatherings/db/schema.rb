@@ -11,26 +11,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151229212642) do
+ActiveRecord::Schema.define(version: 20160110231346) do
 
-  create_table "communities", force: :cascade, id: false do |t|
-    t.string   "id",               limit: 36,    null: false, primary_key: true
-    t.string   "name",             limit: 255
-    t.string   "street_primary",   limit: 255
-    t.string   "street_secondary", limit: 255
-    t.string   "city",             limit: 255
-    t.string   "state",            limit: 255
-    t.string   "postal_code",      limit: 255
-    t.string   "time_zone",        limit: 255
-    t.string   "country",          limit: 255
-    t.date     "active_on"
-    t.date     "inactive_on"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+  create_table "campuses", id: false, force: :cascade do |t|
+    t.string   "id",                 limit: 36,  null: false
+    t.string   "community_id",       limit: 36,  null: false
+    t.string   "name",               limit: 255
+    t.string   "contact_first_name", limit: 255
+    t.string   "contact_last_name",  limit: 255
+    t.string   "email",              limit: 255
+    t.string   "phone",              limit: 255
+    t.string   "street_primary",     limit: 255
+    t.string   "street_secondary",   limit: 255
+    t.string   "city",               limit: 255
+    t.string   "state",              limit: 255
+    t.string   "postal_code",        limit: 255
+    t.string   "time_zone",          limit: 255
+    t.string   "country",            limit: 255
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
   end
 
-  create_table "gatherings", force: :cascade, id: false do |t|
-    t.string   "id",               limit: 36,    null: false, primary_key: true
+  create_table "communities", id: false, force: :cascade do |t|
+    t.string   "id",          limit: 36,  null: false
+    t.string   "name",        limit: 255
+    t.date     "active_on"
+    t.date     "inactive_on"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "gatherings", id: false, force: :cascade do |t|
+    t.string   "id",               limit: 36,    null: false
     t.string   "community_id",     limit: 36,    null: false
     t.string   "name",             limit: 255
     t.text     "description",      limit: 65535
@@ -50,8 +62,8 @@ ActiveRecord::Schema.define(version: 20151229212642) do
     t.datetime "updated_at",                     null: false
   end
 
-  create_table "members", force: :cascade, id: false do |t|
-    t.string   "id",                     limit: 36,               null: false, primary_key: true
+  create_table "members", id: false, force: :cascade do |t|
+    t.string   "id",                     limit: 36,               null: false
     t.string   "first_name",             limit: 255
     t.string   "last_name",              limit: 255
     t.string   "email",                  limit: 255, default: "", null: false

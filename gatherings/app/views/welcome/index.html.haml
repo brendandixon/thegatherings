@@ -18,7 +18,3 @@
           .text-center
             - unless member_signed_in?
               = link_to "#{I18n.t :disjunction, scope: [:common]} #{I18n.t :signin, scope: [:common]}", new_member_session_path, class: 'button tiny radius secondary'
-      .row
-        .small-6.columns
-          = render 'shared/notice'
-        .small-6.columns

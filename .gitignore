@@ -8,7 +8,8 @@ capybara-*.html
 /db/*.sqlite3-journal
 /public/system
 /coverage/
-/spec/tmp
+**/public/assets
+**/tmp
 **.orig
 rerun.txt
 pickle-email-*.html
@@ -28,9 +29,16 @@ config/secrets.yml
 .rvmrc
 
 # if using bower-rails ignore default bower_components path bower.json files
-/vendor/assets/bower_components
-*.bowerrc
-bower.json
+**/vendor/assets/bower_components
+# *.bowerrc
+# bower.json
 
 # Ignore pow environment settings
 .powenv
+
+# Ignore all logfiles and tempfiles.
+**/log
+!/log/.keep
+
+# Ignore Spring files
+/bin

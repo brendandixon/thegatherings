@@ -1,0 +1,20 @@
+%section
+  .row
+    .small-12.columns
+      %h2= t(:title_html, scope: [:welcome, @sequence_step])
+      = render partial: 'shared/spacer'
+      = form_for(@member, as: :member, url: member_complete_signup_step_url(@member), method: :patch) do |f|
+        .row
+          .small-10.small-centered.columns
+            = render partial: 'shared/collection', locals: {form: f, resource_member: @collection_member, resource_list: @member.send(@collection_member), collection: @collection}
+
+        = render partial: 'shared/spacer'
+        .row
+          .small-2.columns
+            .actions
+              = link_to t(:previous, scope: [:common]), member_signup_step_url(@member, back: true), class: 'button small radius', style: 'width:100%;'
+          .small-2.columns.end
+            .actions
+              = f.submit t(:next, scope: [:common]), class: 'button small radius', style: 'width:100%;'
+
+        = render partial: 'shared/errors', locals: {resource: @member}

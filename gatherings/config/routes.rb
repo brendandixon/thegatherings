@@ -2,12 +2,21 @@ Rails.application.routes.draw do
   root 'welcome#index'
   get 'welcome', to: 'welcome#index', as: :welcome
 
-  get "welcome/signup", to: "welcome#sequence_begin_step", as: :welcome_signup
-  get "welcome/signup(/:id)", to: "welcome#sequence_begin_step", as: :welcome_signup_step
-  patch "welcome/signup(/:id)", to: "welcome#sequence_complete_step", as: :welcome_complete_signup_step
+  get "welcome/sign_up", to: "welcome#sequence_begin_step", as: :welcome_signup
+  get "welcome/sign_up(/:id)", to: "welcome#sequence_begin_step", as: :welcome_signup_step
+  patch "welcome/sign_up(/:id)", to: "welcome#sequence_complete_step", as: :welcome_complete_signup_step
 
-  devise_for :members
-  resources :members
+  devise_scope :member do
+    get '/sign_up', to: 'members/registrations#sequence_begin_step', as: :new_member_registration
+    get "/sign_up(/:id)", to: "members/registrations#sequence_begin_step", as: :member_signup_step
+    patch "/sign_up(/:id)", to: "members/registrations#sequence_complete_step", as: :member_complete_signup_step
+  end
+
+  devise_for :members, controllers: {
+    registrations: 'members/registrations',
+    sessions: 'members/sessions'
+  }
+  # resources :members
   get 'communities', to: 'communities#index', as: :member_root
 
   resources :communities do

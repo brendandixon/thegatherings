@@ -9,7 +9,11 @@ Rails.application.config.assets.version = '1.0'
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 # Rails.application.config.assets.precompile += %w( search.js )
-Rails.application.config.assets.precompile += %w( vendor/assets/modernizr/3.2.0/modernizr-all.min.js  )
+# Rails.application.config.assets.precompile += %w( vendor/assets/modernizr/3.2.0/modernizr-all.min.js  )
 
 # See https://github.com/rails/sprockets
-Rails.application.assets.append_path  "vendor/assets/javascripts/modernizr/#{TheGatherings::Application.modernizr_version}"
+Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'stylesheets', 'foundation-icons')
+Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'javascripts', 'modernizr', TheGatherings::Application.modernizr_version)
+Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bower_components')
+Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bower_components', 'foundation-sites', 'scss')
+Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bower_components', 'foundation-sites', 'dist')

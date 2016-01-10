@@ -1,0 +1,26 @@
+{
+  "name": "theGatherings",
+  "homepage": "https://github.com/brendandixon/thegatherings",
+  "authors": [
+    "Brendan Dixon <brendandixon@me.com>"
+  ],
+  "description": "Making it easy to find, connect, and manage gatherings of the Body",
+  "main": "",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor/assets/bower-components",
+    "test",
+    "tests",
+    "vendor/assets/bower_components"
+  ],
+  "dependencies": {
+    "foundation-sites": "~6.1.1"
+  }
+}

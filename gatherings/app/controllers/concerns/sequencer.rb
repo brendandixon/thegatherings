@@ -7,8 +7,10 @@ module Sequencer
     cattr_accessor :sequence_klass
     cattr_accessor :sequence_steps
     cattr_accessor :sequence_variable_name
+    cattr_accessor :sequence_view_paths
 
-    self.sequence_controller = self.name.underscore.split('_').first
+    self.sequence_controller = self.name.demodulize.underscore.split('_').first
+    self.sequence_view_paths = [self.sequence_controller]
     self.sequence_klass = self.sequence_controller.singularize.classify.constantize rescue nil
     self.sequence_cookie_name = "#{self.sequence_controller.singularize}_sequence"
     self.sequence_variable_name = "@#{self.sequence_controller.singularize}"
@@ -21,43 +23,39 @@ module Sequencer
 
   def sequence_begin_step
     m = "sequence_begin_#{@sequence_step}_step".to_sym
-    if self.methods.include?(m)
-      self.send(m)
+    self.send(m) if self.methods.include?(m)
+
+    v = self.instance_variable_get(self.class.sequence_variable_name)
+    if @sequence_step_index > 0 && v.new_record?
+      sequence_reset
+      redirect_to url_for(controller: self.class.sequence_controller, action: :sequence_begin_step)
+    elsif params[:back].present?
+      sequence_step_backward
+      redirect_to url_for(controller: self.class.sequence_controller, action: :sequence_begin_step, id: v.id)
     else
-      v = self.instance_variable_get(self.class.sequence_variable_name)
-      if @sequence_step_index > 0 && v.new_record?
-        sequence_reset
-        redirect_to url_for(controller: self.class.sequence_controller, action: :sequence_begin_step)
-      elsif params[:back].present?
-        sequence_step_backward
-        redirect_to url_for(controller: self.class.sequence_controller, action: :sequence_begin_step, id: v.id)
-      else
-        respond_to do |format|
-          format.html { render sequence_step_view }
-        end
+      respond_to do |format|
+        format.html { render sequence_step_view }
       end
     end
   end
 
-  def sequence_complete_step
-    m = "sequence_complete_#{@sequence_step}_step".to_sym
-    if self.methods.include?(m)
-      self.send(m)
-    else
-      v = self.instance_variable_get(self.class.sequence_variable_name)
+  def sequence_complete_step      
+    v = self.instance_variable_get(self.class.sequence_variable_name)
 
-      if v.update_attributes(sequence_step_params)
-        if sequence_step_forward(params[:complete].present?)
-          respond_to do |format|
-            format.html { redirect_to url_for(controller: self.class.sequence_controller, action: :sequence_begin_step, id: v.id) }
-          end
-        else
-          self.send(:sequence_complete)
+    if sequence_step_params.blank? || v.update_attributes(sequence_step_params)
+      m = "sequence_complete_#{@sequence_step}_step".to_sym
+      self.send(m) if self.methods.include?(m)
+      if sequence_step_forward(params[:complete].present?)
+        respond_to do |format|
+          format.html { redirect_to url_for(controller: self.class.sequence_controller, action: :sequence_begin_step, id: v.id) }
         end
       else
-        respond_to do |format|
-          format.html { render sequence_step_view }
-        end
+        sequence_reset
+        self.send(:sequence_complete)
+      end
+    else
+      respond_to do |format|
+        format.html { render sequence_step_view }
       end
     end
   end
@@ -105,7 +103,6 @@ module Sequencer
   end
 
   def sequence_complete
-    sequence_reset
     respond_to do |format|
       format.html { redirect_to url_for(controller: self.class.sequence_controller, action: :sequence_begin_step, id: self.instance_variable_get(self.class.sequence_variable_name).id) }
     end
@@ -135,7 +132,7 @@ module Sequencer
       self.send(m)
     else
       [@sequence_step.to_s, "new_#{@sequence_step}", "step"].each do |v|
-        return v if lookup_context.template_exists?(v, self.class.sequence_controller)
+        return v if lookup_context.template_exists?(v, self.class.sequence_view_paths)
       end
     end
   end
@@ -146,7 +143,12 @@ module Sequencer
       options = steps.extract_options!
       raise ArgumentException.new("Sequences require at least two steps") if steps.length < 2
       self.sequence_steps = steps
-      self.sequence_klass = options[:klass].to_s.classify.constantize if options.include?(:klass)
+      if options.include?(:klass)
+        klass = options[:klass].to_s
+        self.sequence_view_paths << "#{klass.pluralize}/#{self.sequence_controller}"
+        self.sequence_klass = klass.classify.constantize
+        self.sequence_variable_name = "@#{klass.singularize}"
+      end
     end
 
   end

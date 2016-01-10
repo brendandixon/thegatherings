@@ -2,7 +2,7 @@
 #
 # Table name: gatherings
 #
-#  id               :string(36)       primary key
+#  id               :string(36)       not null, primary key
 #  community_id     :string(36)       not null
 #  name             :string(255)
 #  description      :text(65535)
@@ -93,17 +93,13 @@ class Gathering < ActiveRecord::Base
   private
 
     def ensure_defaults
-      if self.community.present?
-        self.city = self.community.city if self.city.blank?
-        self.state = self.community.state if self.state.blank?
-        self.time_zone = self.community.time_zone if self.time_zone.blank?
-      end
-      
       today = DateTime.current.beginning_of_day
       self.meeting_day = :tuesday if self.meeting_day.blank?
       self.meeting_time = today.advance(hours: 19).to_s(TIME_DB_FORMAT) if self.meeting_time.blank?
       self.meeting_duration = MEETING_DURATION_DEFAULT if self.meeting_duration.blank?
       self.meeting_starts = today if self.meeting_starts.blank?
+
+      self.time_zone = TheGatherings::Application.default_time_zone if self.time_zone.blank?
     end
 
     def normalize_meeting_day

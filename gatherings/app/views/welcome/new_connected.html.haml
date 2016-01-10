@@ -3,7 +3,7 @@
     .small-12.columns
       %h2= t(:title_html, scope: [:welcome, :connected])
       = render partial: 'shared/spacer'
-      = form_tag(welcome_complete_signup_step_url(@welcome), method: :patch) do
+      = form_tag(welcome_complete_signup_step_url(@member), method: :patch) do
         .row
           .small-10.small-centered.columns
             .row
@@ -20,7 +20,9 @@
         .row
           .small-2.columns
             .actions
-              = link_to t(:previous, scope: [:common]), welcome_signup_step_url(@welcome, back: true), class: 'button small radius', style: 'width:100%;'
+              = link_to t(:previous, scope: [:common]), welcome_signup_step_url(@member, back: true), class: 'button small radius', style: 'width:100%;'
           .small-2.columns.end
             .actions
               = submit_tag t(:next, scope: [:common]), class: 'button small radius', style: 'width:100%;'
+
+= render template: 'shared/bind_cards'

@@ -2,4 +2,4 @@
   .row
     .small-10.columns.small-centered
       %h2= I18n.t :join, scope: [:welcome]
-      = render partial: 'members/form', locals: {resource: @welcome, resource_name: :member, resource_path: welcome_complete_signup_step_url(@welcome), method: :patch}
+      = render partial: 'members/form', locals: {resource: @member, resource_name: :member, resource_path: welcome_complete_signup_step_url(@member), method: :patch, exclude_password: true}
