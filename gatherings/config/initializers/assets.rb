@@ -15,5 +15,8 @@ Rails.application.config.assets.version = '1.0'
 Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'stylesheets', 'foundation-icons')
 Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'javascripts', 'modernizr', TheGatherings::Application.modernizr_version)
 Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bower_components')
+Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bower_components', 'Chart.js')
 Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bower_components', 'foundation-sites', 'scss')
 Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bower_components', 'foundation-sites', 'dist')
+
+Rails.application.config.assets.precompile += %w( foundation-sites/dist/foundation.js what-input/what-input.js Chart.js/Chart.js charts.js cards.js dates.js )

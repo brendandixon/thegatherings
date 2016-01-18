@@ -2,12 +2,12 @@ module AgeGroups
   extend ActiveSupport::Concern
 
   AGE_GROUPS = [
-    'twenties',
-    'thirties',
-    'forties',
-    'fifties',
-    'sixties',
-    'plus'
+    'age_group_twenties',
+    'age_group_thirties',
+    'age_group_forties',
+    'age_group_fifties',
+    'age_group_sixties',
+    'age_group_plus'
   ]
 
   included do

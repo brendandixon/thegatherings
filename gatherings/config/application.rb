@@ -43,6 +43,7 @@ module TheGatherings
 
     # Add Extensions to the autoload path
     config.autoload_paths << Rails.root.join("lib")
+    config.autoload_paths << Rails.root.join("lib", "extensions")
   end
 end
 

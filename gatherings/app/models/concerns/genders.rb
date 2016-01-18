@@ -2,9 +2,9 @@ module Genders
   extend ActiveSupport::Concern
 
   GENDERS = [
-    'women_only',
-    'men_only',
-    'mixed'
+    'gender_women',
+    'gender_men',
+    'gender_mixed'
   ]
 
   included do

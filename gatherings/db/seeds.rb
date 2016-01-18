@@ -78,17 +78,17 @@ Time.use_zone "Pacific Time (US & Canada)" do
               postal_code: "98117",
               meeting_starts: 'January 12, 2016',
             }
-  Gathering.create({name: 'Ballard Small Group', description: "The Ballard Small Group gathering.", meeting_day: 'thursday'}.merge(options)) do |g|
-      g.age_group_list = 'thirties, forties, fifties, sixties'
-      g.life_stage_list = 'established_career, post_career'
-      g.relationship_list = 'established_family, empty_nester, divorced'
-      g.gender_list = 'mixed'
+  Gathering.create!({name: 'Ballard Small Group', description: "The Ballard Small Group gathering.", meeting_day: 'thursday'}.merge(options)) do |g|
+      g.age_group_list = 'age_group_thirties, age_group_forties, age_group_fifties, age_group_sixties'
+      g.life_stage_list = 'life_stage_established_career, life_stage_post_career'
+      g.relationship_list = 'relationship_established_family, relationship_empty_nester, relationship_divorced'
+      g.gender_list = 'gender_mixed'
   end
-  Gathering.create({name: 'Ballard PCEC', description: "The Ballard PCEC gathering.", meeting_day: 'tuesday'}.merge(options)) do |g|
-      g.age_group_list = 'twenties, thirties'
-      g.life_stage_list = 'post_college, early_career'
-      g.relationship_list = 'single'
-      g.gender_list = 'women_only'
+  Gathering.create!({name: 'Ballard PCEC', description: "The Ballard PCEC gathering.", meeting_day: 'tuesday'}.merge(options)) do |g|
+      g.age_group_list = 'age_group_twenties, age_group_thirties'
+      g.life_stage_list = 'life_stage_post_college, life_stage_early_career'
+      g.relationship_list = 'relationship_single'
+      g.gender_list = 'gender_women'
   end
 
   options = {
@@ -96,51 +96,22 @@ Time.use_zone "Pacific Time (US & Canada)" do
   }
   ['Brendan Dixon', 'Kim Dixon', 'Carl Janzen', 'Nicole Janzen', 'Irene McKillop', 'Patrick Miller', 'Amy Miller'].each_with_index do |n, i|
     f, l = n.split(' ')
-    Member.create({first_name: f, last_name: l, email: "#{f}.#{l}@nomail.com", phone: "425.123.100#{i}", postal_code: "9811#{i}"}.merge(options)) do |m|
-      m.age_group_list = 'thirties, forties, fifties, sixties'
-      m.life_stage_list = 'established_career, post_career'
-      m.relationship_list = 'established_family, empty_nester, divorced'
-      m.gender_list = 'mixed'
+    Member.create!({first_name: f, last_name: l, email: "#{f}.#{l}@nomail.com", phone: "425.123.100#{i}", postal_code: "9811#{i}"}.merge(options)) do |m|
+      m.age_group_list = 'age_group_thirties, age_group_forties, age_group_fifties, age_group_sixties'
+      m.life_stage_list = 'life_stage_established_career, life_stage_post_career'
+      m.relationship_list = 'relationship_established_family, relationship_empty_nester, relationship_divorced'
+      m.gender_list = 'gender_mixed'
     end
   end
 
   ['Jordan Conrad', 'Tiffany Dimaculangan', 'Lauren Heerlein', 'Chelsea Heimbigner', 'Melissa Howard', 'Abby Lombardo', 'Kristin Mendoza'].each_with_index do |n, i|
     f, l = n.split(' ')
-    Member.create({first_name: f, last_name: l, email: "#{f}.#{l}@nomail.com", phone: "425.123.200#{i}", postal_code: "9812#{i}"}.merge(options)) do |m|
-      m.age_group_list = 'twenties, thirties'
-      m.life_stage_list = 'post_college, early_career'
-      m.relationship_list = 'single'
-      m.gender_list = 'women_only'
+    Member.create!({first_name: f, last_name: l, email: "#{f}.#{l}@nomail.com", phone: "425.123.200#{i}", postal_code: "9812#{i}"}.merge(options)) do |m|
+      m.age_group_list = 'age_group_twenties, age_group_thirties'
+      m.life_stage_list = 'life_stage_post_college, life_stage_early_career'
+      m.relationship_list = 'relationship_single'
+      m.gender_list = 'gender_women'
     end
   end
 
 end
-
-  # LIFE_STAGES = [
-  #   'college',
-  #   'post_college',
-  #   'early_career',
-  #   'established_career',
-  #   'post_career'
-  # ]
-  # AGE_GROUPS = [
-  #   'twenties',
-  #   'thirties',
-  #   'forties',
-  #   'fifties',
-  #   'sixties',
-  #   'plus'
-  # ]
-  # RELATIONSHIPS = [
-  #   'single',
-  #   'young_married',
-  #   'early_family',
-  #   'established_family',
-  #   'empty_nester',
-  #   'divorced'
-  # ]
-  # GENDERS = [
-  #   'men_only',
-  #   'women_only',
-  #   'mixed'
-  # ]

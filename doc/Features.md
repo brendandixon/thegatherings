@@ -50,35 +50,40 @@
 - Can create a Member
 - Can create a Gathering
 
-### v0.1
+### v0.1 - Bethany Ballard
 
-- theGatherings is correctly styled
+Goal: Enable Bethany Ballard to engage their entire community in gatherings, to easily identify
+major gaps, and to have a basic idea of gathering health.
+
 - Bethany members can join theGatherings
+- Bethany helpers can quickly sign-up others to theGatherings
 - Members can create a Gathering
+- Members without a Gathering are given suggestions weekly / bi-weekly / monthly
 - Members can find a Gathering by target ages, tag words, name, location, and day / time
 - Members can request to join a Gathering (via an Invitation)
+- Members can be Gathering / Community / Campus Leaders / Owners / Administrators
+- Gathering Leaders without a full Gathering are given suggested Members
+- Gathering Leaders can quickly take attendance (and update it if needed)
+- Gathering Leaders can quickly enter a "state of health" paragraph weekly / bi-weekly
+- Community Leaders are alerted when a Gathering is created (optional approval process?)
 - Community Leaders can get a list of all Gatherings
 - Community Leaders can see who is attending each Gathering
+- Community Leaders can see the gaps between "needs" and available Gatherings
+- Community Leaders can see word-cloud / textual analysis health reports for a gathering and all gatherings
+- theGatherings is correctly styled
 
-### v0.2
+### v0.2 - All Bethany
 
-- Users can join theGatherings, including via Google and Facebook
-- Members can create a Community (they become Community Leader)
-- Members can join a Community
-- Members can request to join a Gathering (via an Invitation)
-
-### v0.3
-
-- Community Leaders can affiliate their Community with other Communities
-- Community Leaders can get Gathering health reports
+- Users can join theGatherings via Google and Facebook
+- Members can affiliate with a Campus
 - Community Leaders can get an Connectivity Score (Red to Green, Percentage connected, Depth?, Coverage?)
 - Community Leaders can delegate to other Members
 - Gathering Leaders can delegate to other Members of the Gathering
-- Gathering Leaders can easily track attendance
 - Members can use the "Connect Me" tool to find a Gathering
 - Members can search for a Gathering based leader name
 
-### v0.4
+### v0.3
 
+- Members can affiliate with a Community
 - Members can use theGathering from their cell phones
 - Community and Gathering Leaders can share Resource information

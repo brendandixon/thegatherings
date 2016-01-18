@@ -2,8 +2,8 @@
 #
 # Table name: gatherings
 #
-#  id               :string(36)       not null, primary key
-#  community_id     :string(36)       not null
+#  id               :integer          not null, primary key
+#  community_id     :integer          not null
 #  name             :string(255)
 #  description      :text(65535)
 #  street_primary   :string(255)
@@ -16,10 +16,15 @@
 #  meeting_starts   :datetime
 #  meeting_ends     :datetime
 #  meeting_day      :string(25)
-#  meeting_time     :time
+#  meeting_time     :datetime
 #  meeting_duration :integer
+#  childcare        :boolean          default(FALSE)
+#  childfriendly    :boolean          default(FALSE)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  mininum          :integer
+#  maximum          :integer
+#  open             :boolean          default(TRUE)
 #
 
 class Gathering < ActiveRecord::Base
@@ -28,7 +33,6 @@ class Gathering < ActiveRecord::Base
   include Genders
   include LifeStages
   include Relationships
-  include UniqueID
 
   MEETING_DURATION_DEFAULT = 90
 
@@ -41,6 +45,11 @@ class Gathering < ActiveRecord::Base
   has_address_of :street_primary, :street_secondary, :city, :state, :country, :postal_code, allow_blank: true
 
   belongs_to :community, required: true
+  has_one :campus_gathering
+  has_one :campus, through: :campus_gathering
+  has_many :gathering_members
+  has_many :members, through: :gathering_members
+  has_many :membership_requests
 
   after_initialize :ensure_defaults
   before_validation :normalize_meeting_day
@@ -50,7 +59,7 @@ class Gathering < ActiveRecord::Base
   validates :description, presence: true
 
   validates :meeting_day, presence: true, inclusion: {in: WEEKDAYS}, unless: :new_record?
-  validates :meeting_time, presence: true, unless: :new_record?
+  validates_datetime :meeting_time unless :new_record?
   validates :meeting_duration, presence: true, numericality: {only_integer: true, greater_than: 0, less_than_or_equal_to: 24*60}, unless: :new_record?
 
   class<<self

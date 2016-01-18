@@ -2,8 +2,8 @@
 #
 # Table name: campuses
 #
-#  id                 :string(36)       not null, primary key
-#  community_id       :string(36)       not null
+#  id                 :integer          not null, primary key
+#  community_id       :integer          not null
 #  name               :string(255)
 #  contact_first_name :string(255)
 #  contact_last_name  :string(255)

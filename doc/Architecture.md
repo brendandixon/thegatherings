@@ -9,10 +9,9 @@ Gatherings or their owning Community, but an optional affiliation for a Gatherin
 filter Gatherings to a particular Campus, but they do not seek for Gatherings through a Campus (in a
 RESTful sense).
 
-Members attend Gatherings, however, they do not belong to a Gathering but to the Community to which
-the Gathering itself belongs. Members may belong to multiple Gatherings and to multiple Communities.
-Membership, in this sense, is not ownership, but an affiliation. To participate in a Gathering, a
-Member must affiliate with a Community.
+Members are not owned by Communities, Campuses, or Gatherings. But they may affiliate with each and
+have designated roles within each. Members, when affiliating with a Gathering, will be automatically
+affiliated with the owning Community and, if the relationship exists, Campus.
 
 Members register with theGatherings and then affiliate with a Community, possibly preferring a
 Campus.
@@ -61,20 +60,7 @@ Opportunities, and Resources
 
 ## Data Management, Scale, and Deployments
 
-Data in theGatherings divides into three core clumps: A Community and its Campuses and Gatherings,
-Members, and Resources. Each is the unit of scale. All public entities will use stable, public
-identifiers (such as UUIDs). This prevents having to create additional identifiers when Members
-affiliate with a Community and so forth.
-
-Data in each clump knows of data from another clump by its public, or external, identifier. Once
-created public identifiers cannot change. Public identifiers are UUIDs replacing the default
-primary key.
-
-While clumps create units of scale, due to security issues, all clumps must be part of a single
-Deployment. A Deployment is a logical entity. Deployments cannot share any data.
-
-All Community, Gathering, and Member records contain, at least, two timestamps: active_on and
-inactive_on.
+*TBD*
 
 ### Dates and Times
 

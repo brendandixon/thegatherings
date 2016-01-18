@@ -2,8 +2,8 @@
 #
 # Table name: gatherings
 #
-#  id               :string(36)       not null, primary key
-#  community_id     :string(36)       not null
+#  id               :integer          not null, primary key
+#  community_id     :integer          not null
 #  name             :string(255)
 #  description      :text(65535)
 #  street_primary   :string(255)
@@ -16,10 +16,15 @@
 #  meeting_starts   :datetime
 #  meeting_ends     :datetime
 #  meeting_day      :string(25)
-#  meeting_time     :time
+#  meeting_time     :datetime
 #  meeting_duration :integer
+#  childcare        :boolean          default(FALSE)
+#  childfriendly    :boolean          default(FALSE)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  mininum          :integer
+#  maximum          :integer
+#  open             :boolean          default(TRUE)
 #
 
 require "rails_helper"

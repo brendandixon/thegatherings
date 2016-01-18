@@ -2,12 +2,12 @@ module Relationships
   extend ActiveSupport::Concern
 
   RELATIONSHIPS = [
-    'single',
-    'young_married',
-    'early_family',
-    'established_family',
-    'empty_nester',
-    'divorced'
+    'relationship_single',
+    'relationship_young_married',
+    'relationship_early_family',
+    'relationship_established_family',
+    'relationship_empty_nester',
+    'relationship_divorced'
   ]
 
   included do

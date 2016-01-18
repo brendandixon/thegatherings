@@ -2,8 +2,8 @@
 #
 # Table name: campuses
 #
-#  id                 :string(36)       not null, primary key
-#  community_id       :string(36)       not null
+#  id                 :integer          not null, primary key
+#  community_id       :integer          not null
 #  name               :string(255)
 #  contact_first_name :string(255)
 #  contact_last_name  :string(255)
@@ -22,10 +22,14 @@
 
 class Campus < ActiveRecord::Base
   include Addressed
-  include UniqueID
 
   has_address_of :street_primary, :street_secondary, :city, :state, :country, :postal_code, :time_zone, allow_blank: true
 
   belongs_to :community
+  has_many :campus_gatherings
+  has_many :gatherings, through: :campus_gatherings
+  has_many :campus_members
+  has_many :members, through: :campus_members
 
+  validates :email, email: { allow_blank: true }
 end

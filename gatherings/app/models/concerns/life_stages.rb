@@ -2,11 +2,11 @@ module LifeStages
   extend ActiveSupport::Concern
 
   LIFE_STAGES = [
-    'college',
-    'post_college',
-    'early_career',
-    'established_career',
-    'post_career'
+    'life_stage_college',
+    'life_stage_post_college',
+    'life_stage_early_career',
+    'life_stage_established_career',
+    'life_stage_post_career'
   ]
 
   included do

@@ -67,6 +67,9 @@ nearly $5k).
 
 ### Devise and OAuth
 
+- https://github.com/doorkeeper-gem/doorkeeper/wiki
+- https://www.youtube.com/watch?v=6tQTwmIgclE (Authorization in an SOA Environment)
+- https://www.youtube.com/watch?v=L1B_HpCW8bs (Service Oriented Authentication)
 - http://www.thoughtsonrails.com/devise-and-omniauth/ for Devise and Omniauth
 - https://github.com/plataformatec/devise
 - https://www.digitalocean.com/community/tutorials/how-to-configure-devise-and-omniauth-for-your-rails-application

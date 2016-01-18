@@ -2,7 +2,7 @@
 #
 # Table name: members
 #
-#  id                     :string(36)       not null, primary key
+#  id                     :integer          not null, primary key
 #  first_name             :string(255)
 #  last_name              :string(255)
 #  email                  :string(255)      default(""), not null
@@ -37,15 +37,27 @@ class Member < ActiveRecord::Base
   include AgeGroups
   include Genders
   include LifeStages
+  include Phoneable
   include Relationships
-  include UniqueID
 
   has_address_of :country, :postal_code
+
+  has_many :community_members
+  has_many :communities, through: :community_members
+  
+  has_many :campus_members
+  has_many :campuses, through: :campus_members
+  
+  has_many :gathering_members
+  has_many :gatherings, through: :gathering_members
+  has_many :attendance_records
+  has_many :membership_requests
 
   before_validation :ensure_password
   before_validation :ensure_time_zone
 
   validates_presence_of :first_name, :last_name, :email
+  validates :email, email: true
 
   devise :database_authenticatable,
     :lockable,
@@ -63,7 +75,7 @@ class Member < ActiveRecord::Base
     def ensure_password
       unless self.password.present? || self.password_confirmation.present?
         self.password =
-        self.password_confirmation = "pa$$w0rd" 
+        self.password_confirmation = Rails.env.production? ? Devise.friendly_token : "pa$$w0rd"
       end if self.new_record?
     end
 
