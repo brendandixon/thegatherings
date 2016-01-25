@@ -1,0 +1,29 @@
+- member = Member.find(params["member_id"]) rescue nil
+- member ||= current_member
+%section
+  .row
+    .small-12.columns
+      %h2= I18n.t(:title, scope: [:campuses, :index])
+      = render partial: 'shared/spacer'
+
+      .row
+        .small-12.columns
+          - @campuses.each do |campus|
+            .row
+              .small-5.columns
+                = link_to campus.name, campus_path(campus)
+              - if member.present?
+                .small-2.columns
+                  - membership = member.membership_in(campus)
+                  - if membership.blank?
+                    = button_to "Join", campus_memberships_path(member_id: member.id, campus_id: campus.id), method: :post, class: 'button small expanded'
+                  - else
+                    = button_to "Leave", membership_path(membership), method: :delete, class: 'button small expanded secondary'
+
+      = render 'shared/spacer'
+      .row
+        .small-6.columns.clearfix
+          .actions.left
+            = link_to I18n.t(:title, scope: [:campuses, :new]), new_community_campus_path(@community), class: 'button small'
+        .small-6.columns.clearfix
+          .float-right

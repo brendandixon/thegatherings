@@ -1,0 +1,27 @@
+%section
+  .row
+    .small-12.columns
+      %h2= t(:title, scope: [:communities, :show], name: @community.name)
+
+      = render partial: 'shared/spacer'
+      .row
+        .small-12.small-centered.columns
+          %h4= "Gatherings"
+      .row
+        .small-12.small-centered.columns
+          - @gatherings.each do |g|
+            .row
+              .small-10.columns
+                = link_to g.name, gathering_path(g)
+
+      = render 'shared/spacer'
+      .row
+        .small-3.columns
+          = link_to t(:title, scope:[:gatherings, :new]), new_community_gathering_path(@community), class: 'button small', style: 'width: 100%'
+        .small-3.columns
+          = link_to t(:title_html, scope: [:welcome, :signup]), new_community_member_path(@community), class: 'button small', style: 'width: 100%'
+        .small-3.columns
+          = link_to t(:button, scope:[:communities, :report]), gap_community_reports_path(@community), class: 'button small', style: 'width: 100%'
+        .small-3.columns
+          .float-right
+            = link_to t(:title, scope: [:communities]), communities_path

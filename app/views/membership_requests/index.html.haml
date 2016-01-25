@@ -1,0 +1,31 @@
+%section
+  .row
+    .small-12.columns
+      %h2= "#{@gathering.name} Membership Requests"
+
+      = render partial: 'shared/spacer'
+      .row
+        .small-12.small-centered.columns
+          .row
+            .small-4.columns= "Name"
+            .small-2.columns= "Sent On"
+            .small-2.columns.end= "Expires On"
+          - @membership_requests.each do |mr|
+            .row
+              .small-4.columns
+                = mr.member.full_name
+              .small-2.columns
+                = mr.sent_on.to_formatted_s(:date)
+              .small-2.columns
+                = mr.expires_on.to_formatted_s(:date)
+              .small-2.columns
+                = link_to t(:show, scope: [:common]), membership_request_path(mr), class: 'button small expanded'
+
+      = render partial: 'shared/spacer'
+      .row
+        .small-2.columns
+          .actions
+            = link_to t(:show, scope:[:common]), gathering_path(@gathering), class: 'button small', style: 'width: 100%'
+        .small-10.columns.end
+          .float-right
+            = link_to t(:title, scope:[:gatherings]), community_gatherings_path(@community)

@@ -1,0 +1,5 @@
+%section
+  .row
+    .small-10.columns.small-centered
+      %h2 Join theGatherings
+      = render partial: 'members/form', locals: {resource: resource, resource_path: registration_path(resource_name)}

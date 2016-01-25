@@ -42,6 +42,7 @@
 - Customized look and feel
 - Promote new gatherings, highlighted gatherings, and / or randomly selected gatherings
 - Bulk import of existing membership
+- Mark Resources as approved for use
 
 ## Minimum Viable Products
 

@@ -9,10 +9,10 @@ these roles:
 Administrators.
 - Coach: Coaches provide an oversight role
 - Assistants: Assistants have varying, limited rights, within the scope
-- Participant: Participants generally have Read rights within the scope. They also have the Delete
-right for their association with objects in the scope.
 
-Generally, the rights a Member has is a union of the rights from each assigned role.
+Additionally, Members may be a *Participant* within a scope (such as a Gathering). While not
+strictly a role, Participants generally have Read rights within the scope. They also have the Delete
+right for their association with objects in the scope.
 
 Each section below precisely defines the rights Members in role have within the scope.
 

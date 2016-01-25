@@ -1,0 +1,6 @@
+%section
+  .row
+    .small-12.columns
+      %h2= I18n.t(:title, scope: [:campuses, :new])
+      = render partial: 'shared/spacer'
+      = render partial: 'form', locals: {url: community_gatherings_path(@community), mode: :create}

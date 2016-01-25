@@ -1,0 +1,22 @@
+= render partial: 'shared/spacer'
+.row
+  .small-10.small-centered.columns.end
+    %p= "#{t(:active_on, scope: [:activerecord, :attributes, :membership])}: #{membership.active_on.to_date.to_s(:long)}"
+    %p= "#{t(:participant, scope: [:activerecord, :attributes, :membership])}: #{t(membership.participant? ? :positive : :negative, scope: [:common])}"
+    - if membership.as_overseer?
+      %p= "#{t(:role, scope: [:activerecord, :attributes, :membership])}: #{membership.role.humanize}"
+
+= render partial: 'tags/show', locals: {resource: membership}
+
+= render partial: 'shared/spacer'
+.row
+  .small-2.columns
+    .actions
+      = link_to t(:delete, scope:[:common]), membership_path(membership), method: :delete, class: 'button small', style: 'width: 100%'
+  - if membership.member.id != current_member.id
+    .small-2.columns
+      .actions
+        = link_to t(:title_html, scope: [:welcome, :signup]), new_community_member_path(community), class: 'button small', style: 'width: 100%'
+  .small-6.columns.end
+    .float-right
+      = link_to t(:title, scope:[:community]), community_members_path(community)

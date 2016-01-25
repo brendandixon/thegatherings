@@ -1,0 +1,5 @@
+%section
+  .row
+    .small-10.columns.small-centered
+      %h2= I18n.t(current_member.is_self?(resource) ? :title_self : :title, scope:[:members], member: current_member.first_name)
+      = render partial: 'members/show', locals: {resource: resource, exclude_password: true}

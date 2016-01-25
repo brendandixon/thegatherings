@@ -1,0 +1,14 @@
+%p
+  = "Hi #{@membership_request.member.first_name},"
+%p
+%p
+  = "You asked:"
+  %blockquote= @membership_request.message
+%p
+%p
+  = @answer
+%p
+%p
+  = @responder.full_name
+%p
+  = @membership_request.gathering.name

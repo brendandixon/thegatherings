@@ -1,0 +1,5 @@
+%section
+  .row
+    .small-10.columns.small-centered
+      %h2 Join theGatherings
+      = render partial: 'form', locals: {resource: @member, resource_path: community_members_path(@community, @member), exclude_password: true}

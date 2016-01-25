@@ -1,0 +1,39 @@
+class GatheringAuthorizer < ApplicationAuthorizer
+
+  def creatable_by?(member, options = {})
+    super
+    is_affiliate?
+  end
+
+  def readable_by?(member, options = {})
+    super
+    (as_anyone? && is_affiliate?) ||
+    (as_member? && is_gathering_affiliate?) ||
+    (as_leader? && is_gathering_overseer?) ||
+    (as_visitor? && is_gathering_visitor?) ||
+    (is_overseer? && !is_assistant?) ||
+    is_coach?
+  end
+
+  def updatable_by?(member, options = {})
+    super
+    is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
+  end
+
+  def deletable_by?(member, options = {})
+    super
+    is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
+  end
+
+  protected
+
+    def determine_memberships(member, options = {})
+      super
+      community = resource.community || options[:community]
+      campus = resource.campus || options[:campus]
+      @community_membership = member.membership_in(community) rescue nil if community.present?
+      @campus_membership = member.membership_in(campus) rescue nil if campus.present?
+      @gathering_membership = member.membership_in(resource) rescue nil
+    end
+
+end

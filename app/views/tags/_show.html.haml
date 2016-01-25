@@ -1,0 +1,13 @@
+= render partial: 'shared/spacer'
+.row
+  .small-10.small-centered.columns.end
+    - Taggable::TAGS.each do |t|
+      .row
+        .small-3.columns
+          = t(:title, scope: [:tags, t.pluralize])
+        .small-9.columns
+          = resource.send("#{t}_list").map{|i| t(i, scope: [:tags, t.pluralize])}.join(', ')
+.row
+  .small-2.columns
+    .actions
+      = link_to t(:edit, scope:[:common]), edit_membership_tags_path(resource), class: 'button small', style: 'width: 100%'

@@ -12,6 +12,13 @@
 Very nice, new package. Many of the same feature set as outlined for *theGatherings.*
 Is working on integration with other packages / systems. Fee-based.
 
+- http://www.shelbysystems.com/products/arena/
+Part of ShelbySystems larger Church Management package. Add-on with basic features.
+Starts at $149 / month.
+
+- http://home.smallgroup.com
+Small group lessons for a *high* fee.
+
 - http://groupsinteractive.com
 Basic hosted package. Inexpensive ($250 / year). Limited feature set.
 
