@@ -13,10 +13,10 @@ require 'rails_helper'
 describe AttendanceRecord, type: :model do
 
   before :context do
-    @participant = create(:participant)
+    @affiliate = create(:member)
     @member = create(:member)
     @gathering = create(:gathering)
-    create(:gathering_participant, group: @gathering, member: @participant)
+    create(:membership, :as_member, group: @gathering, member: @member)
   end
 
   after :context do
@@ -26,7 +26,7 @@ describe AttendanceRecord, type: :model do
   end
 
   before do
-    @attendance_record = build(:attendance_record, gathering: @gathering, member: @participant)
+    @attendance_record = build(:attendance_record, gathering: @gathering, member: @member)
   end
 
   it 'requires a member' do
@@ -86,7 +86,7 @@ describe AttendanceRecord, type: :model do
   end
 
   it 'rejects members not a part of the Gathering' do
-    @attendance_record.member = @member
+    @attendance_record.member = @affiliate
     expect(@attendance_record).to be_invalid
     expect(@attendance_record.errors).to have_key(:member)
   end
@@ -101,11 +101,11 @@ describe AttendanceRecord, type: :model do
     end
 
     it 'returns true for the associated member' do
-      expect(@attendance_record).to be_belongs_to_member(@participant)
+      expect(@attendance_record).to be_belongs_to_member(@member)
     end
 
     it 'returns false for a different member' do
-      expect(@attendance_record).to_not be_belongs_to_member(@member)
+      expect(@attendance_record).to_not be_belongs_to_member(@affiliate)
     end
   end
 

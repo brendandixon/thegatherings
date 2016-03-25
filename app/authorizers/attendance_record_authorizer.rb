@@ -7,7 +7,7 @@ class AttendanceRecordAuthorizer < ApplicationAuthorizer
 
   def readable_by?(member, options = {})
     super
-    is_gathering_affiliate? || (is_overseer? && !is_assistant?) || is_coach?
+    for_self?(member) || is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
   end
 
   def updatable_by?(member, options = {})
@@ -30,6 +30,10 @@ class AttendanceRecordAuthorizer < ApplicationAuthorizer
       @community_membership = member.membership_in(community) rescue nil if community.present?
       @campus_membership = member.membership_in(campus) rescue nil if campus.present?
       @gathering_membership = member.membership_in(gathering) rescue nil
+    end
+
+    def for_self?(member)
+      resource.member_id == member.id
     end
 
 end

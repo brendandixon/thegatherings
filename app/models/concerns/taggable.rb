@@ -113,7 +113,7 @@ module Taggable
 
     VALUES = [
       'bible',
-      'mix',
+      'topical',
       'devotional',
       'family',
       'marriage',

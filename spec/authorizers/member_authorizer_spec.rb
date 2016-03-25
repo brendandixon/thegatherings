@@ -5,14 +5,16 @@ describe MemberAuthorizer, type: :authorizer do
   before :context do
     @community = create(:community)
     @campus = create(:campus, community: @community)
-    @member = create(:member)
-    @new_member = build(:member)
 
-    @admin = create(:admin)
-    @leader = create(:leader)
-    @assistant = create(:assistant)
-    @coach = create(:coach)
-    @participant = create(:participant)
+    @administrator = create(:member)
+    @leader = create(:member)
+    @assistant = create(:member)
+    @coach = create(:member)
+    @member = create(:member)
+
+    @affiliated = create(:member)
+    @unaffiliated = create(:member)
+    @new_member = build(:member)
   end
 
   after :context do
@@ -24,10 +26,12 @@ describe MemberAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("community_#{affiliation}", group: @community, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
+      create(:membership, :as_member, group: @community, member: @affiliated)
+      create(:membership, :as_member, group: @campus, member: @affiliated)
     end
 
     after :context do
@@ -36,51 +40,42 @@ describe MemberAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'allows creation' do
-        expect(@new_member.authorizer).to be_creatable_by(@admin, community: @community)
+        expect(@new_member.authorizer).to be_creatable_by(@administrator, community: @community)
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:community_participant, group: @community, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'allows reading the full profile' do
-          expect(@member.authorizer).to be_readable_by(@admin, community: @community, scope: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@administrator, community: @community, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@admin, community: @community, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@administrator, community: @community, scope: :as_anyone)
         end
 
         it 'allows updating' do
-          expect(@member.authorizer).to be_updatable_by(@admin, community: @community)
+          expect(@affiliated.authorizer).to be_updatable_by(@administrator, community: @community)
         end
 
         it 'allows deletion' do
-          expect(@member.authorizer).to be_deletable_by(@admin, community: @community)
+          expect(@affiliated.authorizer).to be_deletable_by(@administrator, community: @community)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@admin, community: @community, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@administrator, community: @community, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@admin, community: @community, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@administrator, community: @community, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@admin, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@administrator, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@admin, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@administrator, community: @community)
         end
       end
     end
@@ -91,47 +86,38 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:community_participant, group: @community, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'allows reading the full profile' do
-          expect(@member.authorizer).to be_readable_by(@leader, community: @community, scope: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, community: @community, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@leader, community: @community, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, community: @community, scope: :as_anyone)
         end
 
         it 'allows updating' do
-          expect(@member.authorizer).to be_updatable_by(@leader, community: @community)
+          expect(@affiliated.authorizer).to be_updatable_by(@leader, community: @community)
         end
 
         it 'allows deletion' do
-          expect(@member.authorizer).to be_deletable_by(@leader, community: @community)
+          expect(@affiliated.authorizer).to be_deletable_by(@leader, community: @community)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@leader, community: @community, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, community: @community, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@leader, community: @community, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, community: @community, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@leader, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@leader, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@leader, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@leader, community: @community)
         end
       end
     end
@@ -142,47 +128,38 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:community_participant, group: @community, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'allows reading the full profile' do
-          expect(@member.authorizer).to be_readable_by(@assistant, community: @community, scope: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, community: @community, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@assistant, community: @community, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, community: @community, scope: :as_anyone)
         end
 
         it 'allows updating' do
-          expect(@member.authorizer).to be_updatable_by(@assistant, community: @community)
+          expect(@affiliated.authorizer).to be_updatable_by(@assistant, community: @community)
         end
 
         it 'allows deletion' do
-          expect(@member.authorizer).to be_deletable_by(@assistant, community: @community)
+          expect(@affiliated.authorizer).to be_deletable_by(@assistant, community: @community)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@assistant, community: @community, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, community: @community, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@assistant, community: @community, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, community: @community, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@assistant, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@assistant, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@assistant, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@assistant, community: @community)
         end
       end
     end
@@ -193,98 +170,80 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:community_participant, group: @community, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'allows reading the full profile' do
-          expect(@member.authorizer).to be_readable_by(@coach, community: @community, scope: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@coach, community: @community, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@coach, community: @community, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@coach, community: @community, scope: :as_anyone)
         end
 
         it 'allows updating' do
-          expect(@member.authorizer).to be_updatable_by(@coach, community: @community)
+          expect(@affiliated.authorizer).to be_updatable_by(@coach, community: @community)
         end
 
         it 'allows deletion' do
-          expect(@member.authorizer).to be_deletable_by(@coach, community: @community)
+          expect(@affiliated.authorizer).to be_deletable_by(@coach, community: @community)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@coach, community: @community, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@coach, community: @community, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@coach, community: @community, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@coach, community: @community, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@coach, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@coach, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@coach, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@coach, community: @community)
         end
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'disallows creation' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@participant, community: @community)
+        expect(@new_member.authorizer).to_not be_creatable_by(@member, community: @community)
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:community_participant, group: @community, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@participant, community: @community, scope: :as_member)
+          expect(@affiliated.authorizer).to_not be_readable_by(@member, community: @community, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@participant, community: @community, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@member, community: @community, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@participant, community: @community)
+          expect(@affiliated.authorizer).to_not be_updatable_by(@member, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@participant, community: @community)
+          expect(@affiliated.authorizer).to_not be_deletable_by(@member, community: @community)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@participant, community: @community, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, community: @community, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@participant, community: @community, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, community: @community, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@participant, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@member, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@participant, community: @community)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@member, community: @community)
         end
       end
     end
@@ -293,10 +252,12 @@ describe MemberAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("campus_#{affiliation}", group: @campus, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
       end
+      create(:membership, :as_member, group: @community, member: @affiliated)
+      create(:membership, :as_member, group: @campus, member: @affiliated)
     end
 
     after :context do
@@ -305,51 +266,42 @@ describe MemberAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'allows creation' do
-        expect(@new_member.authorizer).to be_creatable_by(@admin, campus: @campus)
+        expect(@new_member.authorizer).to be_creatable_by(@administrator, campus: @campus)
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:campus_participant, group: @campus, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'allows reading the full profile' do
-          expect(@member.authorizer).to be_readable_by(@admin, campus: @campus, scope: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@administrator, campus: @campus, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@admin, campus: @campus, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@administrator, campus: @campus, scope: :as_anyone)
         end
 
         it 'allows updating' do
-          expect(@member.authorizer).to be_updatable_by(@admin, campus: @campus)
+          expect(@affiliated.authorizer).to be_updatable_by(@administrator, campus: @campus)
         end
 
         it 'allows deletion' do
-          expect(@member.authorizer).to be_deletable_by(@admin, campus: @campus)
+          expect(@affiliated.authorizer).to be_deletable_by(@administrator, campus: @campus)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@admin, campus: @campus, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@administrator, campus: @campus, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@admin, campus: @campus, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@administrator, campus: @campus, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@admin, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@administrator, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@admin, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@administrator, campus: @campus)
         end
       end
     end
@@ -360,47 +312,38 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:campus_participant, group: @campus, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'allows reading the full profile' do
-          expect(@member.authorizer).to be_readable_by(@leader, campus: @campus, scope: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@leader, campus: @campus, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, scope: :as_anyone)
         end
 
         it 'allows updating' do
-          expect(@member.authorizer).to be_updatable_by(@leader, campus: @campus)
+          expect(@affiliated.authorizer).to be_updatable_by(@leader, campus: @campus)
         end
 
         it 'allows deletion' do
-          expect(@member.authorizer).to be_deletable_by(@leader, campus: @campus)
+          expect(@affiliated.authorizer).to be_deletable_by(@leader, campus: @campus)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@leader, campus: @campus, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@leader, campus: @campus, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@leader, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@leader, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@leader, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@leader, campus: @campus)
         end
       end
     end
@@ -411,47 +354,38 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:campus_participant, group: @campus, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'allows reading the full profile' do
-          expect(@member.authorizer).to be_readable_by(@assistant, campus: @campus, scope: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@assistant, campus: @campus, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, scope: :as_anyone)
         end
 
         it 'allows updating' do
-          expect(@member.authorizer).to be_updatable_by(@assistant, campus: @campus)
+          expect(@affiliated.authorizer).to be_updatable_by(@assistant, campus: @campus)
         end
 
         it 'allows deletion' do
-          expect(@member.authorizer).to be_deletable_by(@assistant, campus: @campus)
+          expect(@affiliated.authorizer).to be_deletable_by(@assistant, campus: @campus)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@assistant, campus: @campus, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@assistant, campus: @campus, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@assistant, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@assistant, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@assistant, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@assistant, campus: @campus)
         end
       end
     end
@@ -462,98 +396,80 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:campus_participant, group: @campus, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'allows reading the full profile' do
-          expect(@member.authorizer).to be_readable_by(@coach, campus: @campus, scope: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@coach, campus: @campus, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@coach, campus: @campus, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@coach, campus: @campus, scope: :as_anyone)
         end
 
         it 'allows updating' do
-          expect(@member.authorizer).to be_updatable_by(@coach, campus: @campus)
+          expect(@affiliated.authorizer).to be_updatable_by(@coach, campus: @campus)
         end
 
         it 'allows deletion' do
-          expect(@member.authorizer).to be_deletable_by(@coach, campus: @campus)
+          expect(@affiliated.authorizer).to be_deletable_by(@coach, campus: @campus)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@coach, campus: @campus, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@coach, campus: @campus, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@coach, campus: @campus, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@coach, campus: @campus, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@coach, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@coach, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@coach, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@coach, campus: @campus)
         end
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'disallows creation' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@participant, campus: @campus)
+        expect(@new_member.authorizer).to_not be_creatable_by(@member, campus: @campus)
       end
 
       context 'with affiliated Members' do
-
-        before :context do
-          @membership = create(:campus_participant, group: @campus, member: @member)
-        end
-
-        after :context do
-          @membership.delete
-        end
-        
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@participant, campus: @campus, scope: :as_member)
+          expect(@affiliated.authorizer).to_not be_readable_by(@member, campus: @campus, scope: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@member.authorizer).to be_readable_by(@participant, campus: @campus, scope: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@participant, campus: @campus)
+          expect(@affiliated.authorizer).to_not be_updatable_by(@member, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@participant, campus: @campus)
+          expect(@affiliated.authorizer).to_not be_deletable_by(@member, campus: @campus)
         end
       end
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@member.authorizer).to_not be_readable_by(@participant, campus: @campus, scope: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, scope: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@member.authorizer).to_not be_readable_by(@participant, campus: @campus, scope: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, scope: :as_anyone)
         end
 
         it 'disallows updating' do
-          expect(@member.authorizer).to_not be_updatable_by(@participant, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_updatable_by(@member, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@member.authorizer).to_not be_deletable_by(@participant, campus: @campus)
+          expect(@unaffiliated.authorizer).to_not be_deletable_by(@member, campus: @campus)
         end
       end
     end
@@ -561,23 +477,23 @@ describe MemberAuthorizer, type: :authorizer do
 
   context "for the Member" do
     it 'disallows creation' do
-      expect(@member.authorizer).to_not be_creatable_by(@member)
+      expect(@unaffiliated.authorizer).to_not be_creatable_by(@unaffiliated)
     end
 
     it 'allows reading the full profile' do
-      expect(@member.authorizer).to be_readable_by(@member, scope: :as_member)
+      expect(@unaffiliated.authorizer).to be_readable_by(@unaffiliated, scope: :as_member)
     end
 
     it 'allows reading the public profile' do
-      expect(@member.authorizer).to be_readable_by(@member, scope: :as_anyone)
+      expect(@unaffiliated.authorizer).to be_readable_by(@unaffiliated, scope: :as_anyone)
     end
 
     it 'allows updating' do
-      expect(@member.authorizer).to be_updatable_by(@member)
+      expect(@unaffiliated.authorizer).to be_updatable_by(@unaffiliated)
     end
 
     it 'allows deletion' do
-      expect(@member.authorizer).to be_deletable_by(@member)
+      expect(@unaffiliated.authorizer).to be_deletable_by(@unaffiliated)
     end
   end
 

@@ -7,14 +7,15 @@ describe CampusAuthorizer, type: :authorizer do
     @campus = create(:campus, community: @community)
     @gathering = create(:gathering, community: @community, campus: @campus)
 
-    @admin = create(:admin)
-    @leader = create(:leader)
-    @assistant = create(:assistant)
-    @coach = create(:coach)
-    @participant = create(:participant)
+    @administrator = create(:member)
+    @leader = create(:member)
+    @assistant = create(:member)
+    @coach = create(:member)
+    @member = create(:member)
   end
 
   after :context do
+    Gathering.delete_all
     Campus.delete_all
     Community.delete_all
     Member.delete_all
@@ -23,9 +24,9 @@ describe CampusAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("community_#{affiliation}", group: @community, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
     end
 
@@ -35,31 +36,31 @@ describe CampusAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'allows creation' do
-        expect(@campus.authorizer).to be_creatable_by(@admin)
+        expect(@campus.authorizer).to be_creatable_by(@administrator)
       end
 
       it 'allows reading the leader profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_leader)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_leader)
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_anyone)
       end
 
       it 'allows updating' do
-        expect(@campus.authorizer).to be_updatable_by(@admin)
+        expect(@campus.authorizer).to be_updatable_by(@administrator)
       end
 
       it 'allows deletion' do
-        expect(@campus.authorizer).to be_deletable_by(@admin)
+        expect(@campus.authorizer).to be_deletable_by(@administrator)
       end
     end
 
@@ -153,33 +154,33 @@ describe CampusAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'disallows creation' do
-        expect(@campus.authorizer).to_not be_creatable_by(@participant)
+        expect(@campus.authorizer).to_not be_creatable_by(@member)
       end
 
       it 'disallows reading the leader profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@participant, scope: :as_leader)
+        expect(@campus.authorizer).to_not be_readable_by(@member, scope: :as_leader)
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@participant, scope: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@member, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@participant, scope: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@member, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@participant, scope: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@member, scope: :as_anyone)
       end
 
       it 'disallows updating' do
-        expect(@campus.authorizer).to_not be_updatable_by(@participant)
+        expect(@campus.authorizer).to_not be_updatable_by(@member)
       end
 
       it 'disallows deletion' do
-        expect(@campus.authorizer).to_not be_deletable_by(@participant)
+        expect(@campus.authorizer).to_not be_deletable_by(@member)
       end
     end
   end
@@ -187,9 +188,9 @@ describe CampusAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("campus_#{affiliation}", group: @campus, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
       end
     end
 
@@ -199,31 +200,31 @@ describe CampusAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'disallows creation' do
-        expect(@campus.authorizer).to_not be_creatable_by(@admin)
+        expect(@campus.authorizer).to_not be_creatable_by(@administrator)
       end
 
       it 'allows reading the leader profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_leader)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_leader)
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_anyone)
       end
 
       it 'allows updating' do
-        expect(@campus.authorizer).to be_updatable_by(@admin)
+        expect(@campus.authorizer).to be_updatable_by(@administrator)
       end
 
       it 'disallows deletion' do
-        expect(@campus.authorizer).to_not be_deletable_by(@admin)
+        expect(@campus.authorizer).to_not be_deletable_by(@administrator)
       end
     end
 
@@ -317,33 +318,33 @@ describe CampusAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'disallows creation' do
-        expect(@campus.authorizer).to_not be_creatable_by(@participant)
+        expect(@campus.authorizer).to_not be_creatable_by(@member)
       end
 
       it 'disallows reading the leader profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@participant, scope: :as_leader)
+        expect(@campus.authorizer).to_not be_readable_by(@member, scope: :as_leader)
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@participant, scope: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@member, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@participant, scope: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@member, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@participant, scope: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@member, scope: :as_anyone)
       end
 
       it 'disallows updating' do
-        expect(@campus.authorizer).to_not be_updatable_by(@participant)
+        expect(@campus.authorizer).to_not be_updatable_by(@member)
       end
 
       it 'disallows deletion' do
-        expect(@campus.authorizer).to_not be_deletable_by(@participant)
+        expect(@campus.authorizer).to_not be_deletable_by(@member)
       end
     end
   end
@@ -351,9 +352,9 @@ describe CampusAuthorizer, type: :authorizer do
   context "for a Gathering" do
 
     before :context do
-      [:leader, :assistant, :coach, :participant].each do |affiliation|
+      [:leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("gathering_#{affiliation}", group: @gathering, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
       end
     end
 
@@ -363,31 +364,31 @@ describe CampusAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'disallows creation' do
-        expect(@campus.authorizer).to_not be_creatable_by(@admin)
+        expect(@campus.authorizer).to_not be_creatable_by(@administrator)
       end
 
       it 'disallows reading the leader profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@admin, scope: :as_leader)
+        expect(@campus.authorizer).to_not be_readable_by(@administrator, scope: :as_leader)
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@admin, scope: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@administrator, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@admin, scope: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@administrator, scope: :as_anyone)
       end
 
       it 'disallows updating' do
-        expect(@campus.authorizer).to_not be_updatable_by(@admin)
+        expect(@campus.authorizer).to_not be_updatable_by(@administrator)
       end
 
       it 'disallows deletion' do
-        expect(@campus.authorizer).to_not be_deletable_by(@admin)
+        expect(@campus.authorizer).to_not be_deletable_by(@administrator)
       end
     end
 
@@ -480,33 +481,33 @@ describe CampusAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'disallows creation' do
-        expect(@campus.authorizer).to_not be_creatable_by(@participant)
+        expect(@campus.authorizer).to_not be_creatable_by(@member)
       end
 
       it 'disallows reading the leader profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@participant, scope: :as_leader)
+        expect(@campus.authorizer).to_not be_readable_by(@member, scope: :as_leader)
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@participant, scope: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@member, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@participant, scope: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@member, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@participant, scope: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@member, scope: :as_anyone)
       end
 
       it 'disallows updating' do
-        expect(@campus.authorizer).to_not be_updatable_by(@participant)
+        expect(@campus.authorizer).to_not be_updatable_by(@member)
       end
 
       it 'disallows deletion' do
-        expect(@campus.authorizer).to_not be_deletable_by(@participant)
+        expect(@campus.authorizer).to_not be_deletable_by(@member)
       end
     end
   end

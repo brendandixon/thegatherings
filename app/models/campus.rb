@@ -5,8 +5,6 @@
 #  id                 :integer          not null, primary key
 #  community_id       :integer          not null
 #  name               :string(255)
-#  contact_first_name :string(255)
-#  contact_last_name  :string(255)
 #  email              :string(255)
 #  phone              :string(255)
 #  street_primary     :string(255)
@@ -39,9 +37,6 @@ class Campus < ActiveRecord::Base
 
   validates :community, belonging: {models: [Community]}
   validates_length_of :name, within: 10..255
-  
-  validates_length_of :contact_first_name, within: 2..255, allow_blank: true
-  validates_length_of :contact_last_name, within: 2..255, allow_blank: true
 
   validates :email, email: true
 

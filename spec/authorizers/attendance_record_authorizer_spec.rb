@@ -3,16 +3,16 @@ require 'rails_helper'
 describe AttendanceRecordAuthorizer, type: :authorizer do
 
   before :context do
-    @admin = create(:admin)
-    @leader = create(:leader)
-    @assistant = create(:assistant)
-    @coach = create(:coach)
-    @participant = create(:participant)
-    @member = create(:member)
-
     @community = create(:community)
     @campus = create(:campus, community: @community)
     @gathering = create(:gathering, community: @community, campus: @campus)
+
+    @administrator = create(:member)
+    @leader = create(:member)
+    @assistant = create(:member)
+    @coach = create(:member)
+    @member = create(:member)
+    @other = create(:member)
   end
 
   after :context do
@@ -25,11 +25,12 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("community_#{affiliation}", group: @community, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
-      create(:gathering_membership, group: @gathering, member: @member)
+      create(:membership, :as_member, group: @community, member: @other)
+      create(:membership, :as_member, group: @gathering, member: @member)
       @attendance_record = create(:attendance_record, gathering: @gathering, member: @member)
     end
 
@@ -40,19 +41,19 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'allows creation' do
-        expect(@attendance_record.authorizer).to be_creatable_by(@admin)
+        expect(@attendance_record.authorizer).to be_creatable_by(@administrator)
       end
 
       it 'allows reading' do
-        expect(@attendance_record.authorizer).to be_readable_by(@admin)
+        expect(@attendance_record.authorizer).to be_readable_by(@administrator)
       end
 
       it 'allows updating' do
-        expect(@attendance_record.authorizer).to be_updatable_by(@admin)
+        expect(@attendance_record.authorizer).to be_updatable_by(@administrator)
       end
 
       it 'allows deletion' do
-        expect(@attendance_record.authorizer).to be_deletable_by(@admin)
+        expect(@attendance_record.authorizer).to be_deletable_by(@administrator)
       end
     end
 
@@ -110,21 +111,21 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'disallows creation' do
-        expect(@attendance_record.authorizer).to_not be_creatable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_creatable_by(@other)
       end
 
       it 'disallows reading' do
-        expect(@attendance_record.authorizer).to_not be_readable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_readable_by(@other)
       end
 
       it 'disallows updating' do
-        expect(@attendance_record.authorizer).to_not be_updatable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_updatable_by(@other)
       end
 
       it 'disallows deletion' do
-        expect(@attendance_record.authorizer).to_not be_deletable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_deletable_by(@other)
       end
     end
   end
@@ -132,11 +133,12 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("campus_#{affiliation}", group: @campus, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
       end
-      create(:gathering_membership, group: @gathering, member: @member)
+      create(:membership, :as_member, group: @campus, member: @other)
+      create(:membership, :as_member, group: @gathering, member: @member)
       @attendance_record = create(:attendance_record, gathering: @gathering, member: @member)
     end
 
@@ -147,19 +149,19 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'allows creation' do
-        expect(@attendance_record.authorizer).to be_creatable_by(@admin)
+        expect(@attendance_record.authorizer).to be_creatable_by(@administrator)
       end
 
       it 'allows reading' do
-        expect(@attendance_record.authorizer).to be_readable_by(@admin)
+        expect(@attendance_record.authorizer).to be_readable_by(@administrator)
       end
 
       it 'allows updating' do
-        expect(@attendance_record.authorizer).to be_updatable_by(@admin)
+        expect(@attendance_record.authorizer).to be_updatable_by(@administrator)
       end
 
       it 'allows deletion' do
-        expect(@attendance_record.authorizer).to be_deletable_by(@admin)
+        expect(@attendance_record.authorizer).to be_deletable_by(@administrator)
       end
     end
 
@@ -217,21 +219,21 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'disallows creation' do
-        expect(@attendance_record.authorizer).to_not be_creatable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_creatable_by(@other)
       end
 
       it 'disallows reading' do
-        expect(@attendance_record.authorizer).to_not be_readable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_readable_by(@other)
       end
 
       it 'disallows updating' do
-        expect(@attendance_record.authorizer).to_not be_updatable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_updatable_by(@other)
       end
 
       it 'disallows deletion' do
-        expect(@attendance_record.authorizer).to_not be_deletable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_deletable_by(@other)
       end
     end
   end
@@ -239,11 +241,12 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
   context "for a Gathering" do
 
     before :context do
-      [:leader, :assistant, :coach, :participant].each do |affiliation|
+      [:leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("gathering_#{affiliation}", group: @gathering, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
       end
-      @attendance_record = create(:attendance_record, gathering: @gathering, member: @participant)
+      create(:membership, :as_member, group: @gathering, member: @other)
+      @attendance_record = create(:attendance_record, gathering: @gathering, member: @member)
     end
 
     after :context do
@@ -305,21 +308,25 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'disallows creation' do
-        expect(@attendance_record.authorizer).to_not be_creatable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_creatable_by(@member)
       end
 
-      it 'allows reading' do
-        expect(@attendance_record.authorizer).to be_readable_by(@participant)
+      it 'allows reading their own records' do
+        expect(@attendance_record.authorizer).to be_readable_by(@member)
+      end
+
+      it 'disallows reading other records' do
+        expect(@attendance_record.authorizer).to_not be_readable_by(@other)
       end
 
       it 'disallows updating' do
-        expect(@attendance_record.authorizer).to_not be_updatable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_updatable_by(@member)
       end
 
       it 'disallows deletion' do
-        expect(@attendance_record.authorizer).to_not be_deletable_by(@participant)
+        expect(@attendance_record.authorizer).to_not be_deletable_by(@member)
       end
     end
   end
@@ -327,8 +334,9 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
   context "for a Member" do
 
     before :context do
-      create(:gathering_participant, group: @gathering, member: @participant)
-      @attendance_record = create(:attendance_record, gathering: @gathering, member: @participant)
+      create(:membership, :as_member, group: @gathering, member: @other)
+      create(:membership, :as_member, group: @gathering, member: @member)
+      @attendance_record = create(:attendance_record, gathering: @gathering, member: @member)
     end
 
     after :context do
@@ -337,19 +345,19 @@ describe AttendanceRecordAuthorizer, type: :authorizer do
     end
 
     it 'disallows creation' do
-      expect(@attendance_record.authorizer).to_not be_creatable_by(@member)
+      expect(@attendance_record.authorizer).to_not be_creatable_by(@other)
     end
 
     it 'disallows reading' do
-      expect(@attendance_record.authorizer).to_not be_readable_by(@member)
+      expect(@attendance_record.authorizer).to_not be_readable_by(@other)
     end
 
     it 'disallows updating' do
-      expect(@attendance_record.authorizer).to_not be_updatable_by(@member)
+      expect(@attendance_record.authorizer).to_not be_updatable_by(@other)
     end
 
     it 'disallows deletion' do
-      expect(@attendance_record.authorizer).to_not be_deletable_by(@member)
+      expect(@attendance_record.authorizer).to_not be_deletable_by(@other)
     end
   end
 

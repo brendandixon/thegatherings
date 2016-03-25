@@ -7,16 +7,16 @@ describe MembershipAuthorizer, type: :authorizer do
     @campus = create(:campus, community: @community)
     @gathering = create(:gathering, community: @community, campus: @campus)
 
-    @admin = create(:admin)
-    @leader = create(:leader)
-    @assistant = create(:assistant)
-    @coach = create(:coach)
-    @participant = create(:participant)
-
+    @administrator = create(:member)
+    @leader = create(:member)
+    @assistant = create(:member)
+    @coach = create(:member)
     @member = create(:member)
-    @join_community = build(:community_membership, group: @community, member: @member)
-    @join_campus = build(:campus_membership, group: @campus, member: @member)
-    @join_gathering = build(:gathering_membership, group: @gathering, member: @member)
+
+    @affiliate = create(:member)
+    @join_community = build(:membership, :as_member, group: @community, member: @affiliate)
+    @join_campus = build(:membership, :as_member, group: @campus, member: @affiliate)
+    @join_gathering = build(:membership, :as_member, group: @gathering, member: @affiliate)
   end
 
   after :context do
@@ -28,9 +28,9 @@ describe MembershipAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("community_#{affiliation}", group: @community, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
     end
 
@@ -41,55 +41,55 @@ describe MembershipAuthorizer, type: :authorizer do
     context 'Administrator' do
       context 'with a Community Membership' do
         it 'allows creation' do
-          expect(@join_community.authorizer).to be_creatable_by(@admin, community: @community)
+          expect(@join_community.authorizer).to be_creatable_by(@administrator, community: @community)
         end
         
         it 'allows reading' do
-          expect(@join_community.authorizer).to be_readable_by(@admin, community: @community)
+          expect(@join_community.authorizer).to be_readable_by(@administrator, community: @community)
         end
 
         it 'allows updating' do
-          expect(@join_community.authorizer).to be_updatable_by(@admin, community: @community)
+          expect(@join_community.authorizer).to be_updatable_by(@administrator, community: @community)
         end
 
         it 'allows deletion' do
-          expect(@join_community.authorizer).to be_deletable_by(@admin, community: @community)
+          expect(@join_community.authorizer).to be_deletable_by(@administrator, community: @community)
         end
       end
 
       context 'with a Campus Membership' do
         it 'allows creation' do
-          expect(@join_campus.authorizer).to be_creatable_by(@admin, community: @community)
+          expect(@join_campus.authorizer).to be_creatable_by(@administrator, community: @community)
         end
         
         it 'allows reading' do
-          expect(@join_campus.authorizer).to be_readable_by(@admin, community: @community)
+          expect(@join_campus.authorizer).to be_readable_by(@administrator, community: @community)
         end
 
         it 'allows updating' do
-          expect(@join_campus.authorizer).to be_updatable_by(@admin, community: @community)
+          expect(@join_campus.authorizer).to be_updatable_by(@administrator, community: @community)
         end
 
         it 'allows deletion' do
-          expect(@join_campus.authorizer).to be_deletable_by(@admin, community: @community)
+          expect(@join_campus.authorizer).to be_deletable_by(@administrator, community: @community)
         end
       end
 
       context 'with a Gathering Membership' do
         it 'disallows creation' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@admin, community: @community)
+          expect(@join_gathering.authorizer).to_not be_creatable_by(@administrator, community: @community)
         end
         
         it 'disallows reading' do
-          expect(@join_gathering.authorizer).to_not be_readable_by(@admin, community: @community)
+          expect(@join_gathering.authorizer).to_not be_readable_by(@administrator, community: @community)
         end
 
         it 'disallows updating' do
-          expect(@join_gathering.authorizer).to_not be_updatable_by(@admin, community: @community)
+          expect(@join_gathering.authorizer).to_not be_updatable_by(@administrator, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@join_gathering.authorizer).to_not be_deletable_by(@admin, community: @community)
+          expect(@join_gathering.authorizer).to_not be_deletable_by(@administrator, community: @community)
         end
       end
     end
@@ -262,58 +262,58 @@ describe MembershipAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       context 'with a Community Membership' do
         it 'disallows creation' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@participant, community: @community)
+          expect(@join_community.authorizer).to_not be_creatable_by(@member, community: @community)
         end
         
         it 'disallows reading' do
-          expect(@join_community.authorizer).to_not be_readable_by(@participant, community: @community)
+          expect(@join_community.authorizer).to_not be_readable_by(@member, community: @community)
         end
 
         it 'disallows updating' do
-          expect(@join_community.authorizer).to_not be_updatable_by(@participant, community: @community)
+          expect(@join_community.authorizer).to_not be_updatable_by(@member, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@join_community.authorizer).to_not be_deletable_by(@participant, community: @community)
+          expect(@join_community.authorizer).to_not be_deletable_by(@member, community: @community)
         end
       end
 
       context 'with a Campus Membership' do
         it 'disallows creation' do
-          expect(@join_campus.authorizer).to_not be_creatable_by(@participant, community: @community)
+          expect(@join_campus.authorizer).to_not be_creatable_by(@member, community: @community)
         end
         
         it 'disallows reading' do
-          expect(@join_campus.authorizer).to_not be_readable_by(@participant, community: @community)
+          expect(@join_campus.authorizer).to_not be_readable_by(@member, community: @community)
         end
 
         it 'disallows updating' do
-          expect(@join_campus.authorizer).to_not be_updatable_by(@participant, community: @community)
+          expect(@join_campus.authorizer).to_not be_updatable_by(@member, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@join_campus.authorizer).to_not be_deletable_by(@participant, community: @community)
+          expect(@join_campus.authorizer).to_not be_deletable_by(@member, community: @community)
         end
       end
 
       context 'with a Gathering Membership' do
         it 'disallows creation' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@participant, community: @community)
+          expect(@join_gathering.authorizer).to_not be_creatable_by(@member, community: @community)
         end
         
         it 'disallows reading' do
-          expect(@join_gathering.authorizer).to_not be_readable_by(@participant, community: @community)
+          expect(@join_gathering.authorizer).to_not be_readable_by(@member, community: @community)
         end
 
         it 'disallows updating' do
-          expect(@join_gathering.authorizer).to_not be_updatable_by(@participant, community: @community)
+          expect(@join_gathering.authorizer).to_not be_updatable_by(@member, community: @community)
         end
 
         it 'disallows deletion' do
-          expect(@join_gathering.authorizer).to_not be_deletable_by(@participant, community: @community)
+          expect(@join_gathering.authorizer).to_not be_deletable_by(@member, community: @community)
         end
       end
     end
@@ -322,11 +322,10 @@ describe MembershipAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("campus_#{affiliation}", group: @campus, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
       end
-      @membership = build(:campus_membership, group: @campus, member: @member)
     end
 
     after :context do
@@ -336,55 +335,55 @@ describe MembershipAuthorizer, type: :authorizer do
     context 'Administrator' do
       context 'with a Community Membership' do
         it 'allows creation' do
-          expect(@join_community.authorizer).to be_creatable_by(@admin, campus: @campus)
+          expect(@join_community.authorizer).to be_creatable_by(@administrator, campus: @campus)
         end
         
         it 'allows reading' do
-          expect(@join_community.authorizer).to be_readable_by(@admin, campus: @campus)
+          expect(@join_community.authorizer).to be_readable_by(@administrator, campus: @campus)
         end
 
         it 'allows updating' do
-          expect(@join_community.authorizer).to be_updatable_by(@admin, campus: @campus)
+          expect(@join_community.authorizer).to be_updatable_by(@administrator, campus: @campus)
         end
 
         it 'allows deletion' do
-          expect(@join_community.authorizer).to be_deletable_by(@admin, campus: @campus)
+          expect(@join_community.authorizer).to be_deletable_by(@administrator, campus: @campus)
         end
       end
 
       context 'with a Campus Membership' do
         it 'allows creation' do
-          expect(@join_campus.authorizer).to be_creatable_by(@admin, campus: @campus)
+          expect(@join_campus.authorizer).to be_creatable_by(@administrator, campus: @campus)
         end
         
         it 'allows reading' do
-          expect(@join_campus.authorizer).to be_readable_by(@admin, campus: @campus)
+          expect(@join_campus.authorizer).to be_readable_by(@administrator, campus: @campus)
         end
 
         it 'allows updating' do
-          expect(@join_campus.authorizer).to be_updatable_by(@admin, campus: @campus)
+          expect(@join_campus.authorizer).to be_updatable_by(@administrator, campus: @campus)
         end
 
         it 'allows deletion' do
-          expect(@join_campus.authorizer).to be_deletable_by(@admin, campus: @campus)
+          expect(@join_campus.authorizer).to be_deletable_by(@administrator, campus: @campus)
         end
       end
 
       context 'with a Gathering Membership' do
         it 'disallows creation' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@admin, campus: @campus)
+          expect(@join_gathering.authorizer).to_not be_creatable_by(@administrator, campus: @campus)
         end
         
         it 'disallows reading' do
-          expect(@join_gathering.authorizer).to_not be_readable_by(@admin, campus: @campus)
+          expect(@join_gathering.authorizer).to_not be_readable_by(@administrator, campus: @campus)
         end
 
         it 'disallows updating' do
-          expect(@join_gathering.authorizer).to_not be_updatable_by(@admin, campus: @campus)
+          expect(@join_gathering.authorizer).to_not be_updatable_by(@administrator, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@join_gathering.authorizer).to_not be_deletable_by(@admin, campus: @campus)
+          expect(@join_gathering.authorizer).to_not be_deletable_by(@administrator, campus: @campus)
         end
       end
     end
@@ -557,58 +556,58 @@ describe MembershipAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       context 'with a Community Membership' do
         it 'disallows creation' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@participant, campus: @campus)
+          expect(@join_community.authorizer).to_not be_creatable_by(@member, campus: @campus)
         end
         
         it 'disallows reading' do
-          expect(@join_community.authorizer).to_not be_readable_by(@participant, campus: @campus)
+          expect(@join_community.authorizer).to_not be_readable_by(@member, campus: @campus)
         end
 
         it 'disallows updating' do
-          expect(@join_community.authorizer).to_not be_updatable_by(@participant, campus: @campus)
+          expect(@join_community.authorizer).to_not be_updatable_by(@member, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@join_community.authorizer).to_not be_deletable_by(@participant, campus: @campus)
+          expect(@join_community.authorizer).to_not be_deletable_by(@member, campus: @campus)
         end
       end
 
       context 'with a Campus Membership' do
         it 'disallows creation' do
-          expect(@join_campus.authorizer).to_not be_creatable_by(@participant, campus: @campus)
+          expect(@join_campus.authorizer).to_not be_creatable_by(@member, campus: @campus)
         end
         
         it 'disallows reading' do
-          expect(@join_campus.authorizer).to_not be_readable_by(@participant, campus: @campus)
+          expect(@join_campus.authorizer).to_not be_readable_by(@member, campus: @campus)
         end
 
         it 'disallows updating' do
-          expect(@join_campus.authorizer).to_not be_updatable_by(@participant, campus: @campus)
+          expect(@join_campus.authorizer).to_not be_updatable_by(@member, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@join_campus.authorizer).to_not be_deletable_by(@participant, campus: @campus)
+          expect(@join_campus.authorizer).to_not be_deletable_by(@member, campus: @campus)
         end
       end
 
       context 'with a Gathering Membership' do
         it 'disallows creation' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@participant, campus: @campus)
+          expect(@join_gathering.authorizer).to_not be_creatable_by(@member, campus: @campus)
         end
         
         it 'disallows reading' do
-          expect(@join_gathering.authorizer).to_not be_readable_by(@participant, campus: @campus)
+          expect(@join_gathering.authorizer).to_not be_readable_by(@member, campus: @campus)
         end
 
         it 'disallows updating' do
-          expect(@join_gathering.authorizer).to_not be_updatable_by(@participant, campus: @campus)
+          expect(@join_gathering.authorizer).to_not be_updatable_by(@member, campus: @campus)
         end
 
         it 'disallows deletion' do
-          expect(@join_gathering.authorizer).to_not be_deletable_by(@participant, campus: @campus)
+          expect(@join_gathering.authorizer).to_not be_deletable_by(@member, campus: @campus)
         end
       end
     end
@@ -617,11 +616,10 @@ describe MembershipAuthorizer, type: :authorizer do
   context "for a Gathering" do
 
     before :context do
-      [:leader, :assistant, :coach, :participant].each do |affiliation|
+      [:leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("gathering_#{affiliation}", group: @gathering, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
       end
-      @membership = build(:gathering_membership, group: @gathering, member: @member)
     end
 
     after :context do
@@ -796,58 +794,58 @@ describe MembershipAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       context 'with a Community Membership' do
         it 'disallows creation' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@participant, gathering: @gathering)
+          expect(@join_community.authorizer).to_not be_creatable_by(@member, gathering: @gathering)
         end
         
         it 'disallows reading' do
-          expect(@join_community.authorizer).to_not be_readable_by(@participant, gathering: @gathering)
+          expect(@join_community.authorizer).to_not be_readable_by(@member, gathering: @gathering)
         end
 
         it 'disallows updating' do
-          expect(@join_community.authorizer).to_not be_updatable_by(@participant, gathering: @gathering)
+          expect(@join_community.authorizer).to_not be_updatable_by(@member, gathering: @gathering)
         end
 
         it 'disallows deletion' do
-          expect(@join_community.authorizer).to_not be_deletable_by(@participant, gathering: @gathering)
+          expect(@join_community.authorizer).to_not be_deletable_by(@member, gathering: @gathering)
         end
       end
 
       context 'with a Campus Membership' do
         it 'disallows creation' do
-          expect(@join_campus.authorizer).to_not be_creatable_by(@participant, gathering: @gathering)
+          expect(@join_campus.authorizer).to_not be_creatable_by(@member, gathering: @gathering)
         end
         
         it 'disallows reading' do
-          expect(@join_campus.authorizer).to_not be_readable_by(@participant, gathering: @gathering)
+          expect(@join_campus.authorizer).to_not be_readable_by(@member, gathering: @gathering)
         end
 
         it 'disallows updating' do
-          expect(@join_campus.authorizer).to_not be_updatable_by(@participant, gathering: @gathering)
+          expect(@join_campus.authorizer).to_not be_updatable_by(@member, gathering: @gathering)
         end
 
         it 'disallows deletion' do
-          expect(@join_campus.authorizer).to_not be_deletable_by(@participant, gathering: @gathering)
+          expect(@join_campus.authorizer).to_not be_deletable_by(@member, gathering: @gathering)
         end
       end
 
       context 'with a Gathering Membership' do
         it 'disallows creation' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@participant, gathering: @gathering)
+          expect(@join_gathering.authorizer).to_not be_creatable_by(@member, gathering: @gathering)
         end
         
         it 'allows reading' do
-          expect(@join_gathering.authorizer).to be_readable_by(@participant, gathering: @gathering)
+          expect(@join_gathering.authorizer).to be_readable_by(@member, gathering: @gathering)
         end
 
         it 'disallows updating' do
-          expect(@join_gathering.authorizer).to_not be_updatable_by(@participant, gathering: @gathering)
+          expect(@join_gathering.authorizer).to_not be_updatable_by(@member, gathering: @gathering)
         end
 
         it 'disallows deletion' do
-          expect(@join_gathering.authorizer).to_not be_deletable_by(@participant, gathering: @gathering)
+          expect(@join_gathering.authorizer).to_not be_deletable_by(@member, gathering: @gathering)
         end
       end
     end
@@ -856,55 +854,55 @@ describe MembershipAuthorizer, type: :authorizer do
   context "for the Member" do
       context 'with a Community Membership' do
         it 'allows creation' do
-          expect(@join_community.authorizer).to be_creatable_by(@member)
+          expect(@join_community.authorizer).to be_creatable_by(@affiliate)
         end
         
         it 'allows reading' do
-          expect(@join_community.authorizer).to be_readable_by(@member)
+          expect(@join_community.authorizer).to be_readable_by(@affiliate)
         end
 
         it 'allows updating' do
-          expect(@join_community.authorizer).to be_updatable_by(@member)
+          expect(@join_community.authorizer).to be_updatable_by(@affiliate)
         end
 
         it 'allows deletion' do
-          expect(@join_community.authorizer).to be_deletable_by(@member)
+          expect(@join_community.authorizer).to be_deletable_by(@affiliate)
         end
       end
 
       context 'with a Campus Membership' do
         it 'allows creation' do
-          expect(@join_campus.authorizer).to be_creatable_by(@member)
+          expect(@join_campus.authorizer).to be_creatable_by(@affiliate)
         end
         
         it 'allows reading' do
-          expect(@join_campus.authorizer).to be_readable_by(@member)
+          expect(@join_campus.authorizer).to be_readable_by(@affiliate)
         end
 
         it 'allows updating' do
-          expect(@join_campus.authorizer).to be_updatable_by(@member)
+          expect(@join_campus.authorizer).to be_updatable_by(@affiliate)
         end
 
         it 'allows deletion' do
-          expect(@join_campus.authorizer).to be_deletable_by(@member)
+          expect(@join_campus.authorizer).to be_deletable_by(@affiliate)
         end
       end
 
       context 'with a Gathering Membership' do
         it 'disallows creation' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@member)
+          expect(@join_gathering.authorizer).to_not be_creatable_by(@affiliate)
         end
         
         it 'allows reading' do
-          expect(@join_gathering.authorizer).to be_readable_by(@member)
+          expect(@join_gathering.authorizer).to be_readable_by(@affiliate)
         end
 
         it 'disallows updating' do
-          expect(@join_gathering.authorizer).to_not be_updatable_by(@member)
+          expect(@join_gathering.authorizer).to_not be_updatable_by(@affiliate)
         end
 
         it 'allows deletion' do
-          expect(@join_gathering.authorizer).to be_deletable_by(@member)
+          expect(@join_gathering.authorizer).to be_deletable_by(@affiliate)
         end
       end
   end

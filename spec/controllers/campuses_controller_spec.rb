@@ -27,13 +27,13 @@ require 'rails_helper'
 describe CampusesController, type: :controller do
 
   before :all do
-    @member = create(:admin)
+    @member = create(:member)
 
     @community = create(:community)
     @campuses = []
     10.times { @campuses << create(:campus, community: @community) }
 
-    create(:community_admin, member: @member, group: @community)
+    create(:membership, :as_administrator, member: @member, group: @community)
   end
 
   after :all do

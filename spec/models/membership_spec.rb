@@ -19,7 +19,9 @@ require 'rails_helper'
 describe Membership, type: :model do
 
   before do
-    @membership = build(:community_participant)
+    @member = create(:member)
+    @gathering = create(:gathering)
+    @membership = build(:membership, :as_member, group: @gathering, member: @member)
   end
 
   context 'Member and Group Validation' do
@@ -126,6 +128,7 @@ describe Membership, type: :model do
 
   context 'Visiting' do
     it 'disallows visitors to a Community' do
+      @membership.group = build(:community)
       @membership.visit
       expect(@membership).to be_invalid
       expect(@membership.errors).to have_key(:participant)

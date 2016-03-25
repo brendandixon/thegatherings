@@ -20,10 +20,11 @@ describe MembershipRequest, type: :model do
     @community = create(:community)
     @gathering = create(:gathering, community: @community)
     @member = create(:member)
-    @join_community = create(:community_membership, group: @community, member: @member)
+    @join_community = create(:membership, :as_member, group: @community, member: @member)
   end
 
   after :context do
+    Membership.delete_all
     Gathering.delete_all
     Community.delete_all
     Member.delete_all
@@ -40,10 +41,10 @@ describe MembershipRequest, type: :model do
   end
 
   it 'rejects members not affiliated with the Community' do
-    @membership_request.member.memberships.for_group(@membership_request.gathering.community).take.delete
+    @join_community.delete
     expect(@membership_request).to be_invalid
     expect(@membership_request.errors).to have_key(:member)
-    @join_community = create(:community_membership, group: @community, member: @member)
+    @join_community = create(:membership, :as_member, group: @community, member: @member)
   end
 
   it 'requires a gathering' do
@@ -53,10 +54,10 @@ describe MembershipRequest, type: :model do
   end
 
   it 'rejects members participating in the Gathering' do
-    @join_gaterhing = create(:gathering_membership, group: @gathering, member: @member)
+    @join_gathering = create(:membership, :as_member, group: @gathering, member: @member)
     expect(@membership_request).to be_invalid
     expect(@membership_request.errors).to have_key(:member)
-    @join_gaterhing.delete
+    @join_gathering.delete
   end
 
   it 'requires a sent on date on or before today' do

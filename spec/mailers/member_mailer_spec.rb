@@ -5,12 +5,12 @@ describe MemberMailer, type: :mailer do
   before :all do
     @community = create(:community)
     @gathering = create(:gathering, community: @community)
-    @leader = create(:leader)
+    @leader = create(:member)
     @member = create(:member)
     
-    create(:community_membership, group: @community, member: @leader)
-    create(:community_membership, group: @community, member: @member)
-    create(:gathering_membership, group: @gathering, member: @leader, role: 'leader')
+    create(:membership, :as_member, group: @community, member: @leader)
+    create(:membership, :as_member, group: @community, member: @member)
+    create(:membership, :as_member, group: @gathering, member: @leader, role: 'leader')
   end
 
   after :all do

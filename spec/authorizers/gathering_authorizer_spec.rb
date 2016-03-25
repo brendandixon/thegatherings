@@ -3,16 +3,16 @@ require 'rails_helper'
 describe GatheringAuthorizer, type: :authorizer do
 
   before :context do
-    @admin = create(:admin)
-    @leader = create(:leader)
-    @assistant = create(:assistant)
-    @coach = create(:coach)
-    @participant = create(:participant)
-    @visitor = create(:visitor)
-
     @community = create(:community)
     @campus = create(:campus, community: @community)
     @gathering = create(:gathering, community: @community, campus: @campus)
+
+    @administrator = create(:member)
+    @leader = create(:member)
+    @assistant = create(:member)
+    @coach = create(:member)
+    @member = create(:member)
+    @visitor = create(:member)
   end
 
   after :context do
@@ -25,9 +25,9 @@ describe GatheringAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create("community_#{affiliation}", group: @community, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
     end
 
@@ -37,31 +37,31 @@ describe GatheringAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'allows creation' do
-        expect(@gathering.authorizer).to be_creatable_by(@admin)
+        expect(@gathering.authorizer).to be_creatable_by(@administrator)
       end
 
       it 'allows reading the leader profile' do
-        expect(@gathering.authorizer).to be_readable_by(@admin, scope: :as_leader)
+        expect(@gathering.authorizer).to be_readable_by(@administrator, scope: :as_leader)
       end
 
       it 'allows reading the member profile' do
-        expect(@gathering.authorizer).to be_readable_by(@admin, scope: :as_member)
+        expect(@gathering.authorizer).to be_readable_by(@administrator, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@gathering.authorizer).to be_readable_by(@admin, scope: :as_visitor)
+        expect(@gathering.authorizer).to be_readable_by(@administrator, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@gathering.authorizer).to be_readable_by(@admin, scope: :as_anyone)
+        expect(@gathering.authorizer).to be_readable_by(@administrator, scope: :as_anyone)
       end
 
       it 'allows updating' do
-        expect(@gathering.authorizer).to be_updatable_by(@admin)
+        expect(@gathering.authorizer).to be_updatable_by(@administrator)
       end
 
       it 'allows deletion' do
-        expect(@gathering.authorizer).to be_deletable_by(@admin)
+        expect(@gathering.authorizer).to be_deletable_by(@administrator)
       end
     end
 
@@ -155,33 +155,33 @@ describe GatheringAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'allows creation' do
-        expect(@gathering.authorizer).to be_creatable_by(@participant)
+        expect(@gathering.authorizer).to be_creatable_by(@member)
       end
 
       it 'disallows reading the leader profile' do
-        expect(@gathering.authorizer).to_not be_readable_by(@participant, scope: :as_leader)
+        expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_leader)
       end
 
       it 'disallows reading the member profile' do
-        expect(@gathering.authorizer).to_not be_readable_by(@participant, scope: :as_member)
+        expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_member)
       end
 
       it 'disallows reading the visitor profile' do
-        expect(@gathering.authorizer).to_not be_readable_by(@participant, scope: :as_visitor)
+        expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@gathering.authorizer).to be_readable_by(@participant, scope: :as_anyone)
+        expect(@gathering.authorizer).to be_readable_by(@member, scope: :as_anyone)
       end
 
       it 'disallows updating' do
-        expect(@gathering.authorizer).to_not be_updatable_by(@participant)
+        expect(@gathering.authorizer).to_not be_updatable_by(@member)
       end
 
       it 'disallows deletion' do
-        expect(@gathering.authorizer).to_not be_deletable_by(@participant)
+        expect(@gathering.authorizer).to_not be_deletable_by(@member)
       end
     end
   end
@@ -189,10 +189,9 @@ describe GatheringAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      [:admin, :leader, :assistant, :coach, :participant].each do |affiliation|
+      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create(:community_participant, group: @community, member: member)
-        create("campus_#{affiliation}", group: @campus, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
       end
     end
 
@@ -202,31 +201,31 @@ describe GatheringAuthorizer, type: :authorizer do
 
     context 'Administrator' do
       it 'allows creation' do
-        expect(@gathering.authorizer).to be_creatable_by(@admin)
+        expect(@gathering.authorizer).to be_creatable_by(@administrator)
       end
 
       it 'allows reading the leader profile' do
-        expect(@gathering.authorizer).to be_readable_by(@admin, scope: :as_leader)
+        expect(@gathering.authorizer).to be_readable_by(@administrator, scope: :as_leader)
       end
 
       it 'allows reading the member profile' do
-        expect(@gathering.authorizer).to be_readable_by(@admin, scope: :as_member)
+        expect(@gathering.authorizer).to be_readable_by(@administrator, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@gathering.authorizer).to be_readable_by(@admin, scope: :as_visitor)
+        expect(@gathering.authorizer).to be_readable_by(@administrator, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@gathering.authorizer).to be_readable_by(@admin, scope: :as_anyone)
+        expect(@gathering.authorizer).to be_readable_by(@administrator, scope: :as_anyone)
       end
 
       it 'allows updating' do
-        expect(@gathering.authorizer).to be_updatable_by(@admin)
+        expect(@gathering.authorizer).to be_updatable_by(@administrator)
       end
 
       it 'allows deletion' do
-        expect(@gathering.authorizer).to be_deletable_by(@admin)
+        expect(@gathering.authorizer).to be_deletable_by(@administrator)
       end
     end
 
@@ -320,33 +319,33 @@ describe GatheringAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'allows creation' do
-        expect(@gathering.authorizer).to be_creatable_by(@participant)
+        expect(@gathering.authorizer).to be_creatable_by(@member)
       end
 
       it 'disallows reading the leader profile' do
-        expect(@gathering.authorizer).to_not be_readable_by(@participant, scope: :as_leader)
+        expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_leader)
       end
 
       it 'disallows reading the member profile' do
-        expect(@gathering.authorizer).to_not be_readable_by(@participant, scope: :as_member)
+        expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_member)
       end
 
       it 'disallows reading the visitor profile' do
-        expect(@gathering.authorizer).to_not be_readable_by(@participant, scope: :as_visitor)
+        expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@gathering.authorizer).to be_readable_by(@participant, scope: :as_anyone)
+        expect(@gathering.authorizer).to be_readable_by(@member, scope: :as_anyone)
       end
 
       it 'disallows updating' do
-        expect(@gathering.authorizer).to_not be_updatable_by(@participant)
+        expect(@gathering.authorizer).to_not be_updatable_by(@member)
       end
 
       it 'disallows deletion' do
-        expect(@gathering.authorizer).to_not be_deletable_by(@participant)
+        expect(@gathering.authorizer).to_not be_deletable_by(@member)
       end
     end
   end
@@ -354,10 +353,10 @@ describe GatheringAuthorizer, type: :authorizer do
   context "for a Gathering" do
 
     before :context do
-      [:leader, :assistant, :coach, :participant, :visitor].each do |affiliation|
+      [:leader, :assistant, :coach, :member, :visitor].each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
-        create(:community_participant, group: @community, member: member)
-        create("gathering_#{affiliation}", group: @gathering, member: member)
+        create(:membership, :as_member, group: @community, member: member)
+        create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
       end
     end
 
@@ -455,33 +454,33 @@ describe GatheringAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Participant' do
+    context 'Member' do
       it 'allows creation' do
-        expect(@gathering.authorizer).to be_creatable_by(@participant)
+        expect(@gathering.authorizer).to be_creatable_by(@member)
       end
 
       it 'disallows reading the leader profile' do
-        expect(@gathering.authorizer).to_not be_readable_by(@participant, scope: :as_leader)
+        expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_leader)
       end
 
       it 'allows reading the member profile' do
-        expect(@gathering.authorizer).to be_readable_by(@participant, scope: :as_member)
+        expect(@gathering.authorizer).to be_readable_by(@member, scope: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@gathering.authorizer).to be_readable_by(@participant, scope: :as_visitor)
+        expect(@gathering.authorizer).to be_readable_by(@member, scope: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@gathering.authorizer).to be_readable_by(@participant, scope: :as_anyone)
+        expect(@gathering.authorizer).to be_readable_by(@member, scope: :as_anyone)
       end
 
       it 'disallows updating' do
-        expect(@gathering.authorizer).to_not be_updatable_by(@participant)
+        expect(@gathering.authorizer).to_not be_updatable_by(@member)
       end
 
       it 'disallows deletion' do
-        expect(@gathering.authorizer).to_not be_deletable_by(@participant)
+        expect(@gathering.authorizer).to_not be_deletable_by(@member)
       end
     end
 
@@ -516,42 +515,42 @@ describe GatheringAuthorizer, type: :authorizer do
     end
   end
 
-  context "for a Member" do
+  context "for an unaffiliated Member" do
 
     before :context do
-      @member = create(:member)
+      @unaffiliated = create(:member)
     end
 
     after :context do
-      @member.delete
+      @unaffiliated.delete
     end
 
     it 'disallows creation' do
-      expect(@gathering.authorizer).to_not be_creatable_by(@member)
+      expect(@gathering.authorizer).to_not be_creatable_by(@unaffiliated)
     end
 
     it 'disallows reading the leader profile' do
-      expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_leader)
+      expect(@gathering.authorizer).to_not be_readable_by(@unaffiliated, scope: :as_leader)
     end
 
     it 'disallows reading the member profile' do
-      expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_member)
+      expect(@gathering.authorizer).to_not be_readable_by(@unaffiliated, scope: :as_member)
     end
 
     it 'disallows reading the visitor profile' do
-      expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_visitor)
+      expect(@gathering.authorizer).to_not be_readable_by(@unaffiliated, scope: :as_visitor)
     end
 
     it 'disallows reading the public profile' do
-      expect(@gathering.authorizer).to_not be_readable_by(@member, scope: :as_anyone)
+      expect(@gathering.authorizer).to_not be_readable_by(@unaffiliated, scope: :as_anyone)
     end
 
     it 'disallows updating' do
-      expect(@gathering.authorizer).to_not be_updatable_by(@member)
+      expect(@gathering.authorizer).to_not be_updatable_by(@unaffiliated)
     end
 
     it 'disallows deletion' do
-      expect(@gathering.authorizer).to_not be_deletable_by(@member)
+      expect(@gathering.authorizer).to_not be_deletable_by(@unaffiliated)
     end
   end
 
