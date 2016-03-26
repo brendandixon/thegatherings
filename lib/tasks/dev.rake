@@ -9,9 +9,6 @@ namespace :dev do
 
     purge_all
 
-    community = create(:community)
-    campuses = create_list(:campus, 5, community: community)
-
     blends = [
       [:millennials, :women_only, :pcec, :singles, :mixed_topics],
       [:mixed_ages, :men_only, :working, :singles, :mixed_topics],
@@ -29,14 +26,19 @@ namespace :dev do
       [:mixed_ages, :mixed_gender, :established, :families, :family_life]
     ]
 
-    gatherings = []
-    campuses.each do |campus|
-      gatherings << blends.map{|blend| create(:gathering, *blend, campus: campus, community: community)}
-    end
+    Time.use_zone TheGatherings::Application.default_time_zone do
+      community = create(:community)
+      campuses = create_list(:campus, 3, community: community)
 
-    create_leaders(community, campuses, gatherings)
-    create_attached_members(community, campuses, gatherings, blends)
-    create_unattached_members(community, blends, seeks)
+      gatherings = []
+      campuses.each do |campus|
+        gatherings << blends.map{|blend| create(:gathering, *blend, campus: campus, community: community)}
+      end
+
+      create_leaders(community, campuses, gatherings)
+      create_attached_members(community, campuses, gatherings, blends)
+      create_unattached_members(community, blends, seeks)
+    end
   end
 
   def purge_all
@@ -86,6 +88,7 @@ namespace :dev do
           create(:membership, :as_member, group: campus, member: member)
           create(:membership, :as_member, group: gathering, member: member)
           gathering.prior_meetings(DateTime.now, 10).each do |mt|
+            next if rand(0..100) > 75
             create(:attendance_record, gathering: gathering, member: member, datetime: mt)
           end
         end

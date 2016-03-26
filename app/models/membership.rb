@@ -19,10 +19,6 @@ class Membership < ActiveRecord::Base
   include ActiveDates
   include Taggable
 
-  PARTICIPANT_MEMBER = 'member'
-  PARTICIPANT_VISITOR = 'visitor'
-  PARTICIPANT_STATES = [PARTICIPANT_MEMBER, PARTICIPANT_VISITOR]
-
   belongs_to :group, polymorphic: true, required: true, inverse_of: :memberships
   belongs_to :member, required: true, inverse_of: :memberships
 
@@ -31,8 +27,7 @@ class Membership < ActiveRecord::Base
   validates :member, belonging: {models: [Member]}
   validates :group, belonging: {models: [Community, Campus, Gathering]}
 
-  validates_inclusion_of :participant, in: PARTICIPANT_STATES, allow_blank: true
-  validate :has_allowed_participation
+  validates_inclusion_of :participant, in: ApplicationAuthorizer::PARTICIPANTS, allow_blank: true
   
   validates_inclusion_of :role, in: ApplicationAuthorizer::ROLES, allow_blank: true
   validate :has_allowed_role
@@ -40,11 +35,15 @@ class Membership < ActiveRecord::Base
 
   scope :for_group, lambda{|group| where(group: group)}
   scope :for_member, lambda{|member| where(member: member)}
-
   scope :affiliated_with, lambda{|group, member| for_group(group).for_member(member) }
-  scope :as_participant, lambda{|group, member| for_group(group).for_member(member).where(participant: PARTICIPANT_MEMBER)}
-  scope :as_visitor, lambda{|group, member|  for_group(group).for_member(member).where(participant: PARTICIPANT_VISITOR)}
-  scope :has_role_in, lambda{|group, member| for_group(group).for_member(member).where.not(role: nil)}
+
+  scope :as_affiliate, lambda{where("role IS NOT NULL OR participant = ?", ApplicationAuthorizer::PARTICIPANT_MEMBER)}
+  scope :as_overseer, lambda{where(role: ApplicationAuthorizer::OVERSEERS)}
+  scope :as_assistant, lambda{where(role: ApplicationAuthorizer::ASSISTANTS)}
+  scope :as_coach, lambda{where(role: ApplicationAuthorizer::COACHES)}
+  scope :as_participant, lambda{ where(participant: ApplicationAuthorizer::PARTICIPANT_MEMBER)}
+  scope :as_member, lambda{ where(participant: ApplicationAuthorizer::PARTICIPANT_MEMBER)}
+  scope :as_visitor, lambda{ where(participant: ApplicationAuthorizer::PARTICIPANT_VISITOR)}
 
   scope :in_groups, lambda{|klass| where(group_type: klass)}
   scope :in_communities, lambda{in_groups(Community)}
@@ -69,17 +68,13 @@ class Membership < ActiveRecord::Base
     def join!(group, member, role = nil)
       m = Membership.affiliated_with(group, member).take
       if m.present?
-        m.update(participant: PARTICIPANT_MEMBER, role: role || m.role)
+        m.update(participant: ApplicationAuthorizer::PARTICIPANT_MEMBER, role: role || m.role)
       else
-        m = self.create(group: group, member: member, participant: PARTICIPANT_MEMBER, role: role)
+        m = self.create(group: group, member: member, participant: ApplicationAuthorizer::PARTICIPANT_MEMBER, role: role)
       end
       m
     end
 
-  end
-
-  def as_affiliate?
-    self.as_participant? || self.has_role?
   end
 
   ApplicationAuthorizer::ROLES.each do |role|
@@ -99,8 +94,20 @@ class Membership < ActiveRecord::Base
     METHODS
   end
 
+  def as_affiliate?
+    self.as_participant? || self.has_role?
+  end
+
   def as_overseer?
     ApplicationAuthorizer::OVERSEERS.include?(self.role)
+  end
+
+  def as_assistant?
+    ApplicationAuthorizer::ASSISTANTS.include?(self.role)
+  end
+
+  def as_coach?
+    ApplicationAuthorizer::COACHES.include?(self.role)
   end
 
   def clear_role
@@ -117,7 +124,7 @@ class Membership < ActiveRecord::Base
   end
 
   def participate
-    self.participant = :member
+    self.participant = ApplicationAuthorizer::PARTICIPANT_MEMBER
   end
 
   def participate!
@@ -131,12 +138,13 @@ class Membership < ActiveRecord::Base
   end
 
   def as_participant?
-    self.participant == PARTICIPANT_MEMBER
+    self.participant == ApplicationAuthorizer::PARTICIPANT_MEMBER
   end
+  alias :as_member? :as_participant?
   alias :participating? :as_participant?
 
   def visit
-    self.participant = :visitor
+    self.participant = ApplicationAuthorizer::PARTICIPANT_VISITOR
   end
 
   def visit!
@@ -145,7 +153,7 @@ class Membership < ActiveRecord::Base
   end
 
   def as_visitor?
-    self.participant == PARTICIPANT_VISITOR
+    self.participant == ApplicationAuthorizer::PARTICIPANT_VISITOR
   end
   alias :visiting? :as_visitor?
 
@@ -159,19 +167,11 @@ class Membership < ActiveRecord::Base
       errors.add(:base, I18n.t(:not_participant_or_role, scope: [:errors, :roles])) unless self.has_role? || self.as_participant? || self.as_visitor?
     end
 
-    def has_allowed_participation
-      if !self.errors.has_key?(:participant) && self.as_visitor? && !self.group.is_a?(Gathering)
-        group = self.group.class.to_s.humanize.pluralize
-        participant = self.participant.humanize
-        self.errors.add(:participant, I18n.t(:disallowed_participant, scope: [:errors, :memberships], group: group, participant: participant))
-      end
-    end
-
     def has_allowed_role
       if self.role.present? && self.group.present? && !ApplicationAuthorizer::roles_for(self.group).include?(self.role)
         group = self.group.class.to_s.humanize.pluralize
         role = self.role.humanize
-        self.errors.add(:role, I18n.t(:disallowed_role, scope: [:errors, :memberships], group: group, role: role))
+        self.errors.add(:role, I18n.t(:disallowed_role, scope: [:errors, :membership], group: group, role: role))
       end
     end
 

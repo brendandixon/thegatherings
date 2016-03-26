@@ -103,7 +103,7 @@ class MembershipRequestsController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @gathering : @membership_request
-      scope = is_collection_action? ? :as_leader : :as_member
+      scope = is_collection_action? ? :as_overseer : :as_member
       authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering, scope: scope
     end
 

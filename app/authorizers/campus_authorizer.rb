@@ -9,12 +9,12 @@ class CampusAuthorizer < ApplicationAuthorizer
     super
     as_visitor? ||
     (as_member? && is_affiliate?) || 
-    (as_leader? && (is_overseer? || is_coach?))
+    (as_overseer? && (is_overseer? || is_assistant? || is_coach?))
   end
 
   def updatable_by?(member, options = {})
     super
-    is_overseer?
+    is_overseer? || is_assistant?
   end
 
   def deletable_by?(member, options = {})

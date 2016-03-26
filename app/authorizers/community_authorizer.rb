@@ -8,12 +8,12 @@ class CommunityAuthorizer < ApplicationAuthorizer
     super
     as_visitor? ||
     (as_member? && is_community_affiliate?) || 
-    (as_leader? && (is_community_overseer? || is_community_coach?))
+    (as_overseer? && (is_community_overseer? || is_community_assistant?))
   end
 
   def updatable_by?(member, options = {})
     super
-    is_community_overseer?
+    is_community_overseer? || is_community_assistant?
   end
 
   def deletable_by?(member, options = {})

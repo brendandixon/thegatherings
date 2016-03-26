@@ -2,22 +2,22 @@ class AttendanceRecordAuthorizer < ApplicationAuthorizer
 
   def creatable_by?(member, options = {})
     super
-    is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
+    is_overseer? || is_coach? || is_gathering_overseer? || is_gathering_assistant?
   end
 
   def readable_by?(member, options = {})
     super
-    for_self?(member) || is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
+    for_self?(member) || is_overseer? || is_coach? || is_gathering_overseer? || is_gathering_assistant?
   end
 
   def updatable_by?(member, options = {})
     super
-    is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
+    is_overseer? || is_coach? || is_gathering_overseer? || is_gathering_assistant?
   end
 
   def deletable_by?(member, options = {})
     super
-    is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
+    is_overseer? || is_coach? || is_gathering_overseer? || is_gathering_assistant?
   end
 
   protected

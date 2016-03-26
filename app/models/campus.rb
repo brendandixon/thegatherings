@@ -24,6 +24,7 @@ class Campus < ActiveRecord::Base
   include Authority::Abilities
   include ActiveDates
   include Addressed
+  include Joinable
   include Phoneable
 
   has_address_of :street_primary, :street_secondary, :city, :state, :country, :postal_code, :time_zone
@@ -31,9 +32,6 @@ class Campus < ActiveRecord::Base
   belongs_to :community, required: true, inverse_of: :campuses
 
   has_many :gatherings, inverse_of: :campus
-
-  has_many :memberships, as: :group, dependent: :destroy
-  has_many :members, through: :memberships
 
   validates :community, belonging: {models: [Community]}
   validates_length_of :name, within: 10..255

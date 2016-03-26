@@ -22,7 +22,7 @@ class ReportsController < ApplicationController
   private
 
     def ensure_authorized
-      raise Authority::SecurityViolation.new(current_member, "read the #{self.action_name} report", @group) unless current_member.can_read?(@group, scope: :as_leader)
+      raise Authority::SecurityViolation.new(current_member, "read the #{self.action_name} report", @group) unless current_member.can_read?(@group, scope: :as_overseer)
     end
 
 end

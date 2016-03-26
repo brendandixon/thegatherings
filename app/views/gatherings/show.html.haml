@@ -25,12 +25,22 @@
         = render partial: 'shared/spacer'
         .row
           .small-10.small-centered.columns.end
-            %h4 Members
-            - @gathering.memberships.each do |membership|
+            %h4 Overseers
+            - @gathering.memberships.as_overseer.each do |membership|
               .row
-                .small-5.columns= membership.member.full_name
+                .small-4.columns= membership.member.full_name
                 .small-3.columns= membership.member.email
                 .small-3.columns= membership.member.phone
+                .small-2.columns= membership.role.humanize
+        .row
+          .small-10.small-centered.columns.end
+            %h4 Members
+            - @gathering.memberships.as_member.each do |membership|
+              .row
+                .small-4.columns= membership.member.full_name
+                .small-3.columns= membership.member.email
+                .small-3.columns= membership.member.phone
+                .small-2.columns= (membership.role || "").humanize
 
       = render partial: 'shared/spacer'
       .row

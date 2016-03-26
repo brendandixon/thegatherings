@@ -39,8 +39,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@administrator)
       end
 
-      it 'allows reading the leader profile' do
-        expect(@community.authorizer).to be_readable_by(@administrator, scope: :as_leader)
+      it 'allows reading the overseer profile' do
+        expect(@community.authorizer).to be_readable_by(@administrator, scope: :as_overseer)
       end
 
       it 'allows reading the member profile' do
@@ -69,8 +69,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@leader)
       end
 
-      it 'allows reading the leader profile' do
-        expect(@community.authorizer).to be_readable_by(@leader, scope: :as_leader)
+      it 'allows reading the overseer profile' do
+        expect(@community.authorizer).to be_readable_by(@leader, scope: :as_overseer)
       end
 
       it 'allows reading the member profile' do
@@ -99,8 +99,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@assistant)
       end
 
-      it 'allows reading the leader profile' do
-        expect(@community.authorizer).to be_readable_by(@assistant, scope: :as_leader)
+      it 'allows reading the overseer profile' do
+        expect(@community.authorizer).to be_readable_by(@assistant, scope: :as_overseer)
       end
 
       it 'allows reading the member profile' do
@@ -129,8 +129,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@coach)
       end
 
-      it 'allows reading the leader profile' do
-        expect(@community.authorizer).to be_readable_by(@coach, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@coach, scope: :as_overseer)
       end
 
       it 'allows reading the member profile' do
@@ -159,8 +159,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@member)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@member, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@member, scope: :as_overseer)
       end
 
       it 'allows reading the member profile' do
@@ -203,8 +203,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@administrator)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@administrator, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@administrator, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -233,8 +233,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@leader)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@leader, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@leader, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -263,8 +263,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@assistant)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@assistant, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@assistant, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -293,8 +293,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@coach)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@coach, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@coach, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -323,8 +323,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@member)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@member, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@member, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -367,8 +367,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@administrator)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@administrator, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@administrator, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -397,8 +397,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@leader)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@leader, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@leader, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -427,8 +427,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@assistant)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@assistant, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@assistant, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -457,8 +457,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@coach)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@coach, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@coach, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do
@@ -487,8 +487,8 @@ describe CommunityAuthorizer, type: :authorizer do
         expect(@community.authorizer).to_not be_creatable_by(@member)
       end
 
-      it 'disallows reading the leader profile' do
-        expect(@community.authorizer).to_not be_readable_by(@member, scope: :as_leader)
+      it 'disallows reading the overseer profile' do
+        expect(@community.authorizer).to_not be_readable_by(@member, scope: :as_overseer)
       end
 
       it 'disallows reading the member profile' do

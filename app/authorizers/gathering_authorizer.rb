@@ -9,20 +9,20 @@ class GatheringAuthorizer < ApplicationAuthorizer
     super
     (as_anyone? && is_affiliate?) ||
     (as_member? && is_gathering_affiliate?) ||
-    (as_leader? && is_gathering_overseer?) ||
+    (as_overseer? && (is_gathering_overseer? || is_gathering_assistant?)) ||
     (as_visitor? && is_gathering_visitor?) ||
-    (is_overseer? && !is_assistant?) ||
+    is_overseer? ||
     is_coach?
   end
 
   def updatable_by?(member, options = {})
     super
-    is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
+    is_gathering_overseer? || is_gathering_assistant? || is_overseer? || is_coach?
   end
 
   def deletable_by?(member, options = {})
     super
-    is_gathering_overseer? || (is_overseer? && !is_assistant?) || is_coach?
+    is_gathering_overseer? || is_gathering_assistant? || is_overseer? || is_coach?
   end
 
   protected

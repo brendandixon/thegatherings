@@ -70,7 +70,7 @@ describe Membership, type: :model do
     end
 
     it 'allows both a participant and a role' do
-      @membership.participant = Membership::PARTICIPANT_MEMBER
+      @membership.participant = ApplicationAuthorizer::PARTICIPANT_MEMBER
       @membership.role = :administrator
       expect(@membership).to be_valid
       expect(@membership.errors).to_not have_key(:participant)
@@ -127,18 +127,18 @@ describe Membership, type: :model do
   end
 
   context 'Visiting' do
-    it 'disallows visitors to a Community' do
-      @membership.group = build(:community)
+    it 'sallows visitors to a Community' do
+      @membership.group = create(:community)
       @membership.visit
-      expect(@membership).to be_invalid
-      expect(@membership.errors).to have_key(:participant)
+      expect(@membership).to be_valid
+      expect(@membership.errors).to_not have_key(:participant)
     end
 
     it 'disallows visitors to a Campus' do
-      @membership.group = build(:campus)
+      @membership.group = create(:campus)
       @membership.visit
-      expect(@membership).to be_invalid
-      expect(@membership.errors).to have_key(:participant)
+      expect(@membership).to be_valid
+      expect(@membership.errors).to_not have_key(:participant)
     end
 
     it 'allows visitors to a Gathering' do

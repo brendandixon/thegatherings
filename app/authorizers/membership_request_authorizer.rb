@@ -2,22 +2,34 @@ class MembershipRequestAuthorizer < ApplicationAuthorizer
 
   def creatable_by?(member, options = {})
     super
-    for_self?(member) || (for_gathering? && is_gathering_overseer?) || (is_overseer? && !is_assistant?) || is_coach?
+    for_self?(member) ||
+    (for_gathering? && is_gathering_overseer? || is_gathering_assistant?) ||
+    is_overseer? ||
+    is_coach?
   end
 
   def readable_by?(member, options = {})
     super
-    for_self?(member) || (for_gathering? && is_gathering_overseer?) || (is_overseer? && !is_assistant?) || is_coach?
+    for_self?(member) ||
+    (for_gathering? && is_gathering_overseer? || is_gathering_assistant?) ||
+    is_overseer? ||
+    is_coach?
   end
 
   def updatable_by?(member, options = {})
     super
-    (for_self?(member) && !resource.completed?) || (for_gathering? && is_gathering_overseer?) || (is_overseer? && !is_assistant?) || is_coach?
+    (for_self?(member) && !resource.completed?) ||
+    (for_gathering? && is_gathering_overseer? || is_gathering_assistant?) ||
+    is_overseer? ||
+    is_coach?
   end
 
   def deletable_by?(member, options = {})
     super
-    for_self?(member) || (for_gathering? && is_gathering_overseer?) || (is_overseer? && !is_assistant?) || is_coach?
+    for_self?(member) ||
+    (for_gathering? && is_gathering_overseer? || is_gathering_assistant?) ||
+    is_overseer? ||
+    is_coach?
   end
 
   protected

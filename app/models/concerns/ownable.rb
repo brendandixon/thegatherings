@@ -1,7 +1,6 @@
 module Ownable
   extend ActiveSupport::Concern
 
-
   included do
   end
 

@@ -13,12 +13,10 @@
 class Community < ActiveRecord::Base
   include Authority::Abilities
   include ActiveDates
+  include Joinable
 
   has_many :campuses
   has_many :gatherings
-
-  has_many :memberships, as: :group, dependent: :destroy
-  has_many :members, through: :memberships
 
   validates_length_of :name, within: 10..255
 

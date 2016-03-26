@@ -1,13 +1,24 @@
 class ApplicationAuthorizer < Authority::Authorizer
 
-  ROLES = %w(administrator leader coach assistant)
-  OVERSEERS = ROLES - %w(coach)
+  # Notes:
+  # In addition to the ROLES and PARTICIPANTS expressly defined below, other relationships exist:
+  #   Affiliate: Anyone with a valid ROLE or is a member
+  #   Overseer: An Administrator or Leader
+
+  OVERSEERS = %w(administrator leader)
+  ASSISTANTS = %w(assistant)
+  COACHES = %W(coach)
+  ROLES = OVERSEERS + ASSISTANTS + COACHES
 
   COMMUNITY_ROLES = ROLES
   CAMPUS_ROLES    = ROLES
   GATHERING_ROLES = ROLES - %w(administrator)
 
-  SCOPES = [:as_anyone, :as_member, :as_leader, :as_visitor]
+  PARTICIPANT_MEMBER = 'member'
+  PARTICIPANT_VISITOR = 'visitor'
+  PARTICIPANTS = [PARTICIPANT_MEMBER, PARTICIPANT_VISITOR]
+
+  SCOPES = [:as_anyone, :as_member, :as_overseer, :as_visitor]
 
   class <<self
 
@@ -62,62 +73,59 @@ class ApplicationAuthorizer < Authority::Authorizer
   protected
 
     def determine_memberships(member, options = {})
+      # TODO: Throw a security exception if the incoming scope is present and unrecognized?
       options[:scope] = :as_member unless SCOPES.include?(options[:scope])
       @scope = options[:scope]
     end
 
     %w(community campus gathering).each do |group|
-      %w(affiliate overseer participant visitor).each do |affliation|
+      (PARTICIPANTS + ROLES + %w(affiliate overseer participant)).each do |affliation|
         class_eval <<-METHODS, __FILE__, __LINE__ + 1
           def is_#{group}_#{affliation}?
             @#{group}_membership.present? && @#{group}_membership.as_#{affliation}?
           end
         METHODS
       end
-
-      ROLES.each do |role|
-        class_eval <<-METHODS, __FILE__, __LINE__ + 1
-          def is_#{group}_#{role}?
-            @#{group}_membership.present? && @#{group}_membership.#{role}?
-          end
-        METHODS
-      end
-    end
-
-    ROLES.each do |role|
-      class_eval <<-METHODS, __FILE__, __LINE__ + 1
-        def is_#{role}?
-          is_community_#{role}? || is_campus_#{role}? || is_gathering_#{role}?
-        end
-      METHODS
     end
 
     def as_anyone?
       @scope == :as_anyone
     end
 
-    def as_leader?
+    def as_overseer?
       true
     end
 
     def as_member?
-      @scope != :as_leader
+      @scope != :as_overseer
     end
 
     def as_visitor?
       [:as_anyone, :as_visitor].include?(@scope)
     end
 
+    def is_administrator?
+      is_community_administrator? || is_campus_administrator?
+    end
+
     def is_affiliate?
-      is_community_affiliate? || is_campus_affiliate? || is_gathering_affiliate?
+      is_community_affiliate? || is_campus_affiliate?
     end
 
     def is_overseer?
       is_community_overseer? || is_campus_overseer?
     end
 
+    def is_assistant?
+      is_community_assistant? || is_campus_assistant?
+    end
+
+    def is_coach?
+      is_community_coach? || is_campus_coach? || is_gathering_coach?
+    end
+
     def is_participant?
-      is_community_participant? || is_campus_participant? || is_gathering_participant?
+      is_community_participant? || is_campus_participant?
     end
 
 end

@@ -3,7 +3,7 @@
 #     require "./factories"
 #     include FactoryGirl::Syntax::Methods
 
-Time.use_zone "Pacific Time (US & Canada)" do
+Time.use_zone TheGatherings::Application.default_time_zone do
 
   genders = Member::GENDERS.cycle
   postal_codes = %w(98103 98105 98107 98112 98115 98117 98119 98199).cycle
@@ -181,7 +181,7 @@ Time.use_zone "Pacific Time (US & Canada)" do
         end
       end
 
-      Membership::PARTICIPANT_STATES.each do |p|
+      ApplicationAuthorizer::PARTICIPANTS.each do |p|
         trait "as_#{p}".to_sym do
           participant p
         end

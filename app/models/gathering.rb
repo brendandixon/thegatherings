@@ -31,6 +31,7 @@
 class Gathering < ActiveRecord::Base
   include Authority::Abilities
   include Addressed
+  include Joinable
   include Taggable
 
   MEETING_DURATION_DEFAULT = 90.minutes
@@ -41,9 +42,6 @@ class Gathering < ActiveRecord::Base
 
   belongs_to :community, required: true, inverse_of: :gatherings
   belongs_to :campus
-  
-  has_many :memberships, as: :group, dependent: :destroy
-  has_many :members, through: :memberships
   
   has_many :attendance_records, inverse_of: :gathering
   has_many :membership_requests, inverse_of: :gathering
