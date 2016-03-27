@@ -5,50 +5,42 @@
 
       = render partial: 'shared/spacer'
       .row
-        .small-10.small-centered.columns
-          .row
-            .small-12.columns
-              %ul.tabs{id: :tabs, data: {tabs: true}}
-                %li.tabs-title.is-active
-                  = link_to "Age Groups", "#age_groups"
-                %li.tabs-title
-                  = link_to "Life Stages", "#life_stages"
-                %li.tabs-title
-                  = link_to "Relational Status", "#relationships"
-                %li.tabs-title
-                  = link_to "Gender Mix", "#genders"
+        .small-12.columns
+          %ul.tabs{id: :tabs, data: {tabs: true}}
+            %li.tabs-title.is-active
+              = link_to "Age Groups", "#age_groups"
+            %li.tabs-title
+              = link_to "Life Stages", "#life_stages"
+            %li.tabs-title
+              = link_to "Relational Status", "#relationships"
+            %li.tabs-title
+              = link_to "Gender Mix", "#genders"
+            %li.tabs-title
+              = link_to "Topics", "#topics"
 
-          .row
-            .small-12.columns
-              .tabs-content{data: {tabs_content: "tabs"}}
-                #age_groups.tabs-panel.is-active
-                  .row
-                    .small-12.columns
-                      %canvas.chart{data: {chart: :age_groups}}
-                  .row
-                    .small-12.small-centered.columns
-                      = t(:title, scope: [:charts, :age_groups])
-                #life_stages.tabs-panel
-                  .row
-                    .small-12.columns
-                      %canvas.chart{data: {chart: :life_stages}}
-                  .row
-                    .small-12.small-centered.columns
-                      = t(:title, scope: [:charts, :life_stages])
-                #relationships.tabs-panel
-                  .row
-                    .small-12.columns
-                      %canvas.chart{data: {chart: :relationships}}
-                  .row
-                    .small-12.small-centered.columns
-                      = t(:title, scope: [:charts, :relationships])
-                #genders.tabs-panel
-                  .row
-                    .small-12.columns
-                      %canvas.chart{data: {chart: :genders}}
-                  .row
-                    .small-12.small-centered.columns
-                      = t(:title, scope: [:charts, :genders])
+      .row
+        .small-12.columns
+          .tabs-content{data: {tabs_content: "tabs"}}
+            #age_groups.tabs-panel.is-active
+              .row
+                .small-12.columns
+                  #age_group_chart.chart{data: {chart: :age_groups}}
+            #life_stages.tabs-panel
+              .row
+                .small-12.columns
+                  #life_stage_chart.chart{data: {chart: :life_stages}}
+            #relationships.tabs-panel
+              .row
+                .small-12.columns
+                  #relationship_chart.chart{data: {chart: :relationships}}
+            #genders.tabs-panel
+              .row
+                .small-12.columns
+                  #gender_chart.chart{data: {chart: :genders}}
+            #topics.tabs-panel
+              .row
+                .small-12.columns
+                  #topic_chart.chart{data: {chart: :topics}}
 
       = render partial: 'shared/spacer'
       .row
@@ -60,3 +52,5 @@
             = link_to t(:title, scope: [:gatherings]), community_path(@community)
 
 = render template: 'shared/bind_charts'
+:javascript
+  theGatherings.Charts.gap_data = #{@gaps.to_json}

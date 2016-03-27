@@ -3,27 +3,27 @@ class MembershipAuthorizer < ApplicationAuthorizer
   def creatable_by?(member, options = {})
     super
     ((to_community? || to_campus?) && (for_self?(member) || is_overseer? || is_assistant?)) ||
-    (to_gathering? && (is_gathering_overseer? || is_gathering_assistant? || is_coach?))
+    (to_gathering? && (is_overseer? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
   end
 
   def readable_by?(member, options = {})
     super
     for_self?(member) ||
     ((to_community? || to_campus?) && (is_overseer? || is_assistant?)) ||
-    (to_gathering? && (is_gathering_participant? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
+    (to_gathering? && (is_overseer? || is_gathering_participant? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
   end
 
   def updatable_by?(member, options = {})
     super
     ((to_community? || to_campus?) && (for_self?(member) || is_overseer? || is_assistant?)) ||
-    (to_gathering? && (is_gathering_overseer? || is_gathering_assistant? || is_coach?))
+    (to_gathering? && (is_overseer? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
   end
 
   def deletable_by?(member, options = {})
     super
     for_self?(member) ||
     ((to_community? || to_campus?) && (is_overseer? || is_assistant?)) ||
-    (to_gathering? && (is_gathering_overseer? || is_gathering_assistant? || is_coach?))
+    (to_gathering? && (is_overseer? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
   end
 
   private

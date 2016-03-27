@@ -31,9 +31,10 @@ class GatheringAuthorizer < ApplicationAuthorizer
       super
       community = resource.community || options[:community]
       campus = resource.campus || options[:campus]
+      gathering = resource.is_a?(Gathering) ? resource : resource.gathering
       @community_membership = member.membership_in(community) rescue nil if community.present?
       @campus_membership = member.membership_in(campus) rescue nil if campus.present?
-      @gathering_membership = member.membership_in(resource) rescue nil
+      @gathering_membership = member.membership_in(gathering) rescue nil if gathering.present?
     end
 
 end

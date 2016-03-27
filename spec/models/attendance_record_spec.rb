@@ -2,110 +2,67 @@
 #
 # Table name: attendance_records
 #
-#  id           :integer          not null, primary key
-#  member_id    :integer          not null
-#  gathering_id :integer          not null
-#  datetime     :datetime         not null
+#  id            :integer          not null, primary key
+#  meeting_id    :integer
+#  membership_id :integer
+#  attended      :boolean          default(FALSE), not null
 #
 
 require 'rails_helper'
 
 describe AttendanceRecord, type: :model do
 
-  before :context do
-    @affiliate = create(:member)
-    @member = create(:member)
-    @gathering = create(:gathering)
-    create(:membership, :as_member, group: @gathering, member: @member)
-  end
-
-  after :context do
-    Membership.delete_all
-    Gathering.delete_all
-    Member.delete_all
-  end
-
   before do
-    @attendance_record = build(:attendance_record, gathering: @gathering, member: @member)
+    @gathering = build_stubbed(:gathering)
+    @meeting = build_stubbed(:meeting, gathering: @gathering)
+    @membership = build_stubbed(:membership, group: @gathering)
+    @attendance_record = build(:attendance_record, meeting: @meeting, membership: @membership)
   end
 
-  it 'requires a member' do
-    @attendance_record.member = nil
+  it 'requires a Meeting' do
+    @attendance_record.meeting = nil
     expect(@attendance_record).to be_invalid
-    expect(@attendance_record.errors).to have_key(:member)
+    expect(@attendance_record.errors).to have_key(:meeting)
   end
 
-  it 'requires a gathering' do
-    @attendance_record.gathering = nil
+  it 'requires a Membership' do
+    @attendance_record.membership = nil
     expect(@attendance_record).to be_invalid
-    expect(@attendance_record.errors).to have_key(:gathering)
+    expect(@attendance_record.errors).to have_key(:membership)
   end
 
-  it 'requires a datetime' do
-    @attendance_record.datetime = nil
+  it 'rejects Members not part of the Gatherings' do
+    @attendance_record.membership = build_stubbed(:membership)
     expect(@attendance_record).to be_invalid
-    expect(@attendance_record.errors).to have_key(:datetime)
+    expect(@attendance_record.errors).to have_key(:membership)
   end
 
-  it 'requires a datetime on or before today' do
-    @attendance_record.datetime = 1.year.from_now
-    expect(@attendance_record).to be_invalid
-    expect(@attendance_record.errors).to have_key(:datetime)
-  end
-
-  it 'accepts a datetime on or after the first Gethering meeting' do
-    @attendance_record.datetime = @gathering.prior_meeting
-    expect(@attendance_record).to be_valid
-    expect(@attendance_record.errors).to_not have_key(:datetime)
-  end
-
-  it 'accepts past dates for the datetime' do
-    @attendance_record.datetime = @gathering.first_meeting
-    expect(@attendance_record).to be_valid
-    expect(@attendance_record.errors).to_not have_key(:datetime)
-  end
-
-  it 'rejects dates that occur after the Gathering ends' do
-    me = @gathering.meeting_ends
-    @gathering.meeting_ends = 2.months.ago
-    @attendance_record.datetime = DateTime.current
-    expect(@attendance_record).to be_invalid
-    expect(@attendance_record.errors).to have_key(:datetime)
-    @gathering.meeting_ends = me
-  end
-
-  it 'rejects dates that are not a Gathering meeting' do
-    @attendance_record.datetime = @gathering.next_meeting + 1.day
-    expect(@attendance_record).to be_invalid
-    expect(@attendance_record.errors).to have_key(:datetime)
-  end
-
-  it 'requires the member to be part of the Gathering' do
-    expect(@attendance_record).to be_valid
-    expect(@attendance_record.errors).to_not have_key(:member)
-  end
-
-  it 'rejects members not a part of the Gathering' do
-    @attendance_record.member = @affiliate
-    expect(@attendance_record).to be_invalid
-    expect(@attendance_record.errors).to have_key(:member)
-  end
-
-  context 'Belonging' do
-    it 'returns true for the associated gathering' do
-      expect(@attendance_record).to be_belongs_to_gathering(@gathering)
+  context 'Membership' do
+    before do
+      @member = create(:member)
+      @gathering = create(:gathering)
+      @meeting = create(:meeting, gathering: @gathering)
+      @membership = create(:membership, :as_member, group: @gathering, member: @member)
+      @attendance_record = build(:attendance_record, meeting: @meeting, membership: @membership)
     end
 
-    it 'returns false for a different gathering' do
-      expect(@attendance_record).to_not be_belongs_to_gathering(create(:gathering))
+    it 'accepts Gathering Members' do
+      expect(@attendance_record).to be_valid
+      expect(@attendance_record.errors).to_not have_key(:membership)
     end
 
-    it 'returns true for the associated member' do
-      expect(@attendance_record).to be_belongs_to_member(@member)
+    it 'will mark a member attended' do
+      @attendance_record.attend!
+      expect(@attendance_record).to be_attended
+      expect(@attendance_record).to be_valid
+      expect(@attendance_record.errors).to_not have_key(:attended)
     end
 
-    it 'returns false for a different member' do
-      expect(@attendance_record).to_not be_belongs_to_member(@affiliate)
+    it 'will mark a member absent' do
+      @attendance_record.absent!
+      expect(@attendance_record).to be_absent
+      expect(@attendance_record).to be_valid
+      expect(@attendance_record.errors).to_not have_key(:attended)
     end
   end
 

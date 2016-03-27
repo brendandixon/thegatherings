@@ -26,40 +26,25 @@
         .row
           .small-10.small-centered.columns.end
             %h4 Overseers
-            - @gathering.memberships.as_overseer.each do |membership|
-              .row
-                .small-4.columns= membership.member.full_name
-                .small-3.columns= membership.member.email
-                .small-3.columns= membership.member.phone
-                .small-2.columns= membership.role.humanize
+            = render partial: 'membership', collection: @gathering.memberships.with_role
         .row
           .small-10.small-centered.columns.end
             %h4 Members
-            - @gathering.memberships.as_member.each do |membership|
-              .row
-                .small-4.columns= membership.member.full_name
-                .small-3.columns= membership.member.email
-                .small-3.columns= membership.member.phone
-                .small-2.columns= (membership.role || "").humanize
+            = render partial: 'membership', collection: @gathering.memberships.as_member
 
       = render partial: 'shared/spacer'
       .row
         - if @gathering.updatable_by?(current_member)
           .small-2.columns
             .actions
-              = link_to t(:edit, scope:[:common]), edit_gathering_path(@gathering), class: 'button small expanded'
-        - if @gathering.deletable_by?(current_member)
-          .small-2.columns
-            .actions
-              = link_to t(:delete, scope:[:common]), gathering_path(@gathering), method: :delete, class: 'button small expanded'
-        - if @gathering.updatable_by?(current_member)
-          .small-2.columns
-            .actions
-              = link_to t(:button, scope:[:gatherings, :gather]), gather_gathering_path(@gathering), class: 'button small expanded'
+              = button_to t(:button, scope:[:meetings, :create]), gathering_meetings_path(@gathering), method: :post, class: 'button small expanded'
           .small-2.columns
             .actions
               = link_to t(:button, scope: [:gatherings, :requests]), gathering_membership_requests_path(gathering_id: @gathering.id), class: 'button small expanded'
-        - if !current_member.member_of?(@gathering)
+          .small-2.columns
+            .actions
+              = link_to "Attendance Report", attendance_gathering_reports_path(gathering_id: @gathering.id), class: 'button small expanded'
+        - if !current_member.participant_in?(@gathering)
           .small-2.columns
             .actions
               - request = current_member.membership_requests.for_gathering(@gathering).unexpired.take
@@ -69,4 +54,7 @@
                 = link_to t(:title, scope:[:membership_requests, :edit]), edit_membership_request_path(request), class: 'button small expanded'
         .small-2.columns.end
           .float-right
+            - if @gathering.updatable_by?(current_member)
+              = link_to t(:edit, scope:[:common]), edit_gathering_path(@gathering)
+              &nbsp; | &nbsp;
             = link_to t(:title, scope:[:gatherings]), community_gatherings_path(@community)

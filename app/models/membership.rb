@@ -21,7 +21,9 @@ class Membership < ActiveRecord::Base
 
   belongs_to :group, polymorphic: true, required: true, inverse_of: :memberships
   belongs_to :member, required: true, inverse_of: :memberships
+  has_many :attendance_records, inverse_of: :membership
 
+  before_validation :evaluate_active
   before_validation :normalize_role
 
   validates :member, belonging: {models: [Member]}
@@ -37,13 +39,16 @@ class Membership < ActiveRecord::Base
   scope :for_member, lambda{|member| where(member: member)}
   scope :affiliated_with, lambda{|group, member| for_group(group).for_member(member) }
 
+  scope :with_role, lambda{where.not(role: nil)}
   scope :as_affiliate, lambda{where("role IS NOT NULL OR participant = ?", ApplicationAuthorizer::PARTICIPANT_MEMBER)}
   scope :as_overseer, lambda{where(role: ApplicationAuthorizer::OVERSEERS)}
   scope :as_assistant, lambda{where(role: ApplicationAuthorizer::ASSISTANTS)}
   scope :as_coach, lambda{where(role: ApplicationAuthorizer::COACHES)}
+
+  scope :as_attendee, lambda{where.not(participant: nil)}
   scope :as_participant, lambda{ where(participant: ApplicationAuthorizer::PARTICIPANT_MEMBER)}
-  scope :as_member, lambda{ where(participant: ApplicationAuthorizer::PARTICIPANT_MEMBER)}
-  scope :as_visitor, lambda{ where(participant: ApplicationAuthorizer::PARTICIPANT_VISITOR)}
+  scope :as_member, lambda{where(participant: ApplicationAuthorizer::PARTICIPANT_MEMBER)}
+  scope :as_visitor, lambda{where(participant: ApplicationAuthorizer::PARTICIPANT_VISITOR)}
 
   scope :in_groups, lambda{|klass| where(group_type: klass)}
   scope :in_communities, lambda{in_groups(Community)}
@@ -116,7 +121,7 @@ class Membership < ActiveRecord::Base
 
   def clear_role!
     clear_role
-    self.as_participant? ? self.save : self.delete
+    self.save
   end
 
   def has_role?
@@ -134,7 +139,7 @@ class Membership < ActiveRecord::Base
 
   def end_participation!
     self.participant = nil
-    self.role.present? ? self.save : self.delete
+    self.save
   end
 
   def as_participant?
@@ -157,11 +162,27 @@ class Membership < ActiveRecord::Base
   end
   alias :visiting? :as_visitor?
 
+  def for?(member)
+    member.present? && self.member_id == member.id
+  end
+
+  def to?(group)
+    group.present? && self.group_type == group.class.to_s && self.group_id == group.id
+  end
+
   def community
     self.group.is_a?(Community) ? self.group : self.group.community if self.group.present?
   end
 
   protected
+
+    def evaluate_active
+      if self.role.blank? && self.participant.blank?
+        self.inactive_on = DateTime.now if self.inactive_on.blank?
+      else
+        self.inactive_on = nil
+      end
+    end
 
     def has_affiliation
       errors.add(:base, I18n.t(:not_participant_or_role, scope: [:errors, :roles])) unless self.has_role? || self.as_participant? || self.as_visitor?

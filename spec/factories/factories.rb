@@ -134,7 +134,7 @@ Time.use_zone TheGatherings::Application.default_time_zone do
     end
   
     factory :community do
-      sequence(:name) {|n| "The #{n.ordinalize} Reformed Luthern Fellowship of Spirit-Filled Methodist Baptists" }
+      sequence(:name) {|n| "The #{n.ordinalize} Reformed Charismatic Methodist Baptist Church" }
       active
     end
 
@@ -152,7 +152,7 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       community
       campus
 
-      sequence(:name) {|n| "The #{n.ordinalize} Gathering of Orthodox Baptists" }
+      sequence(:name) {|n| "#{n.ordinalize} Gathering of Orthodox Baptists" }
       description { (sentence * 7).strip! }
       address
       meeting_starts 1.year.ago.beginning_of_week
@@ -162,11 +162,17 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       meeting_duration 90.minutes
     end
 
-    factory :attendance_record do
+    factory :meeting do
       gathering
-      member
 
       datetime { gathering.prior_meeting }
+    end
+
+    factory :attendance_record do
+      meeting
+      membership
+
+      attended true
     end
     
     factory :membership do

@@ -36,8 +36,9 @@ Rails.application.routes.draw do
     end
     resources :gatherings, shallow: true, concerns: [:joinable, :taggable] do
       get 'search', on: :collection
-      get 'gather', on: :member
-      resources :attendance_records, path: :attendance
+      resources :meetings, except: [:new], shallow: true do
+        resources :attendance_records, path: :attendance
+      end
       resources :membership_requests, path: :requests do
         member do
           post "accept", action: "accept"

@@ -6,7 +6,7 @@
       = form_for(@resource, as: @resource_type, url: url, method: :patch) do |f|
         - (@tags || Taggable::TAGS).each do |tags|
           - member = "#{tags}_list".to_sym
-          - options = "Taggable::#{tags.classify}".pluralize.constantize::OPTIONS
+          - options = Taggable.options_for(tags)
           = render partial: 'shared/spacer'
           .row
             .small-10.small-centered.columns

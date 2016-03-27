@@ -99,11 +99,8 @@
                                      PUT    /gatherings/:id(.:format)                               gatherings#update
                                      DELETE /gatherings/:id(.:format)                               gatherings#destroy
 
-                    gather_gathering GET    /gatherings/:id/gather(.:format)                        gatherings#gather
-
-     new_gathering_attendance_record GET    /gatherings/:gathering_id/attendance/new(.:format)      attendance_records#new
-        gathering_attendance_records GET    /gatherings/:gathering_id/attendance(.:format)          attendance_records#index
-                                     POST   /gatherings/:gathering_id/attendance(.:format)          attendance_records#create
+                  gathering_meetings GET    /gatherings/:gathering_id/meetings(.:format)            meetings#index
+                                     POST   /gatherings/:gathering_id/meetings(.:format)            meetings#create
 
             new_gathering_membership GET    /gatherings/:gathering_id/memberships/new(.:format)     memberships#new
                gathering_memberships GET    /gatherings/:gathering_id/memberships(.:format)         memberships#index
@@ -125,6 +122,16 @@
                                      PATCH  /attendance/:id(.:format)                               attendance_records#update
                                      PUT    /attendance/:id(.:format)                               attendance_records#update
                                      DELETE /attendance/:id(.:format)                               attendance_records#destroy
+
+                        edit_meeting GET    /meetings/:id/edit(.:format)                            meetings#edit
+                             meeting GET    /meetings/:id(.:format)                                 meetings#show
+                                     PATCH  /meetings/:id(.:format)                                 meetings#update
+                                     PUT    /meetings/:id(.:format)                                 meetings#update
+                                     DELETE /meetings/:id(.:format)                                 meetings#destroy
+
+       new_meeting_attendance_record GET    /meetings/:meeting_id/attendance/new(.:format)          attendance_records#new
+          meeting_attendance_records GET    /meetings/:meeting_id/attendance(.:format)              attendance_records#index
+                                     POST   /meetings/:meeting_id/attendance(.:format)              attendance_records#create
 
            accept_membership_request POST   /requests/:id/accept(.:format)                          membership_requests#accept
            answer_membership_request POST   /requests/:id/answer(.:format)                          membership_requests#answer

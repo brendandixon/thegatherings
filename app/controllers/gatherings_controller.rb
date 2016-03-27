@@ -86,14 +86,6 @@ class GatheringsController < ApplicationController
     end
   end
 
-  def gather
-    redirect_to member_root_path unless @gathering.persisted?
-
-    @meeting_datetime = Timeliness.parse(params[:on], :date, format: "yyyy-mm-dd") if params[:on].present?
-    @meeting_datetime ||= DateTime.now
-    @meeting_datetime = @gathering.prior_meeting(@meeting_datetime.end_of_day)
-  end
-
   def search
     @gatherings = Gathering
     

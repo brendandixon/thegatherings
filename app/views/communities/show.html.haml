@@ -16,12 +16,14 @@
 
       = render partial: 'shared/spacer'
       .row
-        .small-3.columns
+        .small-2.columns
           = link_to t(:title, scope:[:gatherings, :new]), new_community_gathering_path(@community), class: 'button small', style: 'width: 100%'
-        .small-3.columns
+        .small-2.columns
           = link_to t(:title_html, scope: [:welcome, :signup]), new_community_member_path(@community), class: 'button small', style: 'width: 100%'
-        .small-3.columns
-          = link_to t(:button, scope:[:communities, :report]), gap_community_reports_path(@community), class: 'button small', style: 'width: 100%'
+        .small-2.columns
+          = link_to "Gap Report", gap_community_reports_path(@community), class: 'button small', style: 'width: 100%'
+        .small-2.columns
+          = link_to "Attendance Report", attendance_community_reports_path(@community), class: 'button small', style: 'width: 100%'
         .small-3.columns
           .float-right
             = link_to t(:edit, scope: [:common]), edit_community_path(@community)

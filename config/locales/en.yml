@@ -128,13 +128,46 @@ en:
     preference_title: "Your Preferences"
   charts:
     age_groups:
+      junior_high: "Junior High"
+      high_school: "High School"
+      college: "College"
+      fifties: "50s"
+      forties: "40s"
+      plus: "Beyond"
+      sixties: "60s"
+      thirties: "30s"
+      twenties: "20s"
       title: "Age Groups"
+    genders:
+      men: "Men Only"
+      mixed: "Women and Men"
+      women: "Women Only"
+      title: "Gender Mix"
     life_stages:
+      college: "College"
+      early_career: "Early Career"
+      established_career: "Established Career"
+      post_career: "Post Career"
+      post_college: "Post College"
       title: "Life Stages"
     relationships:
+      divorced: "Divorced"
+      early_family: "Early Family"
+      empty_nester: "Empty Nester"
+      established_family: "Established Family"
+      single: "Single"
+      young_married: "Young Married"
       title: "Relational Status"
-    genders:
-      title: "Gender Mix"
+    topics:
+      bible: "Bible"
+      topical: "Topical"
+      devotional: "Devotional"
+      family: "Family"
+      marriage: "Marriage"
+      singleness: "Singleness"
+      men: "Men"
+      women: "Women"
+      title: "Topic Mix"
   errors:
     belonging:
       illegal: "must be a %{models.to_sentence(two_words_connector: 'or', last_word_connector: 'or')}."
@@ -153,6 +186,8 @@ en:
       invalid_minimum: "The mininum number of members cannot be greater than the maximum."
       invalid_maximum: "The maximum number of members cannot be less than the minimum."
       missing_contact: "Either a phone number or email is required."
+    meeting:
+      invalid_membership: "Member is not a member of the Gathering"
     membership:
       disallowed_participant: "%{group} does not allow participating as a %{participant}."
       disallowed_role: "%{group} does not allow members to have the %{role} role."
@@ -240,9 +275,6 @@ en:
       title_html: "What would you like to name your Gathering?"
     edit:
       title: "Edit the %{name} Gathering"
-    gather:
-      button: "Gather"
-      title: "Gather %{name}"
     gender:
       title_html: "Who will attend your Gathering? (Pick one)"
     index:
@@ -262,6 +294,11 @@ en:
     show:
       title: "%{name} Gathering"
     title: "Gatherings"
+  meetings:
+    create:
+      button: "Gather"
+    show:
+      title: "Gather %{name}"
   members:
     title_self: "Welcome %{member}"
     title: "Member Account"

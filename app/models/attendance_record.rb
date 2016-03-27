@@ -2,49 +2,84 @@
 #
 # Table name: attendance_records
 #
-#  id           :integer          not null, primary key
-#  member_id    :integer          not null
-#  gathering_id :integer          not null
-#  datetime     :datetime         not null
+#  id            :integer          not null, primary key
+#  meeting_id    :integer
+#  membership_id :integer
+#  attended      :boolean          default(FALSE), not null
 #
 
 class AttendanceRecord < ActiveRecord::Base
   include Authority::Abilities
+  self.authorizer_name = 'GatheringAuthorizer'
 
-  belongs_to :member, required: true, inverse_of: :attendance_records
-  belongs_to :gathering, required: true, inverse_of: :attendance_records
+  belongs_to :meeting, required: true, inverse_of: :attendance_records
+  belongs_to :membership, required: true, inverse_of: :attendance_records
 
-  validates :member, belonging: {models: [Member]}
-  validates :gathering, belonging: {models: [Gathering]}
+  validates_presence_of :meeting
+
+  validates_presence_of :membership
   validate :is_gathering_member
 
-  validates_datetime :datetime, on_or_before: :today
-  validate :is_valid_datetime
+  validates_inclusion_of :attended, in: [true, false]
 
-  scope :for_gathering, lambda{|gathering| where(gathering: gathering)}
-  scope :for_member, lambda{|member| where(member: member)}
-  scope :for_datetime, lambda{|datetime| where(datetime: datetime)}
+  scope :for_meeting, lambda{|meeting| where(meeting: meeting)}
+  scope :for_member, lambda{|member| joins(:membership).where(memberships: {member_id: member.id})}
 
-  def belongs_to_gathering?(gathering)
-    gathering.is_a?(Gathering) && self.gathering_id == gathering.id
+  scope :as_absent, lambda{where(attended: false)}
+  scope :as_present, lambda{where(attended: true)}
+
+  def for_gathering?(gathering)
+    self.membership.present? && self.membership.to?(gathering)
   end
 
-  def belongs_to_member?(member)
-    member.is_a?(Member) && self.member_id == member.id
+  def for_member?(member)
+    self.membership.present? && self.membership.for?(member)
+  end
+
+  def absent
+    self.attended = false
+  end
+
+  def absent!
+    absent
+    self.save
+  end
+
+  def absent?
+    !self.attended
+  end
+
+  def attend
+    self.attended = true
+  end
+
+  def attend!
+    attend
+    self.save
+  end
+
+  def attended?
+    self.attended
+  end
+
+  def campus
+    self.gathering.campus if self.gathering.present?
+  end
+
+  def community
+    self.gathering.community if self.gathering.present?
+  end
+
+  def gathering
+    self.meeting.gathering if self.meeting.present?
   end
 
   private
 
     def is_gathering_member
-      unless self.member.blank? || self.gathering.blank? || self.member.membership_in(self.gathering).present?
-        self.errors.add(:member, "#{self.member.full_name} is not a member of #{self.gathering}")
-      end
-    end
-
-    def is_valid_datetime
-      unless self.gathering.blank? || self.datetime.blank? || self.gathering.meeting_on?(self.datetime)
-        self.errors.add(:datetime, "is not a valid Gathering meeting day")
-      end 
+      return if self.errors.has_key?(:membership) || self.errors.has_key?(:meeting)
+      return if self.membership.to?(self.meeting.gathering) && self.membership.active?(self.meeting.datetime)
+      self.errors.add(:membership, "#{self.membership.member.full_name} is not a member of #{self.gathering}")
     end
 
 end

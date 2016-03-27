@@ -149,4 +149,20 @@ describe Membership, type: :model do
     end
   end
 
+  it 'recognizes the owning Member' do
+    expect(@membership).to be_for(@member)
+  end
+
+  it 'rejects other Members' do
+    expect(@membership).to_not be_for(build_stubbed(:member))
+  end
+
+  it 'recognizes the owning group' do
+    expect(@membership).to be_to(@gathering)
+  end
+
+  it 'rejects other groups' do
+    expect(@membership).to_not be_to(@gathering.community)
+  end
+
 end

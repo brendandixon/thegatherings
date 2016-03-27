@@ -11,34 +11,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160322224122) do
+ActiveRecord::Schema.define(version: 20160409181100) do
 
   create_table "attendance_records", force: :cascade do |t|
-    t.integer  "member_id",    limit: 4, null: false
-    t.integer  "gathering_id", limit: 4, null: false
-    t.datetime "datetime",               null: false
+    t.integer "meeting_id",    limit: 4
+    t.integer "membership_id", limit: 4
+    t.boolean "attended",                default: false, null: false
   end
 
-  add_index "attendance_records", ["datetime"], name: "index_attendance_records_on_datetime", using: :btree
-  add_index "attendance_records", ["gathering_id"], name: "index_attendance_records_on_gathering_id", using: :btree
   add_index "attendance_records", ["id"], name: "index_attendance_records_on_id", unique: true, using: :btree
-  add_index "attendance_records", ["member_id", "gathering_id", "datetime"], name: "index_id_member_gathering_datetime", unique: true, using: :btree
-  add_index "attendance_records", ["member_id"], name: "index_attendance_records_on_member_id", using: :btree
+  add_index "attendance_records", ["meeting_id", "membership_id"], name: "index_gathering_member_id", unique: true, using: :btree
+  add_index "attendance_records", ["meeting_id"], name: "index_attendance_records_on_meeting_id", using: :btree
+  add_index "attendance_records", ["membership_id"], name: "index_attendance_records_on_membership_id", using: :btree
 
   create_table "campuses", force: :cascade do |t|
-    t.integer  "community_id",       limit: 4,   null: false
-    t.string   "name",               limit: 255
-    t.string   "email",              limit: 255
-    t.string   "phone",              limit: 255
-    t.string   "street_primary",     limit: 255
-    t.string   "street_secondary",   limit: 255
-    t.string   "city",               limit: 255
-    t.string   "state",              limit: 255
-    t.string   "postal_code",        limit: 255
-    t.string   "time_zone",          limit: 255
-    t.string   "country",            limit: 255
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.integer  "community_id",     limit: 4,   null: false
+    t.string   "name",             limit: 255
+    t.string   "email",            limit: 255
+    t.string   "phone",            limit: 255
+    t.string   "street_primary",   limit: 255
+    t.string   "street_secondary", limit: 255
+    t.string   "city",             limit: 255
+    t.string   "state",            limit: 255
+    t.string   "postal_code",      limit: 255
+    t.string   "time_zone",        limit: 255
+    t.string   "country",          limit: 255
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.datetime "active_on"
     t.datetime "inactive_on"
   end
@@ -95,6 +94,35 @@ ActiveRecord::Schema.define(version: 20160322224122) do
   add_index "gatherings", ["open"], name: "index_gatherings_on_open", using: :btree
   add_index "gatherings", ["postal_code"], name: "index_gatherings_on_postal_code", using: :btree
   add_index "gatherings", ["state"], name: "index_gatherings_on_state", using: :btree
+
+  create_table "inquiries", force: :cascade do |t|
+    t.integer  "member_id",   limit: 4,     null: false
+    t.integer  "group_id",    limit: 4,     null: false
+    t.string   "group_type",  limit: 255,   null: false
+    t.datetime "sent_on",                   null: false
+    t.text     "message",     limit: 65535
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.datetime "answered_on"
+  end
+
+  add_index "inquiries", ["answered_on"], name: "index_inquiries_on_answered_on", using: :btree
+  add_index "inquiries", ["group_id"], name: "index_inquiries_on_group_id", using: :btree
+  add_index "inquiries", ["group_type", "group_id", "member_id"], name: "index_inquiries_on_group_type_and_group_id_and_member_id", unique: true, using: :btree
+  add_index "inquiries", ["group_type", "group_id"], name: "index_inquiries_on_group_type_and_group_id", using: :btree
+  add_index "inquiries", ["id"], name: "index_inquiries_on_id", unique: true, using: :btree
+  add_index "inquiries", ["member_id"], name: "index_inquiries_on_member_id", using: :btree
+
+  create_table "meetings", force: :cascade do |t|
+    t.integer  "gathering_id", limit: 4,                 null: false
+    t.datetime "datetime",                               null: false
+    t.boolean  "canceled",               default: false, null: false
+  end
+
+  add_index "meetings", ["datetime"], name: "index_meetings_on_datetime", using: :btree
+  add_index "meetings", ["gathering_id", "datetime"], name: "index_gathering_datetime", unique: true, using: :btree
+  add_index "meetings", ["gathering_id"], name: "index_meetings_on_gathering_id", using: :btree
+  add_index "meetings", ["id"], name: "index_meetings_on_id", unique: true, using: :btree
 
   create_table "members", force: :cascade do |t|
     t.string   "first_name",             limit: 255

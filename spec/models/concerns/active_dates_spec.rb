@@ -42,4 +42,13 @@ describe ActiveDates, type: :concern do
     expect(@adm.errors).to have_key(:inactive_on)
   end
 
+  it 'recognizes activity' do
+    @adm.active_on = 1.year.ago
+    expect(@adm).to be_active
+
+    @adm.inactive_on = 6.months.ago
+    expect(@adm).to be_active(8.months.ago)
+    expect(@adm).to_not be_active
+  end
+
 end

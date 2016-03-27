@@ -44,15 +44,21 @@
                                  PUT    /campuses/:id(.:format)                                 campuses#update
                                  DELETE /campuses/:id(.:format)                                 campuses#destroy
      search_community_gatherings GET    /communities/:community_id/gatherings/search(.:format)  gatherings#search
-                gather_gathering GET    /gatherings/:id/gather(.:format)                        gatherings#gather
-    gathering_attendance_records GET    /gatherings/:gathering_id/attendance(.:format)          attendance_records#index
-                                 POST   /gatherings/:gathering_id/attendance(.:format)          attendance_records#create
- new_gathering_attendance_record GET    /gatherings/:gathering_id/attendance/new(.:format)      attendance_records#new
+      meeting_attendance_records GET    /meetings/:meeting_id/attendance(.:format)              attendance_records#index
+                                 POST   /meetings/:meeting_id/attendance(.:format)              attendance_records#create
+   new_meeting_attendance_record GET    /meetings/:meeting_id/attendance/new(.:format)          attendance_records#new
           edit_attendance_record GET    /attendance/:id/edit(.:format)                          attendance_records#edit
                attendance_record GET    /attendance/:id(.:format)                               attendance_records#show
                                  PATCH  /attendance/:id(.:format)                               attendance_records#update
                                  PUT    /attendance/:id(.:format)                               attendance_records#update
                                  DELETE /attendance/:id(.:format)                               attendance_records#destroy
+              gathering_meetings GET    /gatherings/:gathering_id/meetings(.:format)            meetings#index
+                                 POST   /gatherings/:gathering_id/meetings(.:format)            meetings#create
+                    edit_meeting GET    /meetings/:id/edit(.:format)                            meetings#edit
+                         meeting GET    /meetings/:id(.:format)                                 meetings#show
+                                 PATCH  /meetings/:id(.:format)                                 meetings#update
+                                 PUT    /meetings/:id(.:format)                                 meetings#update
+                                 DELETE /meetings/:id(.:format)                                 meetings#destroy
        accept_membership_request POST   /requests/:id/accept(.:format)                          membership_requests#accept
        answer_membership_request POST   /requests/:id/answer(.:format)                          membership_requests#answer
       dismiss_membership_request POST   /requests/:id/dismiss(.:format)                         membership_requests#dismiss

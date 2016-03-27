@@ -5,9 +5,14 @@ module Taggable
 
   class<<self
   
+    # TODO: Replace with values_for
     def to_tags(set, *tags)
       m = Taggable.const_get(set.classify.pluralize) rescue nil if set.is_a?(String)
       m.present? ? (m.const_get('VALUES') & tags) : []
+    end
+
+    def options_for(set)
+      TAGS.include?(set) ? "Taggable::#{set.classify.pluralize}".constantize::OPTIONS : []
     end
 
     def scope_to_tags(o, params)
@@ -17,6 +22,10 @@ module Taggable
         o = o.tagged_with(tags, on: set.pluralize, any: true) if tags.present?
       end
       o
+    end
+
+    def values_for(set)
+      TAGS.include?(set) ? "Taggable::#{set.classify.pluralize}".constantize::VALUES : []
     end
 
   end

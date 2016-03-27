@@ -48,7 +48,7 @@ class Member < ActiveRecord::Base
   has_many :campuses, through: :memberships, source: :group, source_type: "Campus"
   has_many :gatherings, through: :memberships, source: :group, source_type: "Gathering"
   
-  has_many :attendance_records, inverse_of: :member, dependent: :destroy
+  has_many :attendance_records, through: :memberships, dependent: :destroy
   has_many :membership_requests, inverse_of: :member, dependent: :destroy
 
   before_validation :ensure_password
@@ -80,6 +80,36 @@ class Member < ActiveRecord::Base
 
   def join!(group, role = nil)
     Membership.join!(group, self, role)
+  end
+
+  def affiliate_of?(group)
+    m = membership_in(group)
+    m.present? && m.as_affiliate?
+  end
+
+  def overseer_for?(group)
+    m = membership_in(group)
+    m.present? && m.as_overseer?
+  end
+
+  def assistant_for?(group)
+    m = membership_in(group)
+    m.present? && m.as_assistant?
+  end
+
+  def coach_for?(group)
+    m = membership_in(group)
+    m.present? && m.as_coach?
+  end
+
+  def participant_in?(group)
+    m = membership_in(group)
+    m.present? && m.as_participant?
+  end
+
+  def visitor_to?(group)
+    m = membership_in(group)
+    m.present? && m.as_visitor?
   end
 
   def member_of?(group)

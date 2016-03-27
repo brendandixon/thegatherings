@@ -20,3 +20,4 @@ Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bo
 Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'bower_components', 'foundation-sites', 'dist')
 
 Rails.application.config.assets.precompile += %w( foundation-sites/dist/foundation.js what-input/what-input.js Chart.js/Chart.js charts.js cards.js dates.js )
+Rails.application.config.assets.precompile += %w( c3/c3.min.css )

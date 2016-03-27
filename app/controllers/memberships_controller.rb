@@ -49,7 +49,8 @@ class MembershipsController < ApplicationController
     authorize_action_for @membership, community: @community, campus: @campus, gathering: @gathering
     respond_to do |format|
       if @membership.save
-        format.html { redirect_to membership_path(@membership), notice: 'Membership was successfully updated.' }
+        format.html { redirect_to :back, notice: 'Membership was successfully updated.'}
+        # format.html { redirect_to membership_path(@membership), notice: 'Membership was successfully updated.' }
       else
         format.html { render :edit }
       end

@@ -43,7 +43,7 @@ class Gathering < ActiveRecord::Base
   belongs_to :community, required: true, inverse_of: :gatherings
   belongs_to :campus
   
-  has_many :attendance_records, inverse_of: :gathering
+  has_many :meetings, inverse_of: :gathering
   has_many :membership_requests, inverse_of: :gathering
 
   after_initialize :ensure_defaults, unless: :persisted?
@@ -111,6 +111,14 @@ class Gathering < ActiveRecord::Base
     self.meeting_ends.present? && dt >= self.meeting_ends
   end
 
+  def leaders_on(dt)
+    dt = self.prior_meeting(dt.end_of_day)
+  end
+
+  def memberships_on(dt)
+    dt = self.prior_meeting(dt.end_of_day)
+  end
+
   def first_meeting
     next_meeting(self.meeting_starts)
   end
@@ -122,6 +130,17 @@ class Gathering < ActiveRecord::Base
   def meeting_on?(dt = DateTime.now)
     dt = dt.beginning_of_day
     dt.to_date == next_meeting(dt).to_date
+  end
+
+  def meetings_since(dt = DateTime.now)
+    nm = [next_meeting(dt.beginning_of_day)]
+    pm = prior_meeting
+    until nm.last == pm
+      m = next_meeting(nm.last.end_of_day)
+      break if nm.last == m
+      nm << m
+    end
+    nm
   end
 
   def next_meeting(dt = DateTime.now)
@@ -194,7 +213,7 @@ class Gathering < ActiveRecord::Base
       self.time_zone = TheGatherings::Application.default_time_zone if self.time_zone.blank?
 
       self.minimum = 6 if self.minimum.blank?
-      self.maximum = 25 if self.maximum.blank?
+      self.maximum = 12 if self.maximum.blank?
     end
 
     def has_one_gender

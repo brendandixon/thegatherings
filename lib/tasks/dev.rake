@@ -87,9 +87,15 @@ namespace :dev do
           create(:membership, :as_member, *blends[i], group: community, member: member)
           create(:membership, :as_member, group: campus, member: member)
           create(:membership, :as_member, group: gathering, member: member)
-          gathering.prior_meetings(DateTime.now, 10).each do |mt|
+        end
+      end
+      gatherings[i].each do |gathering|
+        gathering.meetings_since(4.months.ago).each do |mt|
+          meeting = create(:meeting, gathering: gathering, datetime: mt)
+          meeting.ensure_attendees
+          meeting.attendance_records.each do |ar|
             next if rand(0..100) > 75
-            create(:attendance_record, gathering: gathering, member: member, datetime: mt)
+            ar.attend!
           end
         end
       end
@@ -99,7 +105,7 @@ namespace :dev do
   def create_unattached_members(community, blends, seeks)
     traits = [blends.cycle, seeks.cycle].cycle
 
-    50.times do |n|
+    75.times do |n|
       member = create(:member)
       create(:membership, :as_member, *traits.next.next, group: community, member: member)
     end

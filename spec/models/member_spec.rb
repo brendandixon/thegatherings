@@ -126,4 +126,63 @@ describe Member, type: :model do
 
   end
 
+  context 'Membership Helpers' do
+    
+    before :all do
+      @community = build_stubbed(:community)
+      @gathering = build_stubbed(:gathering, community: @community)
+    end
+
+    before :each do
+      @member = build_stubbed(:member)
+    end
+
+    it 'identifies affiliates' do
+      expect(@member).to_not be_affiliate_of(@gathering)
+
+      m = create(:membership, :as_member, group: @gathering, member: @member)
+      expect(@member).to be_affiliate_of(@gathering)
+
+      m.delete
+      create(:membership, :as_leader, group: @gathering, member: @member)
+      expect(@member).to be_affiliate_of(@gathering)
+    end
+
+    it 'identifies overseers' do
+      expect(@member).to_not be_overseer_for(@gathering)
+
+      create(:membership, :as_leader, group: @gathering, member: @member)
+      expect(@member).to be_overseer_for(@gathering)
+    end
+
+    it 'identifies assistants' do
+      expect(@member).to_not be_assistant_for(@gathering)
+
+      create(:membership, :as_assistant, group: @gathering, member: @member)
+      expect(@member).to be_assistant_for(@gathering)
+    end
+
+    it 'identifies coaches' do
+      expect(@member).to_not be_coach_for(@gathering)
+
+      create(:membership, :as_coach, group: @gathering, member: @member)
+      expect(@member).to be_coach_for(@gathering)
+    end
+
+    it 'identifies participants' do
+      expect(@member).to_not be_participant_in(@gathering)
+
+      create(:membership, :as_member, group: @gathering, member: @member)
+      expect(@member).to be_participant_in(@gathering)
+    end
+
+    it 'identifies visitors' do
+      expect(@member).to_not be_visitor_to(@gathering)
+
+      create(:membership, :as_visitor, group: @gathering, member: @member)
+      expect(@member).to be_visitor_to(@gathering)
+    end
+
+  end
+
 end

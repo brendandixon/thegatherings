@@ -12,8 +12,12 @@
 //
 //= require jquery_ujs
 //= require foundation-sites/dist/foundation
-//= require Chart.min.js
+//= require d3/d3.min.js
+//= require c3/c3.min.js
+//= require d3plus/d3plus.min.js
+//= require d3-cloud/build/d3.layout.cloud.js
 //= require what-input
+//= require autosubmit
 //= require cards
 //= require charts
 //= require dates
