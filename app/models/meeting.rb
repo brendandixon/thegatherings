@@ -8,11 +8,11 @@
 #  canceled     :boolean          default(FALSE), not null
 #
 
-class Meeting < ActiveRecord::Base
+class Meeting < ApplicationRecord
   include Authority::Abilities
   self.authorizer_name = 'GatheringAuthorizer'
 
-  belongs_to :gathering, required: true, inverse_of: :meetings
+  belongs_to :gathering, inverse_of: :meetings
   has_many :attendance_records, inverse_of: :meeting, dependent: :destroy
 
   validates_presence_of :gathering

@@ -1,4 +1,13 @@
 class ApplicationController < ActionController::Base
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:username])
+  end
+end
+class ApplicationController < ActionController::Base
 
   COLLECTION_ACTIONS = %w(index)
   GROUPABLE_ACTIONS = %w(index new create)
@@ -9,8 +18,8 @@ class ApplicationController < ActionController::Base
   before_action :set_locale
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  before_filter :authenticate_member!
-  around_filter :set_timezone
+  before_action :authenticate_member!
+  around_action :set_timezone
   
   def authority_forbidden(error)
     Authority.logger.warn(error.message)
@@ -20,12 +29,8 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) do |m|
-      m.permit(:email, :first_name, :last_name, :password, :password_confirmation, :phone, :postal_code)
-    end
-    devise_parameter_sanitizer.for(:account_update) do |m|
-      m.permit(:current_password, :email, :first_name, :last_name, :password, :password_confirmation, :phone, :postal_code)
-    end
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :first_name, :last_name, :password, :password_confirmation, :phone, :postal_code])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:current_password, :email, :first_name, :last_name, :password, :password_confirmation, :phone, :postal_code])
   end
 
   def is_collection_action?

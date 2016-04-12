@@ -46,4 +46,4 @@ ValidatesTimeliness.setup do |config|
 end
 
 Timeliness.default_timezone = :current
-Timeliness.add_formats(:datetime, "mmm dd, yy")
+Timeliness.add_formats(:datetime, "mmm d, yy")

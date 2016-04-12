@@ -25,14 +25,14 @@ if (theGatherings.Charts !== undefined) {
         }
       },
       size : {
-        height : 400,
-        width : 1000
+        height : $(o.container).height(),
+        width : $(o.container).width()
       },
       axis : {
         x : {
           tick : {
-            // fit : true,
-            // centered : true,
+            fit : true,
+            centered : true,
             outer : false
           },
           type : 'category',
@@ -61,14 +61,14 @@ if (theGatherings.Charts !== undefined) {
         }
       },
       size : {
-        height : 400,
-        width : 1000
+        height : $(o.container).height(),
+        width : $(o.container).width()
       },
       axis : {
         x : {
           tick : {
-            // fit : true,
-            // centered : true,
+            fit : true,
+            centered : true,
             outer : false
           },
           type : 'category',
@@ -79,14 +79,16 @@ if (theGatherings.Charts !== undefined) {
   };
 
   theGatherings.Charts.bindCharts = function() {
-    if (theGatherings.Charts.gap_data !== undefined) {
-      for (i=0; i < theGatherings.Charts.gap_data.length; i++) {
-        theGatherings.Charts.drawGap(theGatherings.Charts.gap_data[i]);
+    if (theGatherings.Charts.gaps_data !== undefined) {
+      for (i=0; i < theGatherings.Charts.gaps_data.length; i++) {
+        theGatherings.Charts.drawGap(theGatherings.Charts.gaps_data[i]);
       }
     }
 
     if (theGatherings.Charts.attendance_data !== undefined) {
-      theGatherings.Charts.drawAttendance(theGatherings.Charts.attendance_data);
+      for (i=0; i < theGatherings.Charts.attendance_data.length; i++) {
+        theGatherings.Charts.drawAttendance(theGatherings.Charts.attendance_data[i]);
+      }
     }
   }
 

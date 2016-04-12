@@ -20,7 +20,7 @@
 #  inactive_on      :datetime
 #
 
-class Campus < ActiveRecord::Base
+class Campus < ApplicationRecord
   include Authority::Abilities
   include ActiveDates
   include Addressed
@@ -29,9 +29,12 @@ class Campus < ActiveRecord::Base
 
   has_address_of :street_primary, :street_secondary, :city, :state, :country, :postal_code, :time_zone
 
-  belongs_to :community, required: true, inverse_of: :campuses
+  belongs_to :community, inverse_of: :campuses
 
   has_many :gatherings, inverse_of: :campus
+
+  has_many :memberships, as: :group
+  has_many :members, through: :memberships
 
   validates :community, belonging: {models: [Community]}
   validates_length_of :name, within: 10..255
@@ -40,6 +43,10 @@ class Campus < ActiveRecord::Base
 
   def campus
     self
+  end
+
+  def meetings
+    Meeting.for_campus(self)
   end
 
   def to_s

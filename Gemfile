@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 #--------------------------------------------------------------------------------------------------
 # Core
-gem 'rails', '~> 4.2'                     # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '~> 5.0'                     # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'mysql2', '~> 0.4'                    # Fast MySQL gem
 
 # http://sass-lang.com
@@ -31,13 +31,14 @@ gem 'jbuilder', '~> 2.0'                  # Build JSON APIs with ease. Read more
 gem 'sdoc', '~> 0.4', group: :doc         # bundle exec rake doc:rails generates the API under doc/api.
 
 # gem 'unicorn'                             # Use Unicorn as the app server
-gem 'thin'                                # Use thin for the web server
+# gem 'thin'                                # Use thin for the web server
+gem 'puma', '~> 3.5'                        # Use Puma for the web server
 gem 'capistrano-rails', group: :development # Use Capistrano for deployment
 
 #--------------------------------------------------------------------------------------------------
 # AuthN / AuthZ
 # http://devise.plataformatec.com.br
-gem 'devise', '~> 3.5'                    # Use Devise for authN
+gem 'devise', '~> 4.2'                    # Use Devise for authN
 
 # https://github.com/intridea/omniauth
 gem 'omniauth', '~> 1.2'                  # Use OmniAuth for authN
@@ -54,7 +55,7 @@ gem 'omniauth-linkedin', '~> 0.2'         # Use OmniAuth for LinkedIn, see https
 gem 'omniauth-twitter', '~> 1.2'          # Use OmniAuth for Twitter, see https://github.com/arunagw/omniauth-twitter
 
 # https://github.com/mbleigh/acts-as-taggable-on
-gem 'acts-as-taggable-on', '~> 3.5'       # Allows tagging of various objects
+gem 'acts-as-taggable-on', '~> 4.0.0.pre' # Allows tagging of various objects
 
 # gem 'therubyracer', platforms: :ruby    # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'bcrypt', '~> 3.1.7'                # Use ActiveModel has_secure_password
@@ -72,6 +73,7 @@ group :development, :test do
   gem 'rspec', '~> 3.4'                   # Use Rspec for testing, see http://rspec.info/
   gem 'rspec-rails', '~> 3.4'             # See https://relishapp.com/rspec/rspec-rails/v/3-4/docs
   gem 'rspec-activemodel-mocks'           # See https://github.com/rspec/rspec-activemodel-mocks/
+  gem 'rails-controller-testing'
 end
 
 group :development do

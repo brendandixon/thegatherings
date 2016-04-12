@@ -61,6 +61,12 @@ nearly $5k).
 - http://web.livefyre.com/comments/
 - https://publishers.disqus.com/engage
 - http://www.intensedebate.com/
+- http://www.discourse.org
+
+## UI
+
+- http://square.com/
+- http://splice.com/
 
 ## Setup
 

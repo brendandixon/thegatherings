@@ -51,54 +51,54 @@ describe CampusesController, type: :controller do
 
   describe "GET #index" do
     it 'responds with HTTP 200' do
-      get :index, {community_id: @community.id}
+      get :index, params: {community_id: @community.id}
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
     it 'renders the index template' do
-      get :index, {community_id: @community.id}
+      get :index, params: {community_id: @community.id}
       expect(response).to render_template("index")
     end
 
     it 'loads all Campuses into @campuses' do
-      get :index, {community_id: @community.id}
+      get :index, params: {community_id: @community.id}
       expect(assigns(:campuses)).to match_array(@campuses)
     end
   end
 
   describe "GET #show" do
     it 'responds with HTTP 200' do
-      get :show, { id: @campuses.first.id }
+      get :show, params: { id: @campuses.first.id }
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :show, { id: @campuses.first.id }
+      get :show, params: { id: @campuses.first.id }
       expect(response).to render_template("show")
     end
 
     it 'loads all Campuses into @campuses' do
-      get :show, { id: @campuses.first.id }
+      get :show, params: { id: @campuses.first.id }
       expect(assigns(:campus)).to eq(@campuses.first)
     end
   end
 
   describe "GET #new" do
     it 'responds with HTTP 200' do
-      get :new, { community_id: @community.id }
+      get :new, params: { community_id: @community.id }
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
     it 'renders the new template' do
-      get :new, { community_id: @community.id }
+      get :new, params: { community_id: @community.id }
       expect(response).to render_template("new")
     end
 
     it 'loads a new Campus into @campus' do
-      get :new, { community_id: @community.id }
+      get :new, params: { community_id: @community.id }
       expect(assigns(:campus)).to be_a_new(Campus)
     end
   end

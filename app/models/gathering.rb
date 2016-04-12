@@ -28,7 +28,7 @@
 #  campus_id        :integer
 #
 
-class Gathering < ActiveRecord::Base
+class Gathering < ApplicationRecord
   include Authority::Abilities
   include Addressed
   include Joinable
@@ -40,11 +40,14 @@ class Gathering < ActiveRecord::Base
 
   has_address_of :street_primary, :street_secondary, :city, :state, :country, :postal_code, :time_zone
 
-  belongs_to :community, required: true, inverse_of: :gatherings
-  belongs_to :campus
+  belongs_to :community, inverse_of: :gatherings
+  belongs_to :campus, optional: true
   
   has_many :meetings, inverse_of: :gathering
   has_many :membership_requests, inverse_of: :gathering
+
+  has_many :memberships, as: :group
+  has_many :members, through: :memberships
 
   after_initialize :ensure_defaults, unless: :persisted?
 
@@ -128,6 +131,7 @@ class Gathering < ActiveRecord::Base
   end
 
   def meeting_on?(dt = DateTime.now)
+    dt = dt.in_time_zone(zone=Time.find_zone(self.time_zone))
     dt = dt.beginning_of_day
     dt.to_date == next_meeting(dt).to_date
   end
@@ -146,6 +150,9 @@ class Gathering < ActiveRecord::Base
   def next_meeting(dt = DateTime.now)
     Time.use_zone(self.time_zone) do
       mt = self.meeting_starts
+
+      dt = dt.in_time_zone
+      mt = mt.in_time_zone
 
       dt = mt if dt < mt
 
@@ -174,6 +181,9 @@ class Gathering < ActiveRecord::Base
     else
       Time.use_zone(self.time_zone) do
         mt = self.meeting_starts
+
+        dt = dt.in_time_zone
+        mt = mt.in_time_zone
 
         dt = self.meeting_ends if ended_by?(dt)
 

@@ -12,14 +12,14 @@
 #  status       :string(25)
 #
 
-class MembershipRequest < ActiveRecord::Base
+class MembershipRequest < ApplicationRecord
   include Authority::Abilities
   include Ownable
 
   STATES = %w(answered accepted dismissed)
 
-  belongs_to :member, required: true, inverse_of: :membership_requests
-  belongs_to :gathering, required: true, inverse_of: :membership_requests
+  belongs_to :member, inverse_of: :membership_requests
+  belongs_to :gathering, inverse_of: :membership_requests
 
   after_initialize :ensure_defaults, unless: :persisted?
 

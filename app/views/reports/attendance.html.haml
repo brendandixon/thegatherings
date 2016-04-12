@@ -6,7 +6,7 @@
       = render partial: 'shared/spacer'
       .row
         .small-12.columns
-          #attendance_chart.chart{data: {chart: :attendance}}
+          %div.chart{id: "#{@group.class.to_s.downcase}_#{@group.id}_chart", data: {chart: :attendance}}
 
       = render partial: 'shared/spacer'
       .row
@@ -19,4 +19,4 @@
 
 = render template: 'shared/bind_charts'
 :javascript
-  theGatherings.Charts.attendance_data = #{@attendance.to_json}
+  theGatherings.Charts.attendance_data = #{@chart_data.to_json}

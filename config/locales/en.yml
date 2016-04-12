@@ -127,7 +127,11 @@ en:
     gathering_title: "Gathering Profile"
     preference_title: "Your Preferences"
   charts:
-    age_groups:
+    absent: "Absent"
+    available: "Available"
+    present: "Present"
+    requests: "Requests"
+    age_group:
       junior_high: "Junior High"
       high_school: "High School"
       college: "College"
@@ -138,19 +142,19 @@ en:
       thirties: "30s"
       twenties: "20s"
       title: "Age Groups"
-    genders:
+    gender:
       men: "Men Only"
       mixed: "Women and Men"
       women: "Women Only"
       title: "Gender Mix"
-    life_stages:
+    life_stage:
       college: "College"
       early_career: "Early Career"
       established_career: "Established Career"
       post_career: "Post Career"
       post_college: "Post College"
       title: "Life Stages"
-    relationships:
+    relationship:
       divorced: "Divorced"
       early_family: "Early Family"
       empty_nester: "Empty Nester"
@@ -158,7 +162,7 @@ en:
       single: "Single"
       young_married: "Young Married"
       title: "Relational Status"
-    topics:
+    topic:
       bible: "Bible"
       topical: "Topical"
       devotional: "Devotional"

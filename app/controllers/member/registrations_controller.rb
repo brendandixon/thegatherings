@@ -1,9 +1,9 @@
 class Member::RegistrationsController < Devise::RegistrationsController
   include MemberSignup
 
-  prepend_before_filter :authenticate_scope!, only: [:show, :edit, :update, :destroy]
-  before_filter :configure_sign_up_params, only: [:create]
-  before_filter :configure_account_update_params, only: [:update]
+  prepend_before_action :authenticate_scope!, only: [:show, :edit, :update, :destroy]
+  before_action :configure_sign_up_params, only: [:create]
+  before_action :configure_account_update_params, only: [:update]
   
   # GET /resource/sign_up
   def new

@@ -54,18 +54,18 @@ describe CommunitiesController, type: :controller do
 
   describe "GET #show" do
     it 'responds with HTTP 200' do
-      get :show, { id: @communities.first.id }
+      get :show, params: { id: @communities.first.id }
       expect(response).to be_success
       expect(response).to have_http_status(200)
     end
 
     it 'renders the show template' do
-      get :show, { id: @communities.first.id }
+      get :show, params: { id: @communities.first.id }
       expect(response).to render_template("show")
     end
 
     it 'loads all Communities into @communities' do
-      get :show, { id: @communities.first.id }
+      get :show, params: { id: @communities.first.id }
       expect(assigns(:community)).to eq(@communities.first)
     end
   end

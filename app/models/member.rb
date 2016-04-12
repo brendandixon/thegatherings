@@ -33,7 +33,7 @@
 #  uid                    :string(255)
 #
 
-class Member < ActiveRecord::Base
+class Member < ApplicationRecord
   include Authority::UserAbilities
   include Authority::Abilities
   include Addressed

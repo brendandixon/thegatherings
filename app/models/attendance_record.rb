@@ -8,12 +8,12 @@
 #  attended      :boolean          default(FALSE), not null
 #
 
-class AttendanceRecord < ActiveRecord::Base
+class AttendanceRecord < ApplicationRecord
   include Authority::Abilities
   self.authorizer_name = 'GatheringAuthorizer'
 
-  belongs_to :meeting, required: true, inverse_of: :attendance_records
-  belongs_to :membership, required: true, inverse_of: :attendance_records
+  belongs_to :meeting, inverse_of: :attendance_records
+  belongs_to :membership, inverse_of: :attendance_records
 
   validates_presence_of :meeting
 

@@ -14,13 +14,13 @@
 #  updated_at  :datetime         not null
 #
 
-class Membership < ActiveRecord::Base
+class Membership < ApplicationRecord
   include Authority::Abilities
   include ActiveDates
   include Taggable
 
-  belongs_to :group, polymorphic: true, required: true, inverse_of: :memberships
-  belongs_to :member, required: true, inverse_of: :memberships
+  belongs_to :group, polymorphic: true, inverse_of: :memberships
+  belongs_to :member, inverse_of: :memberships
   has_many :attendance_records, inverse_of: :membership
 
   before_validation :evaluate_active
