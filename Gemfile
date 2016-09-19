@@ -74,6 +74,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.4'             # See https://relishapp.com/rspec/rspec-rails/v/3-4/docs
   gem 'rspec-activemodel-mocks'           # See https://github.com/rspec/rspec-activemodel-mocks/
   gem 'rails-controller-testing'
+
+  gem 'ripper-tags'                       # For CTAGs support
 end
 
 group :development do
