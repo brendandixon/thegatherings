@@ -11,7 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery_ujs
-//= require foundation-sites/dist/foundation
+//= require foundation-sites/dist/js/foundation
 //= require d3/d3.min.js
 //= require c3/c3.min.js
 //= require d3plus/d3plus.min.js

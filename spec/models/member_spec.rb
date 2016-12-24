@@ -129,12 +129,12 @@ describe Member, type: :model do
   context 'Membership Helpers' do
     
     before :all do
-      @community = build_stubbed(:community)
-      @gathering = build_stubbed(:gathering, community: @community)
+      @community = create(:community)
+      @gathering = create(:gathering, community: @community)
     end
 
     before :each do
-      @member = build_stubbed(:member)
+      @member = create(:member)
     end
 
     it 'identifies affiliates' do
