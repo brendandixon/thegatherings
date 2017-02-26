@@ -206,9 +206,9 @@ ActiveRecord::Schema.define(version: 20160409181100) do
 
   create_table "taggings", force: :cascade do |t|
     t.integer  "tag_id",        limit: 4
-    t.string   "taggable_id",   limit: 36
+    t.integer  "taggable_id",   limit: 4
     t.string   "taggable_type", limit: 255
-    t.string   "tagger_id",     limit: 36
+    t.integer  "tagger_id",     limit: 4
     t.string   "tagger_type",   limit: 255
     t.string   "context",       limit: 128
     t.datetime "created_at"

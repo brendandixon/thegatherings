@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 #--------------------------------------------------------------------------------------------------
 # Core
 gem 'rails', '~> 5.0'                     # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'mysql2', '~> 0.4'                    # Fast MySQL gem
+gem 'pg'
 
 # http://sass-lang.com
 gem 'sass-rails', '~> 5.0'                # Use SCSS for stylesheets
