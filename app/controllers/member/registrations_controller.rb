@@ -51,17 +51,16 @@ class Member::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_up_params
-    devise_parameter_sanitizer.for(:sign_up).concat([:email, :first_name, :last_name, :phone, :postal_code])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :first_name, :gender, :last_name, :phone, :postal_code])
   end
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
-    devise_parameter_sanitizer.for(:account_update).concat([:email, :first_name, :last_name, :phone, :postal_code])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:email, :first_name, :gender, :last_name, :phone, :postal_code])
   end
 
   # The path used after sign up.
   def after_sign_up_path_for(resource)
-    start_signup_for(resource)
     begin_member_signup
   end
 
