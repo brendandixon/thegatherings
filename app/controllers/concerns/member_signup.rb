@@ -46,6 +46,7 @@ module MemberSignup
     @member_signup[:community_id] = community.id if community.present?
     @member_signup[:phase_index] = 0
     cookies[:member_signup] = JSON.generate(@member_signup.except(:member, :community, :phase))
+    member_signup_path
   end
 
   def continue_member_signup
