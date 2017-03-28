@@ -44,7 +44,7 @@ module MemberSignup
     @member_signup[:member_id] = member.id
     @member_signup[:community] = community
     @member_signup[:community_id] = community.id if community.present?
-    @member_signup[:phase_index] = 0
+    @member_signup[:phase_index] = -1
     cookies[:member_signup] = JSON.generate(@member_signup.except(:member, :community, :phase))
     member_signup_path
   end
