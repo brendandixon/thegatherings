@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 #--------------------------------------------------------------------------------------------------
 # Core
 gem 'rails', '~> 5.0'                     # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'pg'
+gem 'pg', '~> 1.0.0'                      # PostgreSQL
 
 # http://sass-lang.com
 gem 'sass-rails', '~> 5.0'                # Use SCSS for stylesheets
@@ -19,6 +19,7 @@ gem 'haml', '~> 4.0'                      # Use HAML for views
 # https://github.com/FortAwesome/font-awesome-sass
 gem 'font-awesome-sass', '~> 4.7'
 
+gem 'nokogiri', '~> 1.8.1'                # Force Nokogiri past CVE-2017-9050
 gem 'uglifier', '>= 1.3'                  # Use Uglifier as compressor for JavaScript assets
 
 # https://github.com/adzap/timeliness
@@ -45,7 +46,7 @@ gem 'capistrano-rails', group: :development # Use Capistrano for deployment
 gem 'devise', '~> 4.2'                    # Use Devise for authN
 
 # https://github.com/intridea/omniauth
-gem 'omniauth', '~> 1.2'                  # Use OmniAuth for authN
+gem 'omniauth', '~> 1.3.2'                # Use OmniAuth for authN
 gem 'omniauth-oauth', '~> 1.1'            # Use OmniAuth for OAuth2
 gem 'omniauth-oauth2', '~> 1.4'           # Use OmniAuth for OAuth2
 
