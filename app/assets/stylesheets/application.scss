@@ -16,11 +16,16 @@
 @import 'foundation-icons';
 
 /*
- * icon('flag')
+ *
+ * FontAwesome has three style: Solid, Regular, and Brands
+ * Select the style via 'fas', 'far', or 'fab'
+ * See https://fontawesome.com for full list
+ *
+ * icon('far', flag')
  * # => <i class="fa fa-flag"></i>
- * icon('flag', class: 'strong')
+ * icon('far', 'flag', class: 'strong')
  * # => <i class="fa fa-flag strong"></i>
- * icon('flag', 'Font Awesome', id: 'my-icon', class: 'strong')
+ * icon('far', 'flag', 'Font Awesome', id: 'my-icon', class: 'strong')
  * # => <i id="my-icon" class="fa fa-flag strong"></i> Font Awesome
  */
 @import "font-awesome-sprockets";

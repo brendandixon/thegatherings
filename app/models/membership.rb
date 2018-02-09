@@ -50,10 +50,10 @@ class Membership < ApplicationRecord
   scope :as_member, lambda{where(participant: ApplicationAuthorizer::PARTICIPANT_MEMBER)}
   scope :as_visitor, lambda{where(participant: ApplicationAuthorizer::PARTICIPANT_VISITOR)}
 
-  scope :in_groups, lambda{|klass| where(group_type: klass)}
-  scope :in_communities, lambda{in_groups(Community)}
-  scope :in_campuses, lambda{in_groups(Campus)}
-  scope :in_gatherings, lambda{in_groups(Gathering)}
+  scope :in_collection, lambda{|klass| where(group_type: klass.to_s)}
+  scope :in_communities, lambda{in_collection(Community)}
+  scope :in_campuses, lambda{in_collection(Campus)}
+  scope :in_gatherings, lambda{in_collection(Gathering)}
 
   scope :for_community, lambda{|model, community| joins("JOIN #{model.to_s.tableize} ON memberships.group_id = #{model.to_s.tableize}.id").where("#{model.to_s.tableize}.community_id = ?", community)}
   scope :for_campus, lambda{|model, campus| joins("JOIN #{model.to_s.tableize} ON memberships.group_id = #{model.to_s.tableize}.id").where("#{model.to_s.tableize}.campus_id = ?", campus)}

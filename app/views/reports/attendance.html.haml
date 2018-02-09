@@ -19,4 +19,4 @@
 
 = render template: 'shared/bind_charts'
 :javascript
-  theGatherings.Charts.attendance_data = #{@chart_data.to_json}
+  theGatherings.Charts.attendance_data = #{raw @chart_data.to_json}

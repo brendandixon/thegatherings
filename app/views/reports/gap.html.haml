@@ -53,4 +53,4 @@
 
 = render template: 'shared/bind_charts'
 :javascript
-  theGatherings.Charts.gaps_data = #{@chart_data.to_json}
+  theGatherings.Charts.gaps_data = #{raw @chart_data.to_json}

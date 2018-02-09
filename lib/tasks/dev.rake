@@ -4,8 +4,8 @@ namespace :dev do
   task prime: ['db:setup'] do
     ensure_development
 
-    require 'factory_girl_rails'
-    include FactoryGirl::Syntax::Methods
+    require 'factory_bot_rails'
+    include FactoryBot::Syntax::Methods
 
     purge_all
 

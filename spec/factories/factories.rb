@@ -1,7 +1,7 @@
-# To use FactoryGirl within in the console:
-#     require "factory_girl"
+# To use FactoryBot within in the console:
+#     require "factory_bot"
 #     require "./factories"
-#     include FactoryGirl::Syntax::Methods
+#     include FactoryBot::Syntax::Methods
 
 Time.use_zone TheGatherings::Application.default_time_zone do
 
@@ -9,7 +9,7 @@ Time.use_zone TheGatherings::Application.default_time_zone do
   postal_codes = %w(98103 98105 98107 98112 98115 98117 98119 98199).cycle
   sentence = "A very long, rambling sentence saying nothing, meaning nothing, but is here nonetheless. "
 
-  FactoryGirl.define do
+  FactoryBot.define do
 
     trait :active do
       active_on 1.year.ago

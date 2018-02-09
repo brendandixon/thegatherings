@@ -7,19 +7,19 @@
         - if member_signed_in?
           %li
             = link_to member_root_path do
-              = icon('home')
+              = icon('far', 'home')
               = "Welcome #{current_member.first_name}"
           %li
             = link_to show_member_registration_path do
-              =icon('user')
+              =icon('far', 'user')
               %span.size-12= 'Account'
           %li
             = link_to destroy_member_session_path, method: :delete do
-              =icon('sign-out')
+              =icon('far', 'sign-out')
               %span.size-12= 'Sign Out'
         - else
           %li
             = link_to show_member_registration_path do
-              =icon('user-plus')
+              =icon('far', 'user-plus')
               %span.size-12= 'Become a Member'
 

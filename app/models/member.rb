@@ -121,7 +121,7 @@ class Member < ApplicationRecord
   end
 
   def memberships_in(klass)
-    self.memberships.in_groups(klass)
+    self.memberships.in_collection(klass)
   end
 
   def abbreviated_name
