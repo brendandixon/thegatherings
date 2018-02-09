@@ -1,6 +1,6 @@
 require "rails_helper"
 
-class TagsModelMigration < ActiveRecord::Migration
+class TagsModelMigration < ActiveRecord::Migration[5.1]
   def up
     create_table :tags_models
   end

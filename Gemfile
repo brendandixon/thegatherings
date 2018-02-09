@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.5.0'
 
 #--------------------------------------------------------------------------------------------------
 # Run with: ARCHFLAGS="-arch x86_64" bundle install
