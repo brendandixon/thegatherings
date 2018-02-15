@@ -9,7 +9,8 @@ ruby '2.5.0'
 # Core
 # Note: pg 1.0.0 requires rails 5.2+
 gem 'rails', '~> 5.1'                     # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'pg', '~> 0.21.0'                     # PostgreSQL
+gem 'mysql2', '~> 0.4'                    # MySQL
+# gem 'pg', '~> 0.21.0'                     # PostgreSQL
 
 # http://sass-lang.com
 gem 'sass-rails', '~> 5.0'                # Use SCSS for stylesheets
