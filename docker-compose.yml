@@ -10,7 +10,10 @@
 # Run tests:
 #   docker-compose run --rm test bundle exec rspec
 #
-# Run the server
+# Run for normal development:
+#   docker-compose run --rm -p 3000:3000 server
+#
+# Run the full suite:
 #   docker-compose up server
 #
 # Shutdown all running services:
@@ -27,6 +30,8 @@ services:
       - db
     networks:
       - webnet
+    ports:
+      - 3000:3000
     tmpfs:
       - /app/tmp
       - /app/log
@@ -43,8 +48,6 @@ services:
   server:
     <<: *dev
     command: "bundle exec rails server -p 3000 -b 0.0.0.0"
-    ports:
-      - 3000:3000
 
   test: &test
     <<: *app
