@@ -63,7 +63,11 @@ in a [Docker Volume](https://docs.docker.com/storage/volumes/).
 
 ### Run the development server
 
-This commands launches the application in the foreground, much like running [Rails](http://rubyonrails.org) locally.
+```
+    docker-compose run --rm -p 3000:3000 server
+```
+
+This command launches the application in the foreground, much like running [Rails](http://rubyonrails.org) locally.
 The application will be available at http://localhost:3000/.
 
 The faux data created via the `rails dev:prime` Rake task adds several user accounts including (with `pa$$w0rd` as the password):
@@ -82,10 +86,6 @@ The faux data created via the `rails dev:prime` Rake task adds several user acco
 Members numbered 72 or less (e.g., `mike72.member@nomail.com`) have affiliations with one or more Gatherings.
 Members numbered 73 or greater are unaffiliated. Women get assigned the odd integers (e.g., `mary1.member@nomail.com`,
 `mary3.member@nomail.com`) and men the even integers (e.g., `mike2.member@nomail.com`, `mike4.member@nomail.com`).
-
-```
-    docker-compose run --rm -p 3000:3000 server
-```
 
 ### Run Tests
 
