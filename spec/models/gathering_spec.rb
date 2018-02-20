@@ -275,16 +275,16 @@ describe Gathering, type: :model do
 
     before do
       Time.use_zone(@gathering.time_zone) do
-        @start_date = Time.local(2015, 2, 1)
+        @start_date = Time.zone.local(2015, 2, 1)
         @end_date = @start_date.years_since(2)
         
-        @first_meeting = Time.local(2015, 2, 4, 19, 0, 0)
+        @first_meeting = Time.zone.local(2015, 2, 4, 19, 0, 0)
         @today = @start_date.weeks_since(4)
-        @next_meeting = Time.local(2015, 3, 4, 19, 0, 0)
+        @next_meeting = Time.zone.local(2015, 3, 4, 19, 0, 0)
         @next_meetings = [@next_meeting, @next_meeting.weeks_since(1), @next_meeting.weeks_since(2), @next_meeting.weeks_since(3)]
-        @prior_meeting = Time.local(2015, 2, 25, 19, 0, 0)
+        @prior_meeting = Time.zone.local(2015, 2, 25, 19, 0, 0)
         @prior_meetings = [@prior_meeting, @prior_meeting.weeks_ago(1), @prior_meeting.weeks_ago(2), @prior_meeting.weeks_ago(3)]
-        @last_meeting = Time.local(2017, 2, 1, 19, 0, 0)
+        @last_meeting = Time.zone.local(2017, 2, 1, 19, 0, 0)
         
         @gathering.meeting_starts = @start_date
         @gathering.meeting_ends = @end_date

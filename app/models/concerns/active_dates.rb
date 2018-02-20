@@ -16,7 +16,7 @@ module ActiveDates
     end
   end
 
-  def active?(dt = DateTime.now)
+  def active?(dt = Time.zone.now)
     self.active_on.present? && self.active_on <= dt && (self.inactive_on.blank? || self.inactive_on > dt)
   end
 

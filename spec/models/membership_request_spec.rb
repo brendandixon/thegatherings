@@ -109,7 +109,7 @@ describe MembershipRequest, type: :model do
     t = DateTime.current.end_of_day
     @membership_request.expires_on = t - 5.hours
     expect(@membership_request).to be_valid
-    expect(@membership_request.expires_on).to eq(t)
+    expect(@membership_request.expires_on).to be_within(1.second).of(t)
     expect(@membership_request.errors).to_not have_key(:expires_on)
   end
 

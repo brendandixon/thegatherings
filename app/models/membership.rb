@@ -178,7 +178,7 @@ class Membership < ApplicationRecord
 
     def evaluate_active
       if self.role.blank? && self.participant.blank?
-        self.inactive_on = DateTime.now if self.inactive_on.blank?
+        self.inactive_on = Time.zone.now if self.inactive_on.blank?
       else
         self.inactive_on = nil
       end

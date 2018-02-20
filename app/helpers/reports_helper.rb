@@ -15,7 +15,7 @@ module ReportsHelper
     groups.each do |group|
       group_data = {}
       query = group.meetings
-      week_start = DateTime.now.beginning_of_month - 3.months
+      week_start = Time.zone.now.beginning_of_month - 3.months
       week_end = week_start.end_of_week
       present = 0
       absent = 0

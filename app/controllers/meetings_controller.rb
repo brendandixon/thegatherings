@@ -29,7 +29,7 @@ class MeetingsController < ApplicationController
 
   def create
     @meeting.datetime = Timeliness.parse(params[:on], :date, format: "yyyy-mm-dd") if params[:on].present?
-    @meeting.datetime ||= DateTime.now
+    @meeting.datetime ||= Time.zone.now
     @meeting.datetime = @gathering.prior_meeting(@meeting.datetime.end_of_day)
 
     respond_to do |format|

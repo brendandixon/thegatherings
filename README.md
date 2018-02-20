@@ -44,13 +44,19 @@ The [Docker Compose](https://docs.docker.com/compose/compose-file/) configures [
 in a [Docker Volume](https://docs.docker.com/storage/volumes/).
 
 ### Prepare the Environment
+
 ```
     docker-compose build
     docker-compose run --rm dev bundle exec rails dev:prime
     docker-compose run --rm test bundle exec rails db:environment:set
 ```
 
+> Note: The `dev:prime` and related Rake tasks (as is common with Rake tasks) do not retry if the database
+> is unavailable. Occasionally, the download and start of MySQL is not "fast enough" causing the task to fail.
+> If the task fails, normally, re-running it succeeds.
+
 ### Run Migrations
+
 ```
     docker-componse run --rm dev bundle exec rails db:migrate
 ```
@@ -82,11 +88,13 @@ Members numbered 73 or greater are unaffiliated. Women get assigned the odd inte
 ```
 
 ### Run Tests
+
 ```
     docker-compose run --rm test bundle exec rspec
 ```
 
 ### Stop all Docker Containers
+
 ```
     docker-compose down
 ```

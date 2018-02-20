@@ -106,11 +106,11 @@ class Gathering < ApplicationRecord
     write_attribute(:meeting_ends, v)
   end
 
-  def started_by?(dt = DateTime.now)
+  def started_by?(dt = Time.zone.now)
     dt >= self.meeting_starts
   end
 
-  def ended_by?(dt = DateTime.now)
+  def ended_by?(dt = Time.zone.now)
     self.meeting_ends.present? && dt >= self.meeting_ends
   end
 
@@ -130,13 +130,13 @@ class Gathering < ApplicationRecord
     prior_meeting(self.meeting_ends)
   end
 
-  def meeting_on?(dt = DateTime.now)
+  def meeting_on?(dt = Time.zone.now)
     dt = dt.in_time_zone(zone=Time.find_zone(self.time_zone))
     dt = dt.beginning_of_day
     dt.to_date == next_meeting(dt).to_date
   end
 
-  def meetings_since(dt = DateTime.now)
+  def meetings_since(dt = Time.zone.now)
     nm = [next_meeting(dt.beginning_of_day)]
     pm = prior_meeting
     until nm.last == pm
@@ -147,7 +147,7 @@ class Gathering < ApplicationRecord
     nm
   end
 
-  def next_meeting(dt = DateTime.now)
+  def next_meeting(dt = Time.zone.now)
     Time.use_zone(self.time_zone) do
       mt = self.meeting_starts
 
@@ -165,7 +165,7 @@ class Gathering < ApplicationRecord
     end
   end
 
-  def next_meetings(dt = DateTime.now, n = 1)
+  def next_meetings(dt = Time.zone.now, n = 1)
     nm = [next_meeting(dt)]
     1.upto(n-1) do |i|
       m = next_meeting(nm[i-1].end_of_day)
@@ -175,7 +175,7 @@ class Gathering < ApplicationRecord
     nm
   end
 
-  def prior_meeting(dt = DateTime.now)
+  def prior_meeting(dt = Time.zone.now)
     if dt < self.meeting_starts
       next_meeting(self.meeting_starts.beginning_of_day)
     else
@@ -197,7 +197,7 @@ class Gathering < ApplicationRecord
     end
   end
 
-  def prior_meetings(dt = DateTime.now, n = 1)
+  def prior_meetings(dt = Time.zone.now, n = 1)
     pm = [prior_meeting(dt)]
     1.upto(n-1) do |i|
       m = prior_meeting(pm[i-1].beginning_of_day)
