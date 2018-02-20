@@ -1,12 +1,76 @@
-# db:
-#   image: postgres
+#
+# Prepare the environment:
+#   docker-compose build
+#   docker-compose run --rm dev bundle exec rails dev:prime
+#   docker-compose run --rm test bundle exec rails db:environment:set
+#
+# Run migrations:
+#   docker-componse run --rm dev bundle exec rails db:migrate
+#
+# Run tests:
+#   docker-compose run --rm test bundle exec rspec
+#
+# Run the server
+#   docker-compose up server
+#
+# Shutdown all running services:
+#   docker-compose down
+#
 
-web:
-  build: .
-  command: bundle exec rails s -p 3000 -b '0.0.0.0'
-  ports: 
-    - 3333:3000
-  volumes:
-    - .:/var/app
-#   links:
-#     - db
+version: "3"
+
+services:
+  app: &app
+    build:
+      context: .
+    depends_on:
+      - db
+    networks:
+      - webnet
+    tmpfs:
+      - /app/tmp
+      - /app/log
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  dev: &dev
+    <<: *app
+    environment:
+      RAILS_ENV: development
+      RACK_ENV: development
+
+  server:
+    <<: *dev
+    command: "bundle exec rails server -p 3000 -b 0.0.0.0"
+    ports:
+      - 3000:3000
+
+  test: &test
+    <<: *app
+    environment:
+      RAILS_ENV: test
+      RACK_ENV: test
+
+  db: &db
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "root", "-e", "select 1"]
+      interval: 1s
+      timeout: 1s
+      retries: 300
+    networks:
+      - webnet
+    volumes:
+      - "db-data:/var/lib/mysql"
+
+networks:
+  webnet:
+
+volumes:
+  db-data:

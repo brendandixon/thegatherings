@@ -1,15 +1,18 @@
 
-FROM ruby:2.3
+FROM ruby:2.5
 
-RUN echo 'alias l="less"' >> ~/.bashrc \
-    && echo 'alias ll="ls -lF"' >> ~/.bashrc \
-    && echo 'alias la="ls -AlF"' >> ~/.bashrc \
-    && echo 'alias ?="pwd"' >> ~/.bashrc
+RUN apt-get -y update \
+    && apt-get install -y --no-install-recommends \
+    nodejs
 
-RUN mkdir -p /var/app
-COPY Gemfile /var/app/Gemfile
-WORKDIR /var/app
+WORKDIR /tmp
+COPY Gemfile* ./
+
+ENV RAILS_ENV=development \
+    RACK_ENV=development \
+    LANG=C.UTF-8
+
 RUN bundle install
 
-# EXPOSE 3000
-# CMD ["rails", "server", "-b", "0.0.0.0"]
+
+EXPOSE 3000
