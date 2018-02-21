@@ -13,11 +13,9 @@ Rails.application.config.assets.version = '1.0'
 
 # See https://github.com/rails/sprockets
 Rails.application.config.assets.paths << Rails.root.join('app', 'assets', 'stylesheets', 'foundation-icons')
-Rails.application.config.assets.paths << 'tmp/bower_components/modernizr'
-Rails.application.config.assets.paths << '/tmp/bower_components'
-Rails.application.config.assets.paths << '/tmp/bower_components/Chart.js'
-Rails.application.config.assets.paths << '/tmp/bower_components/foundation-sites/scss'
-Rails.application.config.assets.paths << '/tmp/bower_components/foundation-sites/dist'
+Rails.application.config.assets.paths << Rails.root.join(ENV['RAILS_ASSET_PATH'], 'node_modules')
+Rails.application.config.assets.paths << Rails.root.join(ENV['RAILS_ASSET_PATH'], 'node_modules', 'foundation-sites', 'scss')
+Rails.application.config.assets.paths << Rails.root.join(ENV['RAILS_ASSET_PATH'], 'node_modules', 'foundation-sites', 'dist')
 
-Rails.application.config.assets.precompile += %w( foundation-sites/dist/js/foundation.js what-input/what-input.js Chart.js/Chart.js charts.js cards.js dates.js )
+Rails.application.config.assets.precompile += %w( foundation-sites/dist/js/foundation.js what-input/what-input.js charts.js cards.js dates.js )
 Rails.application.config.assets.precompile += %w( c3/c3.min.css )

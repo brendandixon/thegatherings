@@ -44,6 +44,6 @@ Rails.application.configure do
 end
 
 TheGatherings::Application.globalize_version = '1.0.0'
-TheGatherings::Application.jquery_version = '2.1.4'
-TheGatherings::Application.jquery_ui_version = '1.11.4'
+TheGatherings::Application.jquery_version = '3.3.1'
+TheGatherings::Application.jquery_ui_version = '1.12.1'
 TheGatherings::Application.modernizr_version = '3.5.0'
