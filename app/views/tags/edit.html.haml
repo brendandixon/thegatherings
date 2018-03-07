@@ -4,14 +4,12 @@
     .small-12.columns
       %h2= t("#{@mode}_title", scope: [:tags])
       = form_for(@resource, as: @resource_type, url: url, method: :patch) do |f|
-        - (@tags || Taggable::TAGS).each do |tags|
-          - member = "#{tags}_list".to_sym
-          - options = Taggable.options_for(tags)
+        - @tag_sets.each do |tag_set|
           = render partial: 'shared/spacer'
           .row
             .small-10.small-centered.columns
-              %h4= t("#{@mode}_html", scope:[:tags, tags.pluralize])
-              = render partial: 'shared/collection', locals: {form: f, resource_member: member, resource_list: @resource.send(member), collection: options}
+              %h4= tag_set.prompt
+              = render partial: 'shared/tags', locals: {form: f, tag_set: tag_set.name, resource: @resource, tags: tag_set.tags}
 
         = render partial: 'shared/spacer'
         .row

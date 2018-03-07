@@ -2,10 +2,12 @@
 #
 # Table name: attendance_records
 #
-#  id            :integer          not null, primary key
-#  meeting_id    :integer
-#  membership_id :integer
+#  id            :bigint(8)        not null, primary key
+#  meeting_id    :bigint(8)
+#  membership_id :bigint(8)
 #  attended      :boolean          default(FALSE), not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 
 require 'rails_helper'

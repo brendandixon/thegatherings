@@ -10,121 +10,129 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180208205758) do
+ActiveRecord::Schema.define(version: 20180613000000) do
+
+  create_table "assigned_overseers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "membership", null: false
+    t.references "gathering", null: false
+
+    t.datetime "active_on", null: false
+    t.datetime "inactive_on"
+    t.timestamps
+
+    t.index ["id"], name: "index_overseers_on_id", unique: true
+    t.index ["membership_id"], name: "index_overseers_on_membership"
+    t.index ["gathering_id"], name: "index_overseers_on_gathering"
+    t.index ["membership_id", "gathering_id"], name: "index_overseers_on_membership_and_gathering", unique: true
+  end
 
   create_table "attendance_records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "meeting_id"
-    t.integer "membership_id"
+    t.references "meeting"
+    t.references "membership"
+
     t.boolean "attended", default: false, null: false
+    t.timestamps
+
     t.index ["id"], name: "index_attendance_records_on_id", unique: true
-    t.index ["meeting_id", "membership_id"], name: "index_gathering_member_id", unique: true
-    t.index ["meeting_id"], name: "index_attendance_records_on_meeting_id"
-    t.index ["membership_id"], name: "index_attendance_records_on_membership_id"
+    t.index ["meeting_id"], name: "index_attendance_records_on_meeting"
+    t.index ["membership_id"], name: "index_attendance_records_on_membership"
+    t.index ["meeting_id", "membership_id"], name: "index_attendance_records_on_meeting_and_member", unique: true
   end
 
   create_table "campuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "community_id", null: false
+    t.references "community", null: false
+
     t.string "name"
-    t.string "email"
-    t.string "phone"
     t.string "street_primary"
     t.string "street_secondary"
     t.string "city"
     t.string "state"
-    t.string "postal_code"
-    t.string "time_zone"
     t.string "country"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "postal_code"
+    t.string "email"
+    t.string "phone"
+    t.boolean "primary", default: false, null: false
     t.datetime "active_on"
     t.datetime "inactive_on"
-    t.index ["city"], name: "index_campuses_on_city"
-    t.index ["community_id"], name: "index_campuses_on_community_id"
+    t.timestamps
+
     t.index ["id"], name: "index_campuses_on_id", unique: true
-    t.index ["postal_code"], name: "index_campuses_on_postal_code"
-    t.index ["state"], name: "index_campuses_on_state"
+    t.index ["community_id"], name: "index_campuses_on_community"
+    t.index ["city"], name: "index_campus_on_city"
+    t.index ["postal_code"], name: "index_campus_on_postal_code"
+    t.index ["state"], name: "index_campus_on_state"
+    t.index ["email"], name: "index_campus_on_email"
+    t.index ["phone"], name: "index_campus_on_phone"
   end
 
   create_table "communities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name"
     t.datetime "active_on", null: false
     t.datetime "inactive_on"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.timestamps
+
     t.index ["id"], name: "index_communities_on_id", unique: true
     t.index ["name"], name: "index_communities_on_name"
   end
 
   create_table "gatherings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "community_id", null: false
+    t.references "community", null: false
+    t.references "campus", null: false
+
     t.string "name"
     t.text "description"
     t.string "street_primary"
     t.string "street_secondary"
     t.string "city"
     t.string "state"
-    t.string "postal_code"
     t.string "country"
+    t.string "postal_code"
     t.string "time_zone"
     t.datetime "meeting_starts"
     t.datetime "meeting_ends"
     t.integer "meeting_day"
     t.integer "meeting_time"
     t.integer "meeting_duration"
-    t.boolean "childcare", default: false, null: false
-    t.boolean "childfriendly", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "minimum"
     t.integer "maximum"
     t.boolean "open", default: true, null: false
-    t.integer "campus_id"
-    t.index ["campus_id"], name: "index_gatherings_on_campus_id"
-    t.index ["city"], name: "index_gatherings_on_city"
-    t.index ["community_id"], name: "index_gatherings_on_community_id"
+    t.timestamps
+
     t.index ["id"], name: "index_gatherings_on_id", unique: true
+    t.index ["campus_id"], name: "index_gatherings_on_campus"
+    t.index ["city"], name: "index_gathering_address_on_city"
+    t.index ["postal_code"], name: "index_gathering_address_on_postal_code"
+    t.index ["state"], name: "index_gathering_address_on_state"
     t.index ["meeting_day"], name: "index_gatherings_on_meeting_day"
     t.index ["meeting_time"], name: "index_gatherings_on_meeting_time"
     t.index ["open"], name: "index_gatherings_on_open"
-    t.index ["postal_code"], name: "index_gatherings_on_postal_code"
-    t.index ["state"], name: "index_gatherings_on_state"
-  end
-
-  create_table "inquiries", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "member_id", null: false
-    t.integer "group_id", null: false
-    t.string "group_type", null: false
-    t.datetime "sent_on", null: false
-    t.text "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "answered_on"
-    t.index ["answered_on"], name: "index_inquiries_on_answered_on"
-    t.index ["group_id"], name: "index_inquiries_on_group_id"
-    t.index ["group_type", "group_id", "member_id"], name: "index_inquiries_on_group_type_and_group_id_and_member_id", unique: true
-    t.index ["group_type", "group_id"], name: "index_inquiries_on_group_type_and_group_id"
-    t.index ["id"], name: "index_inquiries_on_id", unique: true
-    t.index ["member_id"], name: "index_inquiries_on_member_id"
   end
 
   create_table "meetings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "gathering_id", null: false
+    t.references "gathering", null: false
+
     t.datetime "datetime", null: false
     t.boolean "canceled", default: false, null: false
-    t.index ["datetime"], name: "index_meetings_on_datetime"
-    t.index ["gathering_id", "datetime"], name: "index_gathering_datetime", unique: true
-    t.index ["gathering_id"], name: "index_meetings_on_gathering_id"
+    t.timestamps
+
     t.index ["id"], name: "index_meetings_on_id", unique: true
+    t.index ["datetime"], name: "index_meetings_on_datetime"
+    t.index ["gathering_id"], name: "index_meetings_on_gathering"
+    t.index ["gathering_id", "datetime"], name: "index_meetings_on_gathering_datetime", unique: true
   end
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "first_name"
     t.string "last_name"
     t.string "gender", limit: 25, default: "", null: false
-    t.string "email", default: "", null: false
+    t.string "street_primary"
+    t.string "street_secondary"
+    t.string "city"
+    t.string "state"
+    t.string "country"
+    t.string "postal_code"
+    t.string "email"
     t.string "phone"
-    t.string "postal_code", limit: 25
-    t.string "country", limit: 2
     t.string "time_zone"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -142,83 +150,131 @@ ActiveRecord::Schema.define(version: 20180208205758) do
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "provider"
     t.string "uid"
-    t.index ["confirmation_token"], name: "index_members_on_confirmation_token", unique: true
-    t.index ["email"], name: "index_members_on_email", unique: true
+    t.timestamps
+    
+    t.index ["id"], name: "index_members_on_id", unique: true
     t.index ["first_name"], name: "index_members_on_first_name"
     t.index ["gender"], name: "index_members_on_gender"
-    t.index ["id"], name: "index_members_on_id", unique: true
+    t.index ["confirmation_token"], name: "index_members_on_confirmation_token", unique: true
+    t.index ["city"], name: "index_members_address_on_city"
+    t.index ["postal_code"], name: "index_members_address_on_postal_code"
+    t.index ["state"], name: "index_members_address_on_state"
+    t.index ["email"], name: "index_members_on_email", unique: true
     t.index ["phone"], name: "index_members_on_phone"
-    t.index ["postal_code"], name: "index_members_on_postal_code"
     t.index ["provider"], name: "index_members_on_provider"
     t.index ["reset_password_token"], name: "index_members_on_reset_password_token", unique: true
     t.index ["uid"], name: "index_members_on_uid"
     t.index ["unlock_token"], name: "index_members_on_unlock_token", unique: true
+    t.index ["time_zone"], name: "index_members_on_time_zone"
   end
 
   create_table "membership_requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "member_id", null: false
-    t.integer "gathering_id", null: false
+    t.references "member", null: false
+    t.references "gathering", null: false
+
     t.datetime "sent_on", null: false
     t.datetime "expires_on", null: false
     t.text "message"
     t.datetime "responded_on"
     t.string "status", limit: 25
-    t.index ["gathering_id"], name: "index_membership_requests_on_gathering_id"
-    t.index ["id", "member_id", "gathering_id"], name: "index_id_member_gathering", unique: true
+    t.timestamps
+
     t.index ["id"], name: "index_membership_requests_on_id", unique: true
-    t.index ["member_id"], name: "index_membership_requests_on_member_id"
+    t.index ["gathering_id"], name: "index_membership_requests_on_gathering"
+    t.index ["id", "member_id", "gathering_id"], name: "index_id_member_gathering", unique: true
+    t.index ["member_id"], name: "index_membership_requests_on_member"
     t.index ["responded_on"], name: "index_membership_requests_on_responded_on"
     t.index ["status"], name: "index_membership_requests_on_status"
   end
 
   create_table "memberships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "member_id", null: false
-    t.integer "group_id", null: false
+    t.references "member", null: false
+
+    t.bigint "group_id", null: false, unsigned: true
     t.string "group_type", null: false
     t.datetime "active_on", null: false
     t.datetime "inactive_on"
-    t.string "participant", limit: 25
-    t.string "role"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["group_id"], name: "index_memberships_on_group_id"
-    t.index ["group_type", "group_id", "member_id"], name: "index_memberships_on_group_type_and_group_id_and_member_id", unique: true
-    t.index ["group_type", "group_id"], name: "index_memberships_on_group_type_and_group_id"
+    t.string "role", null: false, limit: 25
+    t.timestamps
+
     t.index ["id"], name: "index_memberships_on_id", unique: true
-    t.index ["member_id"], name: "index_memberships_on_member_id"
-    t.index ["participant"], name: "index_memberships_on_participant"
+    t.index ["group_type", "group_id"], name: "index_memberships_on_group"
+    t.index ["group_type", "group_id", "member_id"], name: "index_memberships_on_group_and_member", unique: true
+    t.index ["member_id"], name: "index_memberships_on_member"
+    t.index ["member_id", "role"], name: "index_memberships_on_member_and_role"
     t.index ["role"], name: "index_memberships_on_role"
   end
 
+  create_table "preferences", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "community"
+    t.references "member"
+    t.references "campus"
+    t.references "gathering"
+    t.timestamps
+    
+    t.index ["id"], name: "index_preferences_on_id", unique: true
+    t.index ["community_id"], name: "index_preferences_on_community"
+    t.index ["member_id"], name: "index_preferences_on_member"
+    t.index ["community_id", "member_id"], name: "index_preferences_on_community_and_member", unique: true
+    t.index ["campus_id"], name: "index_preferences_on_campus"
+    t.index ["gathering_id"], name: "index_preferences_on_gathering"
+  end
+
+  create_table "role_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "community"
+
+    t.string "group_type", null: false
+    t.string "role"
+    t.string "name"
+    t.timestamps
+
+    t.index ["id"], name: "index_role_names_on_id", unique: true
+    t.index ["community_id"], name: "index_role_names_on_community"
+    t.index ["community_id", "group_type", "role"], name: "index_role_names_on_community_and_role", unique: true
+    t.index ["role"], name: "index_role_names_on_role"
+  end
+
+  create_table "tag_sets", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "community", null: true
+
+    t.string "name"
+    t.string "single"
+    t.string "plural"
+    t.string "prompt"
+    t.timestamps
+
+    t.index ["id"], name: "index_tag_sets_on_id", unique: true
+    t.index ["name"], name: "index_tag_sets_on_name"
+    t.index ["community_id"], name: "index_tag_sets_on_community"
+    t.index ["name", "community_id"], name: "index_tag_sets_on_name_and_community", unique: true
+  end
+
   create_table "taggings", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "tag_id"
-    t.string "taggable_type"
-    t.integer "taggable_id"
-    t.string "tagger_type"
-    t.integer "tagger_id"
-    t.string "context", limit: 128
-    t.datetime "created_at"
-    t.index ["context"], name: "index_taggings_on_context"
-    t.index ["id"], name: "id", unique: true
-    t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
-    t.index ["tag_id"], name: "index_taggings_on_tag_id"
-    t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
-    t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
-    t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
+    t.references "tag"
+
+    t.bigint "taggable_id", null: false, unsigned: true
+    t.string "taggable_type", null: false
+    t.timestamps
+
+    t.index ["id"], name: "index_taggings_on_id", unique: true
+    t.index ["tag_id"], name: "index_taggings_on_tag"
     t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
-    t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
-    t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
+    t.index ["tag_id", "taggable_id", "taggable_type"], name: "index_taggings_tag_and_taggable", unique: true
+    t.index ["taggable_id", "taggable_type"], name: "index_taggings_on_taggable"
   end
 
   create_table "tags", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "tag_set", null: false
+
     t.string "name"
-    t.integer "taggings_count", default: 0
-    t.index ["id"], name: "id", unique: true
-    t.index ["name"], name: "index_tags_on_name", unique: true
+    t.timestamps
+
+    t.index ["id"], name: "index_tags_on_id", unique: true
+    t.index ["name"], name: "index_tags_on_name"
+    t.index ["tag_set_id"], name: "index_tags_on_tag_set"
+    t.index ["name", "tag_set_id"], name: "index_tags_on_name_and_tag_set", unique: true
   end
 
 end

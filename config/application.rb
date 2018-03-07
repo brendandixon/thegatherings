@@ -45,6 +45,7 @@ module TheGatherings
     config.autoload_paths << Rails.root.join("app", "models", "validators")
     config.autoload_paths << Rails.root.join("lib")
     config.autoload_paths << Rails.root.join("lib", "extensions")
+    config.autoload_paths << Rails.root.join("lib", "reports")
   end
 end
 

@@ -1,16 +1,25 @@
 require "rails_helper"
 
-class BelongingModelOwner1 < FauxModel
+class UnknownModel < TestModelBase
+  define_attribute :unused
 end
 
-class BelongingModelOwner2 < FauxModel
+class BelongingModelOwner1 < TestModelBase
+  define_attribute :unused
 end
 
-class BelongingModelOwner3 < FauxModel
+class BelongingModelOwner2 < TestModelBase
+  define_attribute :unused
 end
 
-class BelongingModel < FauxModel
-  define_attributes :model, :model_blank, :model_new
+class BelongingModelOwner3 < TestModelBase
+  define_attribute :unused
+end
+
+class BelongingModel < TestModelBase
+  define_attribute :model
+  define_attribute :model_blank
+  define_attribute :model_new
 
   validates :model, belonging: {models: [BelongingModelOwner1, BelongingModelOwner2, BelongingModelOwner3]}
   validates :model_blank, belonging: {allow_blank: true, models: [BelongingModelOwner1, BelongingModelOwner2, BelongingModelOwner3]}
@@ -30,7 +39,7 @@ describe BelongingValidator, type: :validator do
   end
 
   it 'requires a known model' do
-    @bm.model = FauxModel.new
+    @bm.model = UnknownModel.new
     expect(@bm).to be_invalid
     expect(@bm.errors).to have_key(:model)
   end

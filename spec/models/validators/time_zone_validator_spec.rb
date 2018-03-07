@@ -1,7 +1,10 @@
 require "rails_helper"
 
-class TimeZoneModel < FauxModel
-  define_attributes :time_zone, :time_zone_blank, :time_zone_us, :other
+class TimeZoneModel < TestModelBase
+  define_attribute :time_zone
+  define_attribute :time_zone_blank
+  define_attribute :time_zone_us
+  define_attribute :other
 
   validates :time_zone, time_zone: true
   validates :time_zone_blank, time_zone: {allow_blank: true}

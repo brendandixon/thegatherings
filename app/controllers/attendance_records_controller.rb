@@ -1,13 +1,3 @@
-# == Schema Information
-#
-# Table name: attendance_records
-#
-#  id            :integer          not null, primary key
-#  meeting_id    :integer
-#  membership_id :integer
-#  attended      :boolean          default(FALSE), not null
-#
-
 class AttendanceRecordsController < ApplicationController
 
   before_action :set_attendance_record, except: COLLECTION_ACTIONS
@@ -66,7 +56,8 @@ class AttendanceRecordsController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @gathering : @attendance_record
-      authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering
+      context = is_contextual_action? ? :as_anyone : :as_leader
+      authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering, context: context
     end
 
     def ensure_campus

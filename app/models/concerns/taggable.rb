@@ -1,159 +1,103 @@
 module Taggable
   extend ActiveSupport::Concern
 
-  TAGS = %w(age_group gender life_stage relationship topic)
-
-  class<<self
-  
-    # TODO: Replace with values_for
-    def to_tags(set, *tags)
-      m = Taggable.const_get(set.classify.pluralize) rescue nil if set.is_a?(String)
-      m.present? ? (m.const_get('VALUES') & tags) : []
-    end
-
-    def options_for(set)
-      TAGS.include?(set) ? "Taggable::#{set.classify.pluralize}".constantize::OPTIONS : []
-    end
-
-    def scope_to_tags(o, params)
-      TAGS.each do |set|
-        next unless params[set].present?
-        tags = to_tags(set, *params[set].split(','))
-        o = o.tagged_with(tags, on: set.pluralize, any: true) if tags.present?
-      end
-      o
-    end
-
-    def values_for(set)
-      TAGS.include?(set) ? "Taggable::#{set.classify.pluralize}".constantize::VALUES : []
-    end
-
-  end
-
-  module AgeGroups
-    extend ActiveSupport::Concern
-
-    VALUES = [
-      'junior_high',
-      'high_school',
-      'college',
-      'twenties',
-      'thirties',
-      'forties',
-      'fifties',
-      'sixties',
-      'plus'
-    ]
-    OPTIONS = VALUES.map{|t| [t, I18n.t(t, scope:[:tags, :age_groups])]}
-
-    included do
-      acts_as_taggable_on :age_groups
-
-      validates :age_group_list, tags: {allow_blank: true, values: VALUES}
-
-      scope :for_age_groups, lambda{|*ages| tagged_with(ages, on: :age_groups, any: true)}
-    end
-  end
-
-  module Genders
-    extend ActiveSupport::Concern
-
-    VALUES = [
-      'women',
-      'men',
-      'mixed'
-    ]
-    OPTIONS = VALUES.map{|t| [t, I18n.t(t, scope: [:tags, :genders])]}
-
-    included do
-      acts_as_taggable_on :genders
-
-      validates :gender_list, tags: {allow_blank: true, values: VALUES}
-
-      scope :for_genders, lambda{|*genders| tagged_with(genders, on: :genders, any: true)}
-    end
-  end
-
-  module LifeStages
-    extend ActiveSupport::Concern
-
-    VALUES = [
-      'college',
-      'post_college',
-      'early_career',
-      'established_career',
-      'post_career'
-    ]
-    OPTIONS = VALUES.map{|t| [t, I18n.t(t, scope: [:tags, :life_stages])]}
-
-    included do
-      acts_as_taggable_on :life_stages
-
-      validates :life_stage_list, tags: {allow_blank: true, values: VALUES}
-
-      scope :for_life_stages, lambda{|*life_stages| tagged_with(life_stages, on: :life_stages, any: true)}
-    end
-  end
-
-  module Relationships
-    extend ActiveSupport::Concern
-
-    VALUES = [
-      'single',
-      'young_married',
-      'early_family',
-      'established_family',
-      'empty_nester',
-      'divorced'
-    ]
-    OPTIONS = VALUES.map{|t| [t, I18n.t(t, scope: [:tags, :relationships])]}
-
-    included do
-      acts_as_taggable_on :relationships
-
-      validates :relationship_list, tags: {allow_blank: true, values: VALUES}
-
-      scope :for_relationships, lambda{|*relationships| tagged_with(relationships, on: :relationships, any: true)}
-    end
-  end
-
-  module Topics
-    extend ActiveSupport::Concern
-
-    VALUES = [
-      'bible',
-      'topical',
-      'devotional',
-      'family',
-      'marriage',
-      'singleness',
-      'men',
-      'women'
-    ]
-    OPTIONS = VALUES.map{|t| [t, I18n.t(t, scope: [:tags, :topics])]}
-
-    included do
-      acts_as_taggable_on :topics
-
-      validates :topic_list, tags: {allow_blank: true, values: VALUES}
-
-      scope :for_topics, lambda{|*topics| tagged_with(topics, on: :topics, any: true)}
-    end
-  end
-
   included do
-    include AgeGroups
-    include Genders
-    include LifeStages
-    include Relationships
-    include Topics
+    has_many :taggings, as: :taggable, dependent: :destroy
+    has_many :tags, through: :taggings
+
+    if self < ApplicationRecord
+      scope :tagged_with, lambda{|tags| joins(:taggings).where(taggings: {tag_id: tags})}
+      scope :tagged_with_set, lambda{|tag_set| tagged_with(tag_set.tags)}
+    end
   end
 
-  def is_tagged?(*tags)
-    (tags.present? ? tags : TAGS).all?{|tag| self.send("#{tag}_list").length > 0}
+  def add_tags!(*tags)
+    tags = normalize_tags(*tags)
+    return if tags.empty?
+
+    if self.new_record?
+      tags.each {|tag| self.taggings.build(tag: tag)}
+    else
+      self.class.transaction do
+        tags.each {|tag| self.taggings.create!(tag: tag)}
+      end
+    end
+
+  end
+  alias :add_tag! :add_tags!
+
+  def remove_tags!(*tags)
+    return self.taggings.clear if tags.empty?
+
+    tags = normalize_tags(*tags)
+    return if tags.empty?
+
+    taggings = self.taggings.for_tags(tags).all
+    self.taggings.delete(taggings) if taggings.present?
+
+  end
+  alias :remove_tag! :remove_tags!
+
+  def set_tags!(*tags, **options)
+    tags = normalize_tags(*tags)
+    return if tags.empty?
+
+    if options[:tag_set].present?
+      tag_set = options[:tag_set]
+      tag_set = TagSet.for_community(self.community).with_name(tag_set).first if tag_set.is_a?(String) || tag_set.is_a?(Symbol)
+      return unless tag_set.is_a?(TagSet) && tag_set.community == self.community
+      taggings = self.taggings.from_set(tag_set)
+    else
+      taggings = self.taggings
+    end
+
+    self.class.transaction do
+      taggings.each {|tagging| tagging.delete unless tags.include?(tagging.tag)}
+      tags.each {|tag| self.taggings.create(tag: tag) unless self.tags.exists?(tag.id)}
+    end
   end
 
   def has_tags?(*tags)
-    (tags.present? ? tags : TAGS).any?{|tag| self.send("#{tag}_list").length > 0}
+    return self.is_tagged? if tags.empty?
+
+    tags = normalize_tags(*tags).map{|tag| tag.id}
+    return false if tags.empty?
+ 
+    tags.all?{|tag| self.tags.exists?(tag)}
   end
+  alias :has_tag? :has_tags?
+
+  def is_tagged?
+    !self.taggings.empty?
+  end
+
+  def tag_sets
+    self.community.present? ? self.community.tag_sets.to_a : []
+  end
+
+  def tags_from_set(tag_set)
+    return [] unless self.community.present?
+    return [] unless tag_set.is_a?(TagSet)
+
+    self.tags.from_set(tag_set)
+  end
+
+  protected
+
+    def normalize_tags(*tags)
+      tags = tags.flatten.map do |tag|
+                if tag.is_a?(Tag)
+                  tag
+                elsif tag.is_a?(String) && tag =~ /\A\d+\z/
+                  Tag.find(tag.to_i) rescue nil
+                elsif tag.is_a?(Integer)
+                  Tag.find(tag) rescue nil
+                else
+                  nil
+                end
+              end
+
+      tags.compact
+    end
+
 end

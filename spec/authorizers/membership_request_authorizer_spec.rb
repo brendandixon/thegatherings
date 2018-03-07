@@ -7,11 +7,11 @@ describe MembershipRequestAuthorizer, type: :authorizer do
     @campus = create(:campus, community: @community)
     @gathering = create(:gathering, community: @community, campus: @campus)
 
-    @administrator = create(:member)
-    @leader = create(:member)
     @assistant = create(:member)
-    @coach = create(:member)
+    @leader = create(:member)
     @member = create(:member)
+    @overseer = create(:member)
+    @visitor = create(:member)
 
     @affiliate = create(:member)
   end
@@ -26,319 +26,17 @@ describe MembershipRequestAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
+      ApplicationAuthorizer::COMMUNITY_ROLES.each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
-      create(:membership, :as_member, group: @community, member: @affiliate)
+      create(:membership, :as_member, group: @campus, member: @affiliate)
       @membership_request = build(:membership_request, gathering: @gathering, member: @member)
     end
 
     after :context do
       MembershipRequest.delete_all
       Membership.delete_all
-    end
-
-    context 'Administrator' do
-      it 'allows creation' do
-        expect(@membership_request.authorizer).to be_creatable_by(@administrator)
-      end
-
-      it 'allows reading' do
-        expect(@membership_request.authorizer).to be_readable_by(@administrator)
-      end
-
-      it 'allows updating' do
-        expect(@membership_request.authorizer).to be_updatable_by(@administrator)
-      end
-
-      it 'allows deletion' do
-        expect(@membership_request.authorizer).to be_deletable_by(@administrator)
-      end
-    end
-
-    context 'Leader' do
-      it 'allows creation' do
-        expect(@membership_request.authorizer).to be_creatable_by(@leader)
-      end
-
-      it 'allows reading' do
-        expect(@membership_request.authorizer).to be_readable_by(@leader)
-      end
-
-      it 'allows updating' do
-        expect(@membership_request.authorizer).to be_updatable_by(@leader)
-      end
-
-      it 'allows deletion' do
-        expect(@membership_request.authorizer).to be_deletable_by(@leader)
-      end
-    end
-
-    context 'Assistant' do
-      it 'disallows creation' do
-        expect(@membership_request.authorizer).to_not be_creatable_by(@assistant)
-      end
-
-      it 'disallows reading' do
-        expect(@membership_request.authorizer).to_not be_readable_by(@assistant)
-      end
-
-      it 'disallows updating' do
-        expect(@membership_request.authorizer).to_not be_updatable_by(@assistant)
-      end
-
-      it 'disallows deletion' do
-        expect(@membership_request.authorizer).to_not be_deletable_by(@assistant)
-      end
-    end
-
-    context 'Coach' do
-      it 'allows creation' do
-        expect(@membership_request.authorizer).to be_creatable_by(@coach)
-      end
-
-      it 'allows reading' do
-        expect(@membership_request.authorizer).to be_readable_by(@coach)
-      end
-
-      it 'allows updating' do
-        expect(@membership_request.authorizer).to be_updatable_by(@coach)
-      end
-
-      it 'allows deletion' do
-        expect(@membership_request.authorizer).to be_deletable_by(@coach)
-      end
-    end
-
-    context 'Member' do
-      context 'For Self' do
-        it 'allows creation' do
-          expect(@membership_request.authorizer).to be_creatable_by(@member)
-        end
-
-        it 'allows reading' do
-          expect(@membership_request.authorizer).to be_readable_by(@member)
-        end
-
-        it 'allows updating if unaccepted' do
-          expect(@membership_request.authorizer).to be_updatable_by(@member)
-        end
-
-        it 'disallows updating if accepted' do
-          @membership_request.accept!
-          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
-        end
-
-        it 'disallows updating if dismissed' do
-          @membership_request.dismiss!
-          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
-        end
-
-        it 'allows deletion' do
-          expect(@membership_request.authorizer).to be_deletable_by(@member)
-        end
-      end
-
-      context 'For Others' do
-        before do
-          @membership_request.member = @affiliate
-        end
-        
-        it 'disallows creation' do
-          expect(@membership_request.authorizer).to_not be_creatable_by(@member)
-        end
-
-        it 'allows reading' do
-          expect(@membership_request.authorizer).to_not be_readable_by(@member)
-        end
-
-        it 'disallows updating' do
-          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
-        end
-
-        it 'allows deletion' do
-          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
-        end
-      end
-    end
-  end
-
-  context "for a Campus" do
-
-    before :context do
-      create(:membership, :as_member, group: @community, member: @member)
-      create(:membership, :as_member, group: @community, member: @affiliate)
-      [:administrator, :leader, :assistant, :coach, :member].each do |affiliation|
-        member = self.instance_variable_get("@#{affiliation}")
-        create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
-      end
-      @membership_request = build(:membership_request, gathering: @gathering, member: @member)
-    end
-
-    after :context do
-      MembershipRequest.delete_all
-      Membership.delete_all
-    end
-
-    context 'Administrator' do
-      it 'allows creation' do
-        expect(@membership_request.authorizer).to be_creatable_by(@administrator)
-      end
-
-      it 'allows reading' do
-        expect(@membership_request.authorizer).to be_readable_by(@administrator)
-      end
-
-      it 'allows updating' do
-        expect(@membership_request.authorizer).to be_updatable_by(@administrator)
-      end
-
-      it 'allows deletion' do
-        expect(@membership_request.authorizer).to be_deletable_by(@administrator)
-      end
-    end
-
-    context 'Leader' do
-      it 'allows creation' do
-        expect(@membership_request.authorizer).to be_creatable_by(@leader)
-      end
-
-      it 'allows reading' do
-        expect(@membership_request.authorizer).to be_readable_by(@leader)
-      end
-
-      it 'allows updating' do
-        expect(@membership_request.authorizer).to be_updatable_by(@leader)
-      end
-
-      it 'allows deletion' do
-        expect(@membership_request.authorizer).to be_deletable_by(@leader)
-      end
-    end
-
-    context 'Assistant' do
-      it 'disallows creation' do
-        expect(@membership_request.authorizer).to_not be_creatable_by(@assistant)
-      end
-
-      it 'disallows reading' do
-        expect(@membership_request.authorizer).to_not be_readable_by(@assistant)
-      end
-
-      it 'disallows updating' do
-        expect(@membership_request.authorizer).to_not be_updatable_by(@assistant)
-      end
-
-      it 'disallows deletion' do
-        expect(@membership_request.authorizer).to_not be_deletable_by(@assistant)
-      end
-    end
-
-    context 'Coach' do
-      it 'allows creation' do
-        expect(@membership_request.authorizer).to be_creatable_by(@coach)
-      end
-
-      it 'allows reading' do
-        expect(@membership_request.authorizer).to be_readable_by(@coach)
-      end
-
-      it 'allows updating' do
-        expect(@membership_request.authorizer).to be_updatable_by(@coach)
-      end
-
-      it 'allows deletion' do
-        expect(@membership_request.authorizer).to be_deletable_by(@coach)
-      end
-    end
-
-    context 'Member' do
-      context 'For Self' do
-        it 'allows creation' do
-          expect(@membership_request.authorizer).to be_creatable_by(@member)
-        end
-
-        it 'allows reading' do
-          expect(@membership_request.authorizer).to be_readable_by(@member)
-        end
-
-        it 'allows updating if unaccepted' do
-          expect(@membership_request.authorizer).to be_updatable_by(@member)
-        end
-
-        it 'disallows updating if accepted' do
-          @membership_request.accept!
-          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
-        end
-
-        it 'disallows updating if dismissed' do
-          @membership_request.dismiss!
-          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
-        end
-
-        it 'allows deletion' do
-          expect(@membership_request.authorizer).to be_deletable_by(@member)
-        end
-      end
-
-      context 'For Others' do
-        before do
-          @membership_request.member = @affiliate
-        end
-        
-        it 'disallows creation' do
-          expect(@membership_request.authorizer).to_not be_creatable_by(@member)
-        end
-
-        it 'allows reading' do
-          expect(@membership_request.authorizer).to_not be_readable_by(@member)
-        end
-
-        it 'disallows updating' do
-          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
-        end
-
-        it 'allows deletion' do
-          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
-        end
-      end
-    end
-  end
-
-  context "for a Gathering" do
-
-    before :context do
-      create(:membership, :as_member, group: @community, member: @member)
-      create(:membership, :as_member, group: @community, member: @affiliate)
-      [:leader, :assistant, :coach, :member].each do |affiliation|
-        member = self.instance_variable_get("@#{affiliation}")
-        create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
-      end
-      @membership_request = build(:membership_request, gathering: @gathering, member: @member)
-    end
-
-    after :context do
-      MembershipRequest.delete_all
-      Membership.delete_all
-    end
-
-    context 'Leader' do
-      it 'allows creation' do
-        expect(@membership_request.authorizer).to be_creatable_by(@leader)
-      end
-
-      it 'allows reading' do
-        expect(@membership_request.authorizer).to be_readable_by(@leader)
-      end
-
-      it 'allows updating' do
-        expect(@membership_request.authorizer).to be_updatable_by(@leader)
-      end
-
-      it 'allows deletion' do
-        expect(@membership_request.authorizer).to be_deletable_by(@leader)
-      end
     end
 
     context 'Assistant' do
@@ -359,21 +57,21 @@ describe MembershipRequestAuthorizer, type: :authorizer do
       end
     end
 
-    context 'Coach' do
+    context 'Leader' do
       it 'allows creation' do
-        expect(@membership_request.authorizer).to be_creatable_by(@coach)
+        expect(@membership_request.authorizer).to be_creatable_by(@leader)
       end
 
       it 'allows reading' do
-        expect(@membership_request.authorizer).to be_readable_by(@coach)
+        expect(@membership_request.authorizer).to be_readable_by(@leader)
       end
 
       it 'allows updating' do
-        expect(@membership_request.authorizer).to be_updatable_by(@coach)
+        expect(@membership_request.authorizer).to be_updatable_by(@leader)
       end
 
       it 'allows deletion' do
-        expect(@membership_request.authorizer).to be_deletable_by(@coach)
+        expect(@membership_request.authorizer).to be_deletable_by(@leader)
       end
     end
 
@@ -387,7 +85,11 @@ describe MembershipRequestAuthorizer, type: :authorizer do
           expect(@membership_request.authorizer).to be_readable_by(@member)
         end
 
-        it 'allows updating if unaccepted' do
+        it 'allows updating if not completed' do
+          @membership_request.unanswer!
+          expect(@membership_request.authorizer).to be_updatable_by(@member)
+
+          @membership_request.answer!
           expect(@membership_request.authorizer).to be_updatable_by(@member)
         end
 
@@ -401,8 +103,22 @@ describe MembershipRequestAuthorizer, type: :authorizer do
           expect(@membership_request.authorizer).to_not be_updatable_by(@member)
         end
 
-        it 'allows deletion' do
+        it 'allows deletion if not completed' do
+          @membership_request.unanswer!
           expect(@membership_request.authorizer).to be_deletable_by(@member)
+
+          @membership_request.answer!
+          expect(@membership_request.authorizer).to be_deletable_by(@member)
+        end
+
+        it 'disallows deletion if accepted' do
+          @membership_request.accept!
+          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
+        end
+
+        it 'disallows deletion if dismissed' do
+          @membership_request.dismiss!
+          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
         end
       end
 
@@ -415,7 +131,7 @@ describe MembershipRequestAuthorizer, type: :authorizer do
           expect(@membership_request.authorizer).to_not be_creatable_by(@member)
         end
 
-        it 'allows reading' do
+        it 'disallows reading' do
           expect(@membership_request.authorizer).to_not be_readable_by(@member)
         end
 
@@ -423,18 +139,58 @@ describe MembershipRequestAuthorizer, type: :authorizer do
           expect(@membership_request.authorizer).to_not be_updatable_by(@member)
         end
 
-        it 'allows deletion' do
+        it 'disallows deletion' do
           expect(@membership_request.authorizer).to_not be_deletable_by(@member)
         end
       end
     end
+  
+    context 'Overseer' do
+      it 'disallows creation' do
+        expect(@membership_request.authorizer).to_not be_creatable_by(@overseer)
+      end
+
+      it 'disallows reading' do
+        expect(@membership_request.authorizer).to_not be_readable_by(@overseer)
+      end
+
+      it 'disallows updating' do
+        expect(@membership_request.authorizer).to_not be_updatable_by(@overseer)
+      end
+
+      it 'disallows deletion' do
+        expect(@membership_request.authorizer).to_not be_deletable_by(@overseer)
+      end
+    end
+  
+    context 'Visitor' do
+      it 'disallows creation' do
+        expect(@membership_request.authorizer).to_not be_creatable_by(@visitor)
+      end
+
+      it 'disallows reading' do
+        expect(@membership_request.authorizer).to_not be_readable_by(@visitor)
+      end
+
+      it 'disallows updating' do
+        expect(@membership_request.authorizer).to_not be_updatable_by(@visitor)
+      end
+
+      it 'disallows deletion' do
+        expect(@membership_request.authorizer).to_not be_deletable_by(@visitor)
+      end
+    end
   end
 
-  context "for a Member" do
+  context "for a Campus" do
 
     before :context do
-      create(:membership, :as_member, group: @gathering, member: @member)
-      @membership_request = build(:membership_request, gathering: @gathering, member: @affiliate)
+      ApplicationAuthorizer::CAMPUS_ROLES.each do |affiliation|
+        member = self.instance_variable_get("@#{affiliation}")
+        create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
+      end
+      create(:membership, :as_member, group: @campus, member: @affiliate)
+      @membership_request = build(:membership_request, gathering: @gathering, member: @member)
     end
 
     after :context do
@@ -442,20 +198,333 @@ describe MembershipRequestAuthorizer, type: :authorizer do
       Membership.delete_all
     end
 
-    it 'disallows creation' do
-      expect(@membership_request.authorizer).to_not be_creatable_by(@member)
+    context 'Assistant' do
+      it 'allows creation' do
+        expect(@membership_request.authorizer).to be_creatable_by(@assistant)
+      end
+
+      it 'allows reading' do
+        expect(@membership_request.authorizer).to be_readable_by(@assistant)
+      end
+
+      it 'allows updating' do
+        expect(@membership_request.authorizer).to be_updatable_by(@assistant)
+      end
+
+      it 'allows deletion' do
+        expect(@membership_request.authorizer).to be_deletable_by(@assistant)
+      end
     end
 
-    it 'disallows reading' do
-      expect(@membership_request.authorizer).to_not be_readable_by(@member)
+    context 'Leader' do
+      it 'allows creation' do
+        expect(@membership_request.authorizer).to be_creatable_by(@leader)
+      end
+
+      it 'allows reading' do
+        expect(@membership_request.authorizer).to be_readable_by(@leader)
+      end
+
+      it 'allows updating' do
+        expect(@membership_request.authorizer).to be_updatable_by(@leader)
+      end
+
+      it 'allows deletion' do
+        expect(@membership_request.authorizer).to be_deletable_by(@leader)
+      end
     end
 
-    it 'disallows updating' do
-      expect(@membership_request.authorizer).to_not be_updatable_by(@member)
+    context 'Member' do
+      context 'For Self' do
+        it 'allows creation' do
+          expect(@membership_request.authorizer).to be_creatable_by(@member)
+        end
+
+        it 'allows reading' do
+          expect(@membership_request.authorizer).to be_readable_by(@member)
+        end
+
+        it 'allows updating if not completed' do
+          @membership_request.unanswer!
+          expect(@membership_request.authorizer).to be_updatable_by(@member)
+
+          @membership_request.answer!
+          expect(@membership_request.authorizer).to be_updatable_by(@member)
+        end
+
+        it 'disallows updating if accepted' do
+          @membership_request.accept!
+          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
+        end
+
+        it 'disallows updating if dismissed' do
+          @membership_request.dismiss!
+          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
+        end
+
+        it 'allows deletion if not completed' do
+          @membership_request.unanswer!
+          expect(@membership_request.authorizer).to be_deletable_by(@member)
+
+          @membership_request.answer!
+          expect(@membership_request.authorizer).to be_deletable_by(@member)
+        end
+
+        it 'disallows deletion if accepted' do
+          @membership_request.accept!
+          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
+        end
+
+        it 'disallows deletion if dismissed' do
+          @membership_request.dismiss!
+          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
+        end
+      end
+
+      context 'For Others' do
+        before do
+          @membership_request.member = @affiliate
+        end
+        
+        it 'disallows creation' do
+          expect(@membership_request.authorizer).to_not be_creatable_by(@member)
+        end
+
+        it 'disallows reading' do
+          expect(@membership_request.authorizer).to_not be_readable_by(@member)
+        end
+
+        it 'disallows updating' do
+          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
+        end
+
+        it 'disallows deletion' do
+          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
+        end
+      end
+    end
+  
+    context 'Overseer' do
+      it 'disallows creation' do
+        expect(@membership_request.authorizer).to_not be_creatable_by(@overseer)
+      end
+
+      it 'disallows reading' do
+        expect(@membership_request.authorizer).to_not be_readable_by(@overseer)
+      end
+
+      it 'disallows updating' do
+        expect(@membership_request.authorizer).to_not be_updatable_by(@overseer)
+      end
+
+      it 'disallows deletion' do
+        expect(@membership_request.authorizer).to_not be_deletable_by(@overseer)
+      end
+    end
+  
+    context 'assigned Overseer' do
+
+      before :context do
+        @gathering.assigned_overseers.create!(membership: @overseer.memberships.take)
+      end
+
+      after :context do
+        AssignedOverseer.delete_all
+      end
+
+      it 'allows creation' do
+        expect(@membership_request.authorizer).to be_creatable_by(@overseer)
+      end
+
+      it 'allows reading' do
+        expect(@membership_request.authorizer).to be_readable_by(@overseer)
+      end
+
+      it 'allows updating' do
+        expect(@membership_request.authorizer).to be_updatable_by(@overseer)
+      end
+
+      it 'allows deletion' do
+        expect(@membership_request.authorizer).to be_deletable_by(@overseer)
+      end
+    end
+  
+    context 'Visitor' do
+      it 'disallows creation' do
+        expect(@membership_request.authorizer).to_not be_creatable_by(@visitor)
+      end
+
+      it 'disallows reading' do
+        expect(@membership_request.authorizer).to_not be_readable_by(@visitor)
+      end
+
+      it 'disallows updating' do
+        expect(@membership_request.authorizer).to_not be_updatable_by(@visitor)
+      end
+
+      it 'disallows deletion' do
+        expect(@membership_request.authorizer).to_not be_deletable_by(@visitor)
+      end
+    end
+  end
+
+  context "for a Gathering" do
+
+    before :context do
+      ApplicationAuthorizer::GATHERING_ROLES.each do |affiliation|
+        member = self.instance_variable_get("@#{affiliation}")
+        create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
+      end
+      create(:membership, :as_member, group: @campus, member: @affiliate)
+      @membership_request = build(:membership_request, gathering: @gathering, member: @member)
     end
 
-    it 'disallows deletion' do
-      expect(@membership_request.authorizer).to_not be_deletable_by(@member)
+    after :context do
+      MembershipRequest.delete_all
+      Membership.delete_all
+    end
+
+    context 'Assistant' do
+      it 'allows creation' do
+        expect(@membership_request.authorizer).to be_creatable_by(@assistant)
+      end
+
+      it 'allows reading' do
+        expect(@membership_request.authorizer).to be_readable_by(@assistant)
+      end
+
+      it 'allows updating' do
+        expect(@membership_request.authorizer).to be_updatable_by(@assistant)
+      end
+
+      it 'allows deletion' do
+        expect(@membership_request.authorizer).to be_deletable_by(@assistant)
+      end
+    end
+
+    context 'Leader' do
+      it 'allows creation' do
+        expect(@membership_request.authorizer).to be_creatable_by(@leader)
+      end
+
+      it 'allows reading' do
+        expect(@membership_request.authorizer).to be_readable_by(@leader)
+      end
+
+      it 'allows updating' do
+        expect(@membership_request.authorizer).to be_updatable_by(@leader)
+      end
+
+      it 'allows deletion' do
+        expect(@membership_request.authorizer).to be_deletable_by(@leader)
+      end
+    end
+
+    context 'Member' do
+      context 'For Self' do
+
+        it 'allows creation' do
+          expect(@membership_request.authorizer).to be_creatable_by(@member)
+        end
+
+        it 'allows reading' do
+          expect(@membership_request.authorizer).to be_readable_by(@member)
+        end
+
+        it 'allows updating if not completed' do
+          @membership_request.unanswer!
+          expect(@membership_request.authorizer).to be_updatable_by(@member)
+
+          @membership_request.answer!
+          expect(@membership_request.authorizer).to be_updatable_by(@member)
+        end
+
+        it 'disallows updating if accepted' do
+          @membership_request.accept!
+          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
+        end
+
+        it 'disallows updating if dismissed' do
+          @membership_request.dismiss!
+          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
+        end
+
+        it 'allows deletion if not completed' do
+          @membership_request.unanswer!
+          expect(@membership_request.authorizer).to be_deletable_by(@member)
+
+          @membership_request.answer!
+          expect(@membership_request.authorizer).to be_deletable_by(@member)
+        end
+
+        it 'disallows deletion if accepted' do
+          @membership_request.accept!
+          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
+        end
+
+        it 'disallows deletion if dismissed' do
+          @membership_request.dismiss!
+          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
+        end
+      end
+
+      context 'For Others' do
+        before do
+          @membership_request.member = @affiliate
+        end
+        
+        it 'allows creation' do
+          expect(@membership_request.authorizer).to be_creatable_by(@member)
+        end
+
+        it 'allows reading' do
+          expect(@membership_request.authorizer).to be_readable_by(@member)
+        end
+
+        it 'disallows updating' do
+          expect(@membership_request.authorizer).to_not be_updatable_by(@member)
+        end
+
+        it 'disallows deletion' do
+          expect(@membership_request.authorizer).to_not be_deletable_by(@member)
+        end
+      end
+    end
+  
+    context 'Overseer' do
+      it 'disallows creation' do
+        expect(@membership_request.authorizer).to_not be_creatable_by(@overseer)
+      end
+
+      it 'disallows reading' do
+        expect(@membership_request.authorizer).to_not be_readable_by(@overseer)
+      end
+
+      it 'disallows updating' do
+        expect(@membership_request.authorizer).to_not be_updatable_by(@overseer)
+      end
+
+      it 'disallows deletion' do
+        expect(@membership_request.authorizer).to_not be_deletable_by(@overseer)
+      end
+    end
+  
+    context 'Visitor' do
+      it 'disallows creation' do
+        expect(@membership_request.authorizer).to_not be_creatable_by(@visitor)
+      end
+
+      it 'disallows reading' do
+        expect(@membership_request.authorizer).to_not be_readable_by(@visitor)
+      end
+
+      it 'disallows updating' do
+        expect(@membership_request.authorizer).to_not be_updatable_by(@visitor)
+      end
+
+      it 'disallows deletion' do
+        expect(@membership_request.authorizer).to_not be_deletable_by(@visitor)
+      end
     end
   end
 

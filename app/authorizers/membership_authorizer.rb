@@ -2,41 +2,42 @@ class MembershipAuthorizer < ApplicationAuthorizer
 
   def creatable_by?(member, options = {})
     super
-    ((to_community? || to_campus?) && (for_self?(member) || is_overseer? || is_assistant?)) ||
-    (to_gathering? && (is_overseer? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
+    (to_community? &&
+      ((for_self?(member) && resource.as_member?) ||
+        (as_signup? && acts_as_community_member?) ||
+        acts_as_community_leader?)) ||
+    (to_campus? &&
+      ((for_self?(member) && resource.as_member?) ||
+        (as_signup? && acts_as_campus_member?) ||
+        acts_as_campus_leader?)) ||
+    (to_gathering? && acts_as_gathering_leader?)
   end
 
   def readable_by?(member, options = {})
     super
     for_self?(member) ||
-    ((to_community? || to_campus?) && (is_overseer? || is_assistant?)) ||
-    (to_gathering? && (is_overseer? || is_gathering_participant? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
+    (to_community? && acts_as_campus_member?) ||
+    (to_campus? && acts_as_campus_member?) ||
+    (to_gathering? && (acts_as_gathering_member? || acts_as_campus_leader?))
   end
 
   def updatable_by?(member, options = {})
     super
-    ((to_community? || to_campus?) && (for_self?(member) || is_overseer? || is_assistant?)) ||
-    (to_gathering? && (is_overseer? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
+    for_self?(member) ||
+    (to_community? && acts_as_community_leader?) ||
+    (to_campus? && acts_as_campus_leader?) ||
+    (to_gathering? && acts_as_gathering_leader?)
   end
 
   def deletable_by?(member, options = {})
     super
     for_self?(member) ||
-    ((to_community? || to_campus?) && (is_overseer? || is_assistant?)) ||
-    (to_gathering? && (is_overseer? || is_gathering_overseer? || is_gathering_assistant? || is_coach?))
+    (to_community? && acts_as_community_leader?) ||
+    (to_campus? && acts_as_campus_leader?) ||
+    (to_gathering? && acts_as_gathering_leader?)
   end
 
-  private
-
-    def determine_memberships(member, options = {})
-      super
-      community = options[:community]
-      campus = options[:campus]
-      gathering = options[:gathering]
-      @community_membership = member.membership_in(community) rescue nil if community.present?
-      @campus_membership = member.membership_in(campus) rescue nil if campus.present?
-      @gathering_membership = member.membership_in(gathering) rescue nil if gathering.present?
-    end
+  protected
 
     def for_self?(member)
       resource.member_id == member.id

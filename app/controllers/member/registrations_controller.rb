@@ -1,4 +1,5 @@
 class Member::RegistrationsController < Devise::RegistrationsController
+  include Devised
   include MemberSignup
 
   prepend_before_action :authenticate_scope!, only: [:show, :edit, :update, :destroy]
@@ -49,34 +50,24 @@ class Member::RegistrationsController < Devise::RegistrationsController
 
   protected
 
-  # If you have extra params to permit, append them to the sanitizer.
-  def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :first_name, :gender, :last_name, :phone, :postal_code])
-  end
+    # The path used after sign up.
+    def after_sign_up_path_for(resource)
+      begin_signup_for(resource)
+    end
 
-  # If you have extra params to permit, append them to the sanitizer.
-  def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:email, :first_name, :gender, :last_name, :phone, :postal_code])
-  end
+    # The path used after sign up for inactive accounts.
+    def after_inactive_sign_up_path_for(resource)
+      show_member_registration_path
+    end
 
-  # The path used after sign up.
-  def after_sign_up_path_for(resource)
-    begin_member_signup
-  end
+    # The default url to be used after updating a resource.
+    def after_update_path_for(resource)
+      show_member_registration_path
+    end
 
-  # The path used after sign up for inactive accounts.
-  def after_inactive_sign_up_path_for(resource)
-    show_member_registration_path
-  end
-
-  # The default url to be used after updating a resource.
-  def after_update_path_for(resource)
-    show_member_registration_path
-  end
-
-  # By default we want to require a password checks on update.
-  def update_resource(resource, params)
-    resource.update_without_password(params)
-  end
+    # By default we want to require a password checks on update.
+    def update_resource(resource, params)
+      resource.update_without_password(params)
+    end
 
 end

@@ -1,5 +1,7 @@
 module ApplicationHelper
 
+  GROUP_TYPES = [ Community.to_s, Campus.to_s, Gathering.to_s, ]
+
   TIME_DISPLAY_FORMAT = "%l:%M %p"
 
   # TODO: Write a real matrix layout

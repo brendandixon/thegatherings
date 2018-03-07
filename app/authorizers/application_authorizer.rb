@@ -1,24 +1,24 @@
 class ApplicationAuthorizer < Authority::Authorizer
 
-  # Notes:
-  # In addition to the ROLES and PARTICIPANTS expressly defined below, other relationships exist:
-  #   Affiliate: Anyone with a valid ROLE or is a member
-  #   Overseer: An Administrator or Leader
+  LEADER = "leader"
+  ASSISTANT = "assistant"
+  OVERSEER = "overseer"
+  MEMBER = "member"
+  VISITOR = "visitor"
 
-  OVERSEERS = %w(administrator leader)
-  ASSISTANTS = %w(assistant)
-  COACHES = %W(coach)
-  ROLES = OVERSEERS + ASSISTANTS + COACHES
+  ROLES = [LEADER, ASSISTANT, OVERSEER, MEMBER, VISITOR]
+  ASSISTANTS = [ASSISTANT]
+  LEADERS = [LEADER, ASSISTANT]
+  OVERSEERS = LEADERS + [OVERSEER]
+  MEMBERS = OVERSEERS + [MEMBER]
+  PARTICIPANTS = MEMBERS + [VISITOR]
+  VISITORS = [VISITOR]
 
-  COMMUNITY_ROLES = ROLES
-  CAMPUS_ROLES    = ROLES
-  GATHERING_ROLES = ROLES - %w(administrator)
+  COMMUNITY_ROLES = LEADERS + [MEMBER]
+  CAMPUS_ROLES = MEMBERS
+  GATHERING_ROLES = ROLES - [OVERSEER]
 
-  PARTICIPANT_MEMBER = 'member'
-  PARTICIPANT_VISITOR = 'visitor'
-  PARTICIPANTS = [PARTICIPANT_MEMBER, PARTICIPANT_VISITOR]
-
-  SCOPES = [:as_anyone, :as_member, :as_overseer, :as_visitor]
+  CONTEXTS = [:as_anyone, :as_assistant, :as_leader, :as_member, :as_signup, :as_visitor]
 
   class <<self
 
@@ -34,18 +34,18 @@ class ApplicationAuthorizer < Authority::Authorizer
       false
     end
 
-    def roles_collection
-      @@rc ||= ROLES.map{|v| [v, I18n.t(v, scope: [:tags, :roles])]} << ["", I18n.t(:none, scope: [:tags, :roles])]
-    end
-
-    def roles_for(group)
+    def roles_allowed_for(group)
       case group
-      when Community then ApplicationAuthorizer::COMMUNITY_ROLES
-      when Campus then ApplicationAuthorizer::CAMPUS_ROLES
-      when Gathering then ApplicationAuthorizer::CAMPUS_ROLES
+      when Community then COMMUNITY_ROLES
+      when Campus then CAMPUS_ROLES
+      when Gathering then GATHERING_ROLES
       else
         []
       end
+    end
+
+    def is_role_allowed?(group, role)
+      roles_allowed_for(group).include?(role)
     end
 
   end
@@ -73,59 +73,166 @@ class ApplicationAuthorizer < Authority::Authorizer
   protected
 
     def determine_memberships(member, options = {})
-      # TODO: Throw a security exception if the incoming scope is present and unrecognized?
-      options[:scope] = :as_member unless SCOPES.include?(options[:scope])
-      @scope = options[:scope]
+      # TODO: Throw a security exception if the incoming context is present and unrecognized?
+      options[:context] = :as_member unless CONTEXTS.include?(options[:context])
+      @context = options[:context]
+
+      options[:campus] ||= options[:gathering].campus if options[:gathering].present?
+      options[:community] ||= options[:campus].community if options[:campus].present?
+
+      @community_membership = community_membership_for(member, options)
+      @campus_membership = campus_membership_for(member, options)
+      @gathering_membership = gathering_membership_for(member, options)
+      @gathering_overseer = gathering_overseer_for(member, options)
+
+      # dump_roles_for(member)
     end
 
-    %w(community campus gathering).each do |group|
-      (PARTICIPANTS + ROLES + %w(affiliate overseer participant)).each do |affliation|
-        class_eval <<-METHODS, __FILE__, __LINE__ + 1
-          def is_#{group}_#{affliation}?
-            @#{group}_membership.present? && @#{group}_membership.as_#{affliation}?
-          end
-        METHODS
-      end
+    COMMUNITY_ROLES.each do |role|
+      class_eval <<-METHODS, __FILE__, __LINE__ + 1
+        def is_community_#{role}?
+          @community_membership.present? && @community_membership.as_#{role}?
+        end
+      METHODS
+    end
+
+    CAMPUS_ROLES.each do |role|
+      class_eval <<-METHODS, __FILE__, __LINE__ + 1
+        def is_campus_#{role}?
+          @campus_membership.present? && @campus_membership.as_#{role}?
+        end
+      METHODS
+    end
+
+    GATHERING_ROLES.each do |role|
+      class_eval <<-METHODS, __FILE__, __LINE__ + 1
+        def is_gathering_#{role}?
+          @gathering_membership.present? && @gathering_membership.as_#{role}?
+        end
+      METHODS
+    end
+
+    def is_assigned_overseer?
+      @gathering_overseer.present?
+    end
+
+    def acts_as_community_leader?
+      is_community_leader?
+    end
+
+    def acts_as_community_member?
+      is_community_member? || acts_as_community_leader?
+    end
+
+    def acts_as_campus_leader?
+      is_campus_leader? || acts_as_community_leader?
+    end
+
+    def acts_as_campus_member?
+      is_campus_member? || acts_as_community_member?
+    end
+
+    def acts_as_campus_overseer?
+      is_campus_overseer? || acts_as_campus_leader?
+    end
+
+    def acts_as_gathering_leader?
+      is_gathering_leader? || is_assigned_overseer? || acts_as_campus_leader?
+    end
+
+    def acts_as_gathering_member?
+      is_gathering_member? || is_assigned_overseer?
+    end
+
+    def acts_as_gathering_visitor?
+      @gathering_membership.present?
     end
 
     def as_anyone?
-      @scope == :as_anyone
+      @context == :as_anyone
+    end
+
+    def as_leader?
+      [:as_assistant, :as_leader].include?(@context)
     end
 
     def as_overseer?
-      true
+      [:as_assistant, :as_leader, :as_overseer].include?(@context)
     end
 
     def as_member?
-      @scope != :as_overseer
+      [:as_assistant, :as_leader, :as_overseer, :as_member].include?(@context)
+    end
+
+    def as_participant?
+      [:as_assistant, :as_leader, :as_overseer, :as_member, :as_visitor].include?(@context)
+    end
+
+    def as_signup?
+      [:as_signup].include?(@context)
     end
 
     def as_visitor?
-      [:as_anyone, :as_visitor].include?(@scope)
+      [:as_visitor].include?(@context)
     end
 
-    def is_administrator?
-      is_community_administrator? || is_campus_administrator?
+    def community_membership_for(member, options)
+      @community = options[:community] || (for_community? ? resource : resource.community)
+      @community.present? ? member.active_member_of(@community) : nil
+    rescue
+      nil
     end
 
-    def is_affiliate?
-      is_community_affiliate? || is_campus_affiliate?
+    def campus_membership_for(member, options)
+      @campus = options[:campus] || (for_campus? ? resource : resource.campus)
+      @campus.present? ? member.active_member_of(@campus) : nil
+    rescue
+      nil
     end
 
-    def is_overseer?
-      is_community_overseer? || is_campus_overseer?
+    def gathering_membership_for(member, options)
+      @gathering = options[:gathering] || (for_gathering? ? resource : resource.gathering)
+      @gathering.present? ? member.active_member_of(@gathering) : nil
+    rescue
+      nil
     end
 
-    def is_assistant?
-      is_community_assistant? || is_campus_assistant?
+    def gathering_overseer_for(member, options)
+      @gathering.present? ? @gathering.assigned_overseers.for_active_member(member).take : nil
+    rescue
+      nil
     end
 
-    def is_coach?
-      is_community_coach? || is_campus_coach? || is_gathering_coach?
+    def for_community?
+      resource.is_a?(Community)
     end
 
-    def is_participant?
-      is_community_participant? || is_campus_participant?
+    def for_campus?
+      resource.is_a?(Campus)
     end
+
+    def for_gathering?
+      resource.is_a?(Gathering)
+    end
+
+    protected
+
+      def dump_roles_for(member)
+        return unless Rails.env.development? || Rails.env.test?
+        
+        puts "Roles for #{member} #{'=' * 50}"
+        COMMUNITY_ROLES.each {|role| puts "Community #{role.to_s.humanize}? #{self.send("is_community_#{role}?".to_sym)}"}
+        CAMPUS_ROLES.each {|role| puts "Campus #{role.to_s.humanize}? #{self.send("is_campus_#{role}?".to_sym)}"}
+        GATHERING_ROLES.each {|role| puts "Gathering #{role.to_s.humanize}? #{self.send("is_gathering_#{role}?".to_sym)}"}
+        puts "Is Assigned Overseer? #{is_assigned_overseer?}"
+        puts "Acts as Community Leader? #{acts_as_community_leader?}"
+        puts "Acts as Community Member? #{acts_as_community_member?}"
+        puts "Acts as Campus Leader? #{acts_as_campus_leader?}"
+        puts "Acts as Campus Member? #{acts_as_campus_member?}"
+        puts "Acts as Campus Overseer? #{acts_as_campus_overseer?}"
+        puts "Acts as Gathering Leader? #{acts_as_gathering_leader?}"
+        puts "Acts as Gathering Member? #{acts_as_gathering_member?}"
+        puts "Acts as Gathering Visitor? #{acts_as_gathering_visitor?}"
+      end
 
 end

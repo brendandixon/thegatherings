@@ -3,43 +3,50 @@ module Phoneable
 
   PATTERNS = [
     #  xxxxxxxxxx
-    /\s*([1-9]\d{2})([1-9]\d{2})(\d{4})\s*/,
+    /^\s*([1-9]\d{2})([1-9]\d{2})(\d{4})\s*$/,
   
     # xxx xxxxxxx
     # xxx xxx xxxx
-    /\s*([1-9]\d{2})\s+([1-9]\d{2})\s*(\d{4})\s*/,
+    /^\s*([1-9]\d{2})\s+([1-9]\d{2})\s*(\d{4})\s*$/,
   
     # xxx.xxx.xxxx
     # xxx-xxx-xxxx
     # xxx.xxx-xxxx
     # xxx-xxx.xxxx
-    /\s*([1-9]\d{2})[\.\-]([1-9]\d{2})[\.\-](\d{4})\s*/,
+    /^\s*([1-9]\d{2})[\.\-]([1-9]\d{2})[\.\-](\d{4})\s*$/,
 
     # xxx xxx.xxxx
     # xxx xxx-xxxx
-    /\s*([1-9]\d{2})\s+([1-9]\d{2})[\.\-](\d{4})\s*/,
+    /^\s*([1-9]\d{2})\s+([1-9]\d{2})[\.\-](\d{4})\s*$/,
 
     # xxx.xxx xxxx
     # xxx-xxx xxxx
     # xxx.xxxxxxx
     # xxx-xxxxxxx
-    /\s*([1-9]\d{2})[\.\-]([1-9]\d{2})\s*(\d{4})\s*/,
+    /^\s*([1-9]\d{2})[\.\-]([1-9]\d{2})\s*(\d{4})\s*$/,
     
     # (xxx)xxx-xxxx
     # (xxx)xxx.xxxx
     # (xxx) xxx-xxxx
     # (xxx) xxx.xxxx
-    /\s*\(([1-9]\d{2})\)\s*([1-9]\d{2})[\.\-](\d{4})\s*/,
+    /^\s*\(([1-9]\d{2})\)\s*([1-9]\d{2})[\.\-](\d{4})\s*$/,
     
     # (xxx)xxxxxxx
     # (xxx)xxx xxxx 
     # (xxx) xxx xxxx
-    /\s*\(([1-9]\d{2})\)\s*([1-9]\d{2})\s*(\d{4})\s*/
+    /^\s*\(([1-9]\d{2})\)\s*([1-9]\d{2})\s*(\d{4})\s*$/
   ]
+
+  PHONE_FIELDS = [:phone]
 
   included do
     before_validation :normalize_phone
+
     validates :phone, phone: true
+
+    if self < ApplicationRecord
+      scope :with_phone, lambda{|phone| where(phone: phone)}
+    end
   end
 
   protected

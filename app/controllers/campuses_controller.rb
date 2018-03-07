@@ -1,25 +1,3 @@
-# == Schema Information
-#
-# Table name: campuses
-#
-#  id               :integer          not null, primary key
-#  community_id     :integer          not null
-#  name             :string(255)
-#  email            :string(255)
-#  phone            :string(255)
-#  street_primary   :string(255)
-#  street_secondary :string(255)
-#  city             :string(255)
-#  state            :string(255)
-#  postal_code      :string(255)
-#  time_zone        :string(255)
-#  country          :string(255)
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  active_on        :datetime
-#  inactive_on      :datetime
-#
-
 class CampusesController < ApplicationController
 
   before_action :set_campus, except: COLLECTION_ACTIONS
@@ -73,8 +51,8 @@ class CampusesController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @community : @campus
-      scope = is_scoped_action? ? :as_anyone : :as_member
-      authorize_action_for resource, community: @community, scope: scope
+      context = is_contextual_action? ? :as_anyone : :as_member
+      authorize_action_for resource, community: @community, context: context
     end
 
     def ensure_community
@@ -93,6 +71,6 @@ class CampusesController < ApplicationController
     end
 
     def campus_params
-      params.permit(campus: [:name, :contact_first_name, :contact_last_name, :email, :phone, *Campus.address_fields, :active_on, :inactive_on])
+      params.permit(campus: Campus::FORM_FIELDS)
     end
 end

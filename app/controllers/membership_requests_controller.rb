@@ -1,17 +1,3 @@
-# == Schema Information
-#
-# Table name: membership_requests
-#
-#  id           :integer          not null, primary key
-#  member_id    :integer          not null
-#  gathering_id :integer          not null
-#  sent_on      :datetime         not null
-#  expires_on   :datetime         not null
-#  message      :text(65535)
-#  responded_on :datetime
-#  status       :string(25)
-#
-
 class MembershipRequestsController < ApplicationController
 
   authority_actions accept: :update, answer: :update, dismiss: :update
@@ -103,16 +89,16 @@ class MembershipRequestsController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @gathering : @membership_request
-      scope = is_collection_action? ? :as_overseer : :as_member
-      authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering, scope: scope
+      context = is_collection_action? ? :as_leader : :as_member
+      authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering, context: context
     end
 
     def ensure_campus
-      @campus = @gathering.campus
+      @campus = @gathering.campus if @gathering.present?
     end
 
     def ensure_community
-      @community = @gathering.community
+      @community = @campus.community if @campus.present?
     end
 
     def ensure_gathering
@@ -143,6 +129,6 @@ class MembershipRequestsController < ApplicationController
     end
 
     def membership_request_params
-      params.permit(membership_request: [:member_id, :gathering_id, :message])
+      params.permit(membership_request: MembershipRequest::FORM_FIELDS)
     end
 end

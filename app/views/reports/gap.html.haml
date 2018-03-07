@@ -7,46 +7,24 @@
       .row
         .small-12.columns
           %ul.tabs{id: :tabs, data: {tabs: true}}
-            %li.tabs-title.is-active
-              = link_to "Age Groups", "#age_groups"
-            %li.tabs-title
-              = link_to "Life Stages", "#life_stages"
-            %li.tabs-title
-              = link_to "Relational Status", "#relationships"
-            %li.tabs-title
-              = link_to "Gender Mix", "#genders"
-            %li.tabs-title
-              = link_to "Topics", "#topics"
+            - @chart_data.each_with_index do |category, i|
+              %li{class: i == 0 ? 'tabs-title is-active' : 'tabs-title'}
+                = link_to category[:plural], "##{category[:container]}"
 
       .row
         .small-12.columns
           .tabs-content{data: {tabs_content: "tabs"}}
-            #age_groups.tabs-panel.is-active
-              .row
-                .small-12.columns
-                  #age_group_chart.chart{data: {chart: :age_groups}}
-            #life_stages.tabs-panel
-              .row
-                .small-12.columns
-                  #life_stage_chart.chart{data: {chart: :life_stages}}
-            #relationships.tabs-panel
-              .row
-                .small-12.columns
-                  #relationship_chart.chart{data: {chart: :relationships}}
-            #genders.tabs-panel
-              .row
-                .small-12.columns
-                  #gender_chart.chart{data: {chart: :genders}}
-            #topics.tabs-panel
-              .row
-                .small-12.columns
-                  #topic_chart.chart{data: {chart: :topics}}
+            - @chart_data.each_with_index do |category, i|
+              %div{id: category[:container], class: i == 0 ? 'tabs-panel is-active' : 'tabs-panel'}
+                .row
+                  .small-12.columns
+                    %canvas{id: "#{category[:container]}_chart", class: 'chart'}
 
       = render partial: 'shared/spacer'
       .row
         .small-4.columns
-          .actions.left
-            = link_to t(:title, scope:[:gatherings, :new]), new_community_gathering_path(@community), class: 'button small'
+          -# .actions.left
+          -#   = link_to t(:title, scope:[:gatherings, :new]), new_community_gathering_path(@community), class: 'button small'
         .small-6.columns.end
           .float-right
             = link_to t(:title, scope: [:gatherings]), community_path(@community)

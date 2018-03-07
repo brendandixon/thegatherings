@@ -1,5 +1,10 @@
 # Features
 
+## Principles
+
+- Connecting matters more than having full detail
+- Low bar entry, always
+
 ## For Members
 
 - "Connect Me" guided group finder
@@ -11,6 +16,8 @@
 - Mobile access
 - Optional reminder text or email messages
 - Secure and private Prayer / Needs by group
+- Text to sign-up
+- Gather health data via text messages
 
 ## For Leaders
 

@@ -1,33 +1,3 @@
-# == Schema Information
-#
-# Table name: gatherings
-#
-#  id               :integer          not null, primary key
-#  community_id     :integer          not null
-#  name             :string(255)
-#  description      :text(65535)
-#  street_primary   :string(255)
-#  street_secondary :string(255)
-#  city             :string(255)
-#  state            :string(255)
-#  postal_code      :string(255)
-#  country          :string(255)
-#  time_zone        :string(255)
-#  meeting_starts   :datetime
-#  meeting_ends     :datetime
-#  meeting_day      :integer
-#  meeting_time     :integer
-#  meeting_duration :integer
-#  childcare        :boolean          default(FALSE), not null
-#  childfriendly    :boolean          default(FALSE), not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  minimum          :integer
-#  maximum          :integer
-#  open             :boolean          default(TRUE), not null
-#  campus_id        :integer
-#
-
 class GatheringsController < ApplicationController
   include QueryHelpers
 
@@ -35,15 +5,17 @@ class GatheringsController < ApplicationController
 
   authority_actions gather: :read, search: :read
 
-  before_action :set_gathering, except: COLLECTION_ACTIONS
+  before_action :set_campus
   before_action :set_community
+  before_action :set_gathering, except: COLLECTION_ACTIONS
   before_action :ensure_campus
   before_action :ensure_community
+  before_action :ensure_gathering
   before_action :ensure_authorized
 
   def index
-    scope = current_member.member_of?(@community) ? :as_member : :as_anyone
-    authorize_action_for @community, scope: scope
+    context = current_member.member_of?(@community) ? :as_member : :as_anyone
+    authorize_action_for @community, context: context
     @gatherings = @community.gatherings.is_open
   end
 
@@ -59,7 +31,6 @@ class GatheringsController < ApplicationController
   def create
     respond_to do |format|
       if @gathering.save
-        Membership.join!(@gathering, current_member, 'leader')
         format.html { redirect_to edit_gathering_tags_path(@gathering), notice: 'Gathering was successfully created.' }
       else
         format.html { render :new }
@@ -117,35 +88,43 @@ class GatheringsController < ApplicationController
   private
 
     def ensure_authorized
-      resource = is_collection_action? ? @community : @gathering
-      scope = is_scoped_action? ? :as_anyone : :as_member
-      authorize_action_for resource, community: @community, campus: @campus, scope: scope
+      resource = is_collection_action? ? @campus : @gathering
+      context = is_contextual_action? ? :as_anyone : :as_member
+      authorize_action_for resource, community: @community, campus: @campus, context: context
     end
 
     def ensure_campus
-      @campus = @gathering.campus if @gathering.present?
+      @campus = @gathering.campus if @campus.blank? && @gathering.present?
+      @campus = current_member.active_campuses.first.group if @campus.blank? && current_member.active_campuses.present?
+      redirect_to member_root_path if @campus.blank?
     end
 
     def ensure_community
-      @community ||= @gathering.community if @gathering.present?
-      if @community.blank?
-        @community = current_member.communities.first
-        redirect_to (@community.present? ? community_gatherings_path(@community) : member_root_path)
-      end
+      @community = @campus.community if @community.blank? || @community != @campus.community
     end
 
+    def ensure_gathering
+      if @gathering.blank?
+        @gathering = Gathering.new(gathering_params[:gathering])
+        @gathering.community = @community
+        @gathering.campus = @campus
+      end
+      redirect_to member_root_path unless @gathering.campus = @campus
+    end
+
+    def set_campus
+      @campus = Campus.find(params[:campus_id]) rescue nil if params[:campus_id].present?
+    end
     def set_community
       @community = Community.find(params[:community_id]) rescue nil if params[:community_id].present?
-      @gathering.community ||= @community if @gathering.present?
     end
 
     def set_gathering
-      @gathering = Gathering.find(params[:id]) rescue nil
-      @gathering ||= Gathering.new(gathering_params[:gathering])
+      @gathering = Gathering.find(params[:id]) rescue nil if params[:id].present?
     end
 
     def gathering_params
-      params.permit(gathering: [:name, :description, *Gathering.address_fields, :meeting_starts, :meeting_ends, :meeting_day, :meeting_time, :meeting_duration])
+      params.permit(:campus_id, :community_id, gathering: Gathering::FORM_FIELDS)
     end
 
 end

@@ -20,16 +20,22 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  address:
-    street: "Street"
-    city: "City"
-    state: "State"
-    postal_code: "Zipcode"
-    time_zone: "Time Zone"
   activerecord:
     attributes:
+      address:
+        street_primary: "Primary Street"
+        street_secondary: "Secondary Street"
+        city: "City"
+        state: "State"
+        country: "Country"
+        postal_code: "Zipcode"
+        time_zone: "Time Zone"
       community:
         name: "Name"
+      email_address:
+        email: "Email"
+        one: "Email Address"
+        other: "Email Addresses"
       gathering:
         description: "Description"
         inactive_on: "Stops Meeting (optional)"
@@ -39,21 +45,23 @@ en:
         meeting_starts: "The first meeting occurs on"
         meeting_time: "Meeting Time"
       member:
-        email: "Email"
         first_name: "First Name"
         last_name: "Last Name"
         one: "Member"
         other: "Members"
         password: "Password"
         password_confirmation: "Confirm Password"
-        phone: "Cell Number"
-        postal_code: "Zipcode"
+        time_zone: "Time Zone"
       membership:
         active_on: "Active Since"
         participant: "Participant"
         role: "Role"
       membership_request:
         message: "Your Message"
+      phone_number:
+        phone: "Phone"
+        one: "Phone Number"
+        other: "Phone Numbers"
     models:
       campus:
         one: "Campus"
@@ -71,7 +79,11 @@ en:
         one: "Membership"
         other: "Memberships"
   tags:
+    prompt: "Preferred %{tag_set_name}?"
     age_groups:
+      single: "Age Group"
+      plural: "Age Groups"
+      prompt: "Preferred Age Groups?"
       junior_high: "Junior High"
       high_school: "High School"
       college: "College"
@@ -81,49 +93,46 @@ en:
       sixties: "60s"
       thirties: "30s"
       twenties: "20s"
-      title: "Age Groups"
-      gathering_html: "Members will be in their&#8230;"
-      preference_html: "Others in your Gathering would be in their&#8230;"
     connected:
       preference_html: "Do you presently attend a Gathering?"
     genders:
+      single: "Gender"
+      plural: "Genders"
+      prompt: "Preferred Gender Mix?"
       men: "Men Only"
       mixed: "A Mix of Women and Men"
       women: "Women Only"
-      title: "Gender Mix"
-      gathering_html: "Members will be&#8230;"
-      preference_html: "You are most comfortable if the Gathering has&#8230;"
     life_stages:
+      single: "Life Stage"
+      plural: "Life Stages"
+      prompt: "Preferred Life Stages?"
       college: "Still in College"
       early_career: "Just starting a Career"
       established_career: "Established in a Career"
       post_career: "In their Post Career"
       post_college: "Recent College Graduates"
-      title: "Life Stages"
-      gathering_html: "And they are likely&#8230;"
-      preference_html: "You prefer a Gathering whose members are&#8230;"
     relationships:
+      single: "Relationship"
+      plural: "Relationships"
+      prompt: "Preferred Relationship Status?"
       divorced: "Recovering from a Divorce"
       early_family: "Just starting a Family"
       empty_nester: "Savoring an Empty Nest"
       established_family: "Established with a Family"
       single: "Enjoying Singleness"
       young_married: "Recently Married"
-      title: "Relational Status"
-      gathering_html: "Members will be&#8230;"
-      preference_html: "The Gathering members will be&#8230;"
     topics:
+      single: "Topic"
+      plural: "Topics"
+      prompt: "Preferred Topics?"
       bible: "Bible Studies"
       topical: "Topical Studies"
-      devotional: "Prayer & Devotional"
+      devotional: "Devotional"
       family: "Family Life"
       marriage: "Maximizing Marriage"
       singleness: "Successful Singleness"
       men: "Men's Concerns"
       women: "Women's Concerns"
-      title: "Topics"
-      gathering_html: "Covered topics will include&#8230;"
-      preference_html: "Topics that interest you include&#8230;"
     gathering_title: "Gathering Profile"
     preference_title: "Your Preferences"
   charts:
@@ -317,10 +326,11 @@ en:
     memberships: "Memberships"
     title: "Membership Record"
   roles:
-    administrator: "Administrator"
-    leader: "Leader"
-    coach: "Coach"
     assistant: "Assistant"
+    leader: "Leader"
+    member: "Member"
+    overseer: "Overseer"
+    visitor: "Visitor"
     none: "None"
   welcome:
     find: "Find a Gathering"

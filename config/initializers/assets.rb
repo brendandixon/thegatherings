@@ -18,4 +18,3 @@ Rails.application.config.assets.paths << Rails.root.join(ENV['RAILS_ASSET_PATH']
 Rails.application.config.assets.paths << Rails.root.join(ENV['RAILS_ASSET_PATH'], 'node_modules', 'foundation-sites', 'dist')
 
 Rails.application.config.assets.precompile += %w( foundation-sites/dist/js/foundation.js what-input/what-input.js charts.js cards.js dates.js )
-Rails.application.config.assets.precompile += %w( c3/c3.min.css )

@@ -4,13 +4,14 @@ describe MemberMailer, type: :mailer do
 
   before :all do
     @community = create(:community)
-    @gathering = create(:gathering, community: @community)
+    @campus = create(:campus, community: @community)
+    @gathering = create(:gathering, campus: @campus)
     @leader = create(:member)
     @member = create(:member)
     
-    create(:membership, :as_member, group: @community, member: @leader)
-    create(:membership, :as_member, group: @community, member: @member)
-    create(:membership, :as_member, group: @gathering, member: @leader, role: 'leader')
+    create(:membership, :as_member, group: @campus, member: @leader)
+    create(:membership, :as_member, group: @campus, member: @member)
+    create(:membership, :as_leader, group: @gathering, member: @leader)
   end
 
   after :all do

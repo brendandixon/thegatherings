@@ -5,28 +5,31 @@ module Joinable
     has_many :memberships, as: :group, dependent: :destroy
   end
 
-  def affiliates
-    self.memberships.as_affiliate.map{|m| m.member}
-  end
-
-  def overseers
-    self.memberships.as_overseer.map{|m| m.member}
-  end
-
   def assistants
     self.memberships.as_assistant.map{|m| m.member}
   end
 
-  def coaches
-    self.memberships.as_coach.map{|m| m.member}
+  def leaders
+    self.memberships.as_leader.map{|m| m.member}
+  end
+
+  def members
+    return [] unless ApplicationAuthorizer::is_role_allowed?(self, ApplicationAuthorizer::MEMBER)
+    self.memberships.as_member.map{|m| m.member}
+  end
+
+  def overseers
+    return [] unless ApplicationAuthorizer::is_role_allowed?(self, ApplicationAuthorizer::OVERSEER)
+    self.memberships.as_overseer.map{|m| m.member}
   end
 
   def participants
+    return [] unless ApplicationAuthorizer::is_role_allowed?(self, ApplicationAuthorizer::MEMBER)
     self.memberships.as_participant.map{|m| m.member}
   end
-  alias :members :participants
 
   def visitors
+    return [] unless ApplicationAuthorizer::is_role_allowed?(self, ApplicationAuthorizer::VISITOR)
     self.memberships.as_visitor.map{|m| m.member}
   end
 

@@ -2,14 +2,16 @@
 #
 # Table name: membership_requests
 #
-#  id           :integer          not null, primary key
-#  member_id    :integer          not null
-#  gathering_id :integer          not null
+#  id           :bigint(8)        not null, primary key
+#  member_id    :bigint(8)        not null
+#  gathering_id :bigint(8)        not null
 #  sent_on      :datetime         not null
 #  expires_on   :datetime         not null
 #  message      :text(65535)
 #  responded_on :datetime
 #  status       :string(25)
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
 #
 
 require 'rails_helper'
@@ -17,10 +19,10 @@ require 'rails_helper'
 describe MembershipRequest, type: :model do
 
   before :context do
-    @community = create(:community)
-    @gathering = create(:gathering, community: @community)
+    @campus = create(:campus)
+    @gathering = create(:gathering, campus: @campus)
     @member = create(:member)
-    @join_community = create(:membership, :as_member, group: @community, member: @member)
+    @join_campus = create(:membership, :as_member, group: @campus, member: @member)
   end
 
   after :context do
@@ -38,13 +40,6 @@ describe MembershipRequest, type: :model do
     @membership_request.member = nil
     expect(@membership_request).to be_invalid
     expect(@membership_request.errors).to have_key(:member)
-  end
-
-  it 'rejects members not affiliated with the Community' do
-    @join_community.delete
-    expect(@membership_request).to be_invalid
-    expect(@membership_request.errors).to have_key(:member)
-    @join_community = create(:membership, :as_member, group: @community, member: @member)
   end
 
   it 'requires a gathering' do
@@ -111,6 +106,20 @@ describe MembershipRequest, type: :model do
     expect(@membership_request).to be_valid
     expect(@membership_request.expires_on).to be_within(1.second).of(t)
     expect(@membership_request.errors).to_not have_key(:expires_on)
+  end
+
+  it 'allows an empty responded on date if status is empty' do
+    @membership_request.status = nil
+    @membership_request.responded_on = nil
+    expect(@membership_request).to be_valid
+  end
+
+  it 'requires a responded on date if status exists' do
+    @membership_request.responded_on = nil
+    MembershipRequest::STATES.each do |state|
+      @membership_request.status = state
+      expect(@membership_request).to_not be_valid
+    end
   end
 
   context do
@@ -186,6 +195,8 @@ describe MembershipRequest, type: :model do
 
     it 'a dismissed request can be accepted' do
       @membership_request.dismiss!
+      expect(@membership_request).to be_dismissed
+
       @membership_request.accept!
       expect(@membership_request).to_not be_changed
       expect(@membership_request).to be_valid
@@ -195,6 +206,8 @@ describe MembershipRequest, type: :model do
 
     it 'an accepted request can be dismissed' do
       @membership_request.accept!
+      expect(@membership_request).to be_accepted
+
       @membership_request.dismiss!
       expect(@membership_request).to_not be_changed
       expect(@membership_request).to be_valid
@@ -213,12 +226,26 @@ describe MembershipRequest, type: :model do
 
     it 'answering resets a dismissed request' do
       @membership_request.dismiss!
+      expect(@membership_request).to be_dismissed
+
       @membership_request.answer!
       expect(@membership_request).to_not be_changed
       expect(@membership_request).to be_valid
       expect(@membership_request).to_not be_dismissed
       expect(@membership_request).to be_answered
       expect(@membership_request.responded_on).to be_acts_like(:time)
+    end
+
+    it 'can be unanswered' do
+      @membership_request.accept!
+      expect(@membership_request).to be_accepted
+
+      @membership_request.unanswer!
+      expect(@membership_request).to_not be_changed
+      expect(@membership_request).to be_valid
+      expect(@membership_request).to_not be_dismissed
+      expect(@membership_request).to be_unanswered
+      expect(@membership_request.responded_on).to be_blank
     end
   end
 

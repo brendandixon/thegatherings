@@ -2,15 +2,19 @@
 #
 # Table name: meetings
 #
-#  id           :integer          not null, primary key
-#  gathering_id :integer          not null
+#  id           :bigint(8)        not null, primary key
+#  gathering_id :bigint(8)        not null
 #  datetime     :datetime         not null
 #  canceled     :boolean          default(FALSE), not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
 #
 
 class Meeting < ApplicationRecord
   include Authority::Abilities
-  self.authorizer_name = 'GatheringAuthorizer'
+  self.authorizer_name = 'GatheringResourceAuthorizer'
+
+  FORM_FIELDS = [:gathering_id, :datetime, :canceled]
 
   belongs_to :gathering, inverse_of: :meetings
   has_many :attendance_records, inverse_of: :meeting, dependent: :destroy
@@ -22,9 +26,11 @@ class Meeting < ApplicationRecord
 
   validates_inclusion_of :canceled, in: [true, false]
 
-  scope :for_community, lambda{|community| joins(:gathering).where("gatherings.community_id = ?", community.id)}
-  scope :for_campus, lambda{|campus| joins(:gathering).where("gatherings.campus_id = ?", campus.id)}
+  scope :for_campus, lambda{|campus| joins(:gathering).where('gatherings.campus_id = ?', campus)}
+  scope :for_campuses, lambda{|*campuses| joins(:gathering).where('gatherings.campus_id IN (?)', campuses)}
+  scope :for_community, lambda{|community| joins(:gathering).for_community(community)}
   scope :for_gathering, lambda{|gathering| where(gathering_id: gathering.id)}
+
   scope :for_datetime, lambda{|dt| where(datetime: dt)}
   
   scope :since, lambda{|dt| where("datetime >= ?", dt)}
@@ -56,7 +62,7 @@ class Meeting < ApplicationRecord
   end
 
   def ensure_attendees
-    self.gathering.memberships.as_attendee.active_on(self.datetime).each do |membership|
+    self.gathering.memberships.active_on(self.datetime).each do |membership|
       next if membership.attendance_records.for_meeting(self).present?
       begin
         membership.attendance_records.create(meeting_id: self.id)

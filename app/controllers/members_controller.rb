@@ -1,49 +1,14 @@
-# == Schema Information
-#
-# Table name: members
-#
-#  id                     :integer          not null, primary key
-#  first_name             :string(255)
-#  last_name              :string(255)
-#  gender                 :string(25)       default(""), not null
-#  email                  :string(255)      default(""), not null
-#  phone                  :string(255)
-#  postal_code            :string(25)
-#  country                :string(2)
-#  time_zone              :string(255)
-#  encrypted_password     :string(255)      default(""), not null
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0), not null
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
-#  confirmation_token     :string(255)
-#  confirmed_at           :datetime
-#  confirmation_sent_at   :datetime
-#  unconfirmed_email      :string(255)
-#  failed_attempts        :integer          default(0), not null
-#  unlock_token           :string(255)
-#  locked_at              :datetime
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  provider               :string(255)
-#  uid                    :string(255)
-#
-
 class MembersController < ApplicationController
-  include MemberSignup
 
   authority_actions mygatherings: :read
   
   before_action :set_member, except: COLLECTION_ACTIONS
   before_action :set_community
+  before_action :set_campus
   before_action :ensure_authorized
 
   def index
-    authorize_action_for @community, scope: :as_member
+    authorize_action_for @community, context: :as_member
     @members = @community.members
   end
 
@@ -61,9 +26,9 @@ class MembersController < ApplicationController
       begin
         @member.save!
         @member.join!(@community)
-        begin_member_signup(@member, @community)
+        begin_signup_for(@member, @community)
         @member.send_reset_password_instructions
-        format.html { redirect_to member_signup_path, notice: 'Member was successfully created.' }
+        format.html { redirect_to signup_path_for(@member), notice: 'Member was successfully created.' }
       rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
         @member.errors.add(:email, I18n.t(:not_unique, scope:[:errors, :common])) if e.is_a?(ActiveRecord::RecordNotUnique)
         format.html { render :new }
@@ -97,13 +62,20 @@ class MembersController < ApplicationController
   private
 
     def ensure_authorized
-      resource = is_collection_action? ? @community : @member
-      authorize_action_for resource, community: @community
+      resource = is_collection_action? ? @campus : @member
+      context = is_collection_action? || in_signup_for?(@member) ? :as_member : :as_leaders
+      authorize_action_for resource, campus: @campus, context: context
+    end
+
+    def set_campus
+      @campus = Campus.find(params[:campus_id]) rescue nil if params[:campus_id].present?
+      @campus ||= current_member.active_campuses.first.group if current_member.active_campuses.present?
+      @campus = nil unless @campus.present? && @community == @campus.community
     end
 
     def set_community
-      @community = Community.find(params[:community_id]) rescue nil if params[:community_id].present?
-      @community ||= current_member.communities.first
+      @community = Community.find(param[:community_id]) rescue nil if params[:community_id].present?
+      @community ||= current_member.active_communities.first.group if current_member.active_communities.present?
     end
 
     def set_member
@@ -113,7 +85,7 @@ class MembersController < ApplicationController
     end
 
     def member_params
-      params.permit(member: [:first_name, :last_name, :gender, :email, :phone, :postal_code, :password, :password_confirmation])
+      params.permit(:campus_id, :community_id, member: Member::FORM_FIELDS + [:password, :password_confirmation])
     end
 
 end

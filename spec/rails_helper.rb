@@ -30,6 +30,9 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
+  # Allow running only failures
+  config.example_status_persistence_file_path = "#{Rails.root}/../log"
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
@@ -59,4 +62,15 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
 end
 
-require 'faux_model'
+require 'test_model'
+
+module TestConstants
+  PUNCUATION_CHARACTERS = %w(! @ # $ % ^ & * ( ) + = { } [ ] | \ ; : \ " < > , . / ? ~ `)
+end
+
+def clean_db
+  Gathering.delete_all
+  Campus.delete_all
+  Community.delete_all
+  Member.delete_all
+end

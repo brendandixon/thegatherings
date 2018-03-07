@@ -1,31 +1,28 @@
-- if resource.has_address_field?(:street_primary)
-  .row
-    .small-12.columns.end
-      .field
-        = form.label t :street, scope: [:address]
-        = form.text_field :street_primary
-- if resource.has_address_field?(:street_secondary)
-  .row
-    .small-12.columns.end
-      .field
-        = form.text_field :street_secondary
-- if resource.has_address_field?(:city)
-  .row
-    .small-6.columns
-      .field
-        = form.label t :city, scope: [:address]
-        = form.text_field :city, default: "Seattle"
-    .small-3.columns
-      .field
-        = form.label t :state, scope: [:address]
-        = form.text_field :state, default: "WA"
-    .small-3.columns.end
-      .field
-        = form.label t :postal_code, scope: [:address]
-        = form.text_field :postal_code
-- if resource.has_address_field?(:time_zone)
+.row
+  .small-12.columns.end
+    .field
+      = form.label t :street_primary, scope: [:activerecord, :attributes, :address]
+      = form.text_field :street_primary
+.row
+  .small-12.columns.end
+    .field
+      = form.text_field :street_secondary
+.row
+  .small-6.columns
+    .field
+      = form.label t :city, scope: [:activerecord, :attributes, :address]
+      = form.text_field :city, default: "Seattle"
+  .small-3.columns
+    .field
+      = form.label t :state, scope: [:activerecord, :attributes, :address]
+      = form.text_field :state, default: "WA"
+  .small-3.columns.end
+    .field
+      = form.label t :postal_code, scope: [:activerecord, :attributes, :address]
+      = form.text_field :postal_code
+- if resource.has_attribute?('time_zone')
   .row
     .small-6.columns.end
       .field
-        = form.label t :time_zone, scope: [:address]
+        = form.label t :time_zone, scope: [:activerecord, :attributes, :address]
         = form.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones

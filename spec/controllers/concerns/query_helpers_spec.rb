@@ -1,7 +1,9 @@
 require "rails_helper"
 
-class QueryHelpersModel < FauxModel
+class QueryHelpersModel < TestModelBase
   include QueryHelpers
+
+  define_attribute :unused
 end
 
 describe QueryHelpers, type: :concern do

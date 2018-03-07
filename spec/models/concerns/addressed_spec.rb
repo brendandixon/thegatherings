@@ -1,22 +1,29 @@
-require "rails_helper"
+require 'rails_helper'
 
-class AddressedModel < FauxModel
+class AddressedModel < TestModelBase
   include Addressed
 
-  define_attributes :street_primary, :street_secondary, :city, :state, :country, :postal_code, :time_zone
-  has_address_of :street_primary, :street_secondary, :city, :state, :country, :postal_code, :time_zone
+  define_attribute :street_primary, :string
+  define_attribute :street_secondary, :string
+  define_attribute :city, :string
+  define_attribute :state, :string
+  define_attribute :country, :string
+  define_attribute :postal_code, :string
 end
 
 describe Addressed, type: :concern do
 
   before :example do
-    @am = AddressedModel.new(
-        street_primary: "1234 57th Street",
-        city: "Seattle",
-        state: "WA",
-        country: :us,
-        postal_code: "12345"
-      )
+    @am = AddressedModel.new
+    @am.street_primary = "123 Some Street"
+    @am.city = "Nowhere"
+    @am.state = "WA"
+    @am.country = "US"
+    @am.postal_code = "12345"
+  end
+
+  it 'validates' do
+    expect(@am).to be_valid
   end
 
   it 'requires a street' do
@@ -107,12 +114,6 @@ describe Addressed, type: :concern do
     @am.postal_code = '98117'
     expect(@am).to be_valid
     expect(@am.errors).to_not have_key(:postal_code)
-  end
-
-  it 'requires a time zone' do
-    @am.time_zone = nil
-    expect(@am).to be_valid
-    expect(@am.errors).to_not have_key(:time_zone)
   end
 
 end

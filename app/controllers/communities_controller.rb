@@ -1,15 +1,3 @@
-# == Schema Information
-#
-# Table name: communities
-#
-#  id          :integer          not null, primary key
-#  name        :string(255)
-#  active_on   :datetime         not null
-#  inactive_on :datetime
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#
-
 class CommunitiesController < ApplicationController
 
   before_action :set_community, except: COLLECTION_ACTIONS
@@ -61,8 +49,8 @@ class CommunitiesController < ApplicationController
 
     def ensure_authorized
       if !is_collection_action?
-        scope = is_scoped_action? ? :as_anyone : :as_member
-        authorize_action_for @community, scope: scope
+        context = is_contextual_action? ? :as_anyone : :as_member
+        authorize_action_for @community, context: context
       end
     end
 
@@ -72,6 +60,6 @@ class CommunitiesController < ApplicationController
     end
 
     def community_params
-      params.permit(community: [:name, :path, :active_on, :inactive_on, :time_zone])
+      params.permit(community: Community::FORM_FIELDS)
     end
 end

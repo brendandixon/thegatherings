@@ -2,15 +2,20 @@
 #
 # Table name: attendance_records
 #
-#  id            :integer          not null, primary key
-#  meeting_id    :integer
-#  membership_id :integer
+#  id            :bigint(8)        not null, primary key
+#  meeting_id    :bigint(8)
+#  membership_id :bigint(8)
 #  attended      :boolean          default(FALSE), not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 
 class AttendanceRecord < ApplicationRecord
   include Authority::Abilities
-  self.authorizer_name = 'GatheringAuthorizer'
+
+  self.authorizer_name = 'GatheringResourceAuthorizer'
+
+  FORM_FIELDS = [:meeting_id, :membership_id, :attended]
 
   belongs_to :meeting, inverse_of: :attendance_records
   belongs_to :membership, inverse_of: :attendance_records
@@ -74,7 +79,7 @@ class AttendanceRecord < ApplicationRecord
     self.meeting.gathering if self.meeting.present?
   end
 
-  private
+  protected
 
     def is_gathering_member
       return if self.errors.has_key?(:membership) || self.errors.has_key?(:meeting)

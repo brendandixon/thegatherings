@@ -1,78 +1,85 @@
 require "rails_helper"
 
-class TagsModelMigration < ActiveRecord::Migration[5.1]
-  def up
-    create_table :tags_models
-  end
-
-  def down
-    drop_table :tags_models
-  end
-end
-
-class TagsModel < ActiveRecord::Base
-  include Taggable
-end
-
 describe Taggable, type: :concern do
-  @verbosity = true
 
   before :all do
-    @verbosity = ActiveRecord::Migration.verbose
-    ActiveRecord::Migration.verbose = false
-    TagsModelMigration.new.up
+    @c = create(:community)
+    @ca = create(:campus, community: @c)
+
+    @ts1 = @c.tag_sets.create!(name: "TagSet1")
+    @ts2 = @c.tag_sets.create!(name: "TagSet2")
+
+    @tags1 = (0..2).map{|n| @ts1.tags.create!(name: "#{@ts1.name}-Tag#{n}")}
+    @tags2 = (0..2).map{|n| @ts2.tags.create!(name: "#{@ts2.name}-Tag#{n}")}
+    @all_tags = @tags1 + @tags2
   end
 
   after :all do
-    TagsModelMigration.new.down
-    ActiveRecord::Migration.verbose = @verbosity
+    clean_db
   end
 
   before :example do
-    @tm = TagsModel.new
+    @g = create(:gathering, campus: @ca)
   end
 
-  it 'to_tags returns an empty list for unknown tag sets' do
-    expect(Taggable.to_tags('no_a_tag_set', 'value1')).to be_empty
+  it 'adds given tags' do
+    @g.add_tags!(*@all_tags)
+    expect(@g.has_tags?(@all_tags)).to be true
   end
 
-  it 'to_tags rejects unrecognized tags' do
-    expect(Taggable.to_tags('age_group', 'badvalue', 'morebad')).to be_empty
+  it 'removes given tags' do
+    @g.add_tags!(*@all_tags)
+    @g.remove_tags!(@tags1)
+    expect(@g.has_tags?(@tags1)).to be false
+    expect(@g.has_tags?(@tags2)).to be true
   end
 
-  it 'to_tags accepts unrecognized tags' do
-    expect(Taggable.to_tags('age_group', 'twenties', 'thirties').length).to be(2)
+  it 'removes all tags' do
+    @g.add_tags!(*@all_tags)
+    @g.remove_tags!
+    expect(@g).to_not be_is_tagged
   end
 
-  it 'is_tagged? returns false if tags are missing' do
-    expect(@tm).to_not be_is_tagged
+  it 'sets all tags to be those given' do
+    @g.add_tags!(*@all_tags)
+    @g.set_tags!(@tags2.first, @tags1.last)
+    expect(@g.has_tags?(@tags2.first, @tags1.last)).to be true
+    expect(@g.tags.count).to eq(2)
   end
 
-  it 'is_tagged? returns true if all tag categories have at least one tag' do
-    Taggable::TAGS.each do |tag|
-      @tm.send("#{tag}_list=", "Taggable::#{tag.classify.pluralize}".constantize::VALUES.first)
-    end
-    expect(@tm).to be_is_tagged
+  it 'sets tags within a tag set to be those given' do
+    @g.add_tags!(*@all_tags)
+    @g.set_tags!(@tags1.first, @tags1.last, tag_set:@ts1)
+    expect(@g.has_tags?(@tags2)).to be true
+    expect(@g.has_tags?(@tags1.first, @tags1.last)).to be true
+    (@tags1 - [@tags1.first, @tags1.last]).each{|tag| expect(@g.has_tag?(tag)).to be false}
   end
 
-  it 'fails validation all tag groups' do
-    Taggable::TAGS.each do |tag|
-      @tm.send("#{tag}_list=", "not a legal tag value")
-    end
-    expect(@tm).to be_invalid
-    Taggable::TAGS.each do |tag|
-      expect(@tm.errors).to have_key("#{tag}_list".to_sym)
-    end
+  it 'can check if it has specific tags' do
+    @g.add_tags!(*@all_tags)
+    expect(@g.has_tags?(@tags1.first, @tags2.last)).to be true
   end
 
-  it 'fails validation all tag groups' do
-    Taggable::TAGS.each do |tag|
-      @tm.send("#{tag}_list=", "Taggable::#{tag.classify.pluralize}".constantize::VALUES.first)
-    end
-    expect(@tm).to be_valid
-    Taggable::TAGS.each do |tag|
-      expect(@tm.errors).to_not have_key("#{tag}_list".to_sym)
-    end
+  it 'can check if it has no tags' do
+    expect(@g.is_tagged?).to be false
+  end
+
+  it 'can check if it has any tag' do
+    @g.add_tags!(*@tags1)
+    expect(@g.has_tags?).to be true
+    expect(@g.is_tagged?).to be true
+  end
+
+  it 'can return the available tag sets' do
+    tag_sets = @g.tag_sets
+    expect(tag_sets.length).to be(@c.tag_sets.length)
+    expect(tag_sets.find(@ts1)).to be_present
+    expect(tag_sets.find(@ts2)).to be_present
+  end
+
+  it 'returns taggings from a given tag set' do
+    @g.add_tags!(*@all_tags)
+    expect(@g.tags_from_set(@ts1).map{|t| t.to_s}.sort).to eq(@tags1.map{|t| t.to_s}.sort)
   end
 
 end

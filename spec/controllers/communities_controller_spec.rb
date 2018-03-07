@@ -1,15 +1,3 @@
-# == Schema Information
-#
-# Table name: communities
-#
-#  id          :integer          not null, primary key
-#  name        :string(255)
-#  active_on   :datetime         not null
-#  inactive_on :datetime
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#
-
 require 'rails_helper'
 
 describe CommunitiesController, type: :controller do
@@ -37,7 +25,7 @@ describe CommunitiesController, type: :controller do
   describe "GET #index" do
     it 'responds with HTTP 200' do
       get :index
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -55,7 +43,7 @@ describe CommunitiesController, type: :controller do
   describe "GET #show" do
     it 'responds with HTTP 200' do
       get :show, params: { id: @communities.first.id }
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 

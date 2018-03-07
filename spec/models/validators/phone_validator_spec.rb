@@ -1,7 +1,7 @@
 require "rails_helper"
 
-class PhoneModel < FauxModel
-  define_attributes :phone
+class PhoneModel < TestModelBase
+  define_attribute :phone, :string
 
   validates :phone, phone: true
 end

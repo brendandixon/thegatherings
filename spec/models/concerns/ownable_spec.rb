@@ -1,9 +1,9 @@
 require "rails_helper"
 
-class OwnableModel < FauxModel
+class OwnableModel < TestModelBase
   include Ownable
 
-  define_attributes :member_id
+  define_attribute :member_id, :integer
 end
 
 describe Ownable, type: :concern do

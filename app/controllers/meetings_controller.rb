@@ -1,13 +1,3 @@
-# == Schema Information
-#
-# Table name: meetings
-#
-#  id           :integer          not null, primary key
-#  gathering_id :integer          not null
-#  datetime     :datetime         not null
-#  canceled     :boolean          default(FALSE), not null
-#
-
 class MeetingsController < ApplicationController
 
   before_action :set_meeting, except: COLLECTION_ACTIONS
@@ -29,7 +19,7 @@ class MeetingsController < ApplicationController
 
   def create
     @meeting.datetime = Timeliness.parse(params[:on], :date, format: "yyyy-mm-dd") if params[:on].present?
-    @meeting.datetime ||= Time.zone.now
+    @meeting.datetime ||= DateTime.current
     @meeting.datetime = @gathering.prior_meeting(@meeting.datetime.end_of_day)
 
     respond_to do |format|
@@ -80,7 +70,7 @@ class MeetingsController < ApplicationController
     end
 
     def ensure_community
-      @community = @gathering.community if @gathering.present?
+      @community = @gathering.community if @gathering.present? && @gathering.campus.present?
     end
 
     def ensure_gathering
@@ -101,6 +91,6 @@ class MeetingsController < ApplicationController
     end
 
     def meeting_params
-      params.permit(meeting: [:gathering_id, :datetime, :canceled])
+      params.permit(meeting: Meeting::FORM_FIELDS)
     end
 end

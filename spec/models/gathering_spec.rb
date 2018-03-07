@@ -2,30 +2,28 @@
 #
 # Table name: gatherings
 #
-#  id               :integer          not null, primary key
-#  community_id     :integer          not null
+#  id               :bigint(8)        not null, primary key
+#  community_id     :bigint(8)        not null
+#  campus_id        :bigint(8)        not null
 #  name             :string(255)
 #  description      :text(65535)
 #  street_primary   :string(255)
 #  street_secondary :string(255)
 #  city             :string(255)
 #  state            :string(255)
-#  postal_code      :string(255)
 #  country          :string(255)
+#  postal_code      :string(255)
 #  time_zone        :string(255)
 #  meeting_starts   :datetime
 #  meeting_ends     :datetime
 #  meeting_day      :integer
 #  meeting_time     :integer
 #  meeting_duration :integer
-#  childcare        :boolean          default(FALSE), not null
-#  childfriendly    :boolean          default(FALSE), not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
 #  minimum          :integer
 #  maximum          :integer
 #  open             :boolean          default(TRUE), not null
-#  campus_id        :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 
 require 'rails_helper'
@@ -39,22 +37,16 @@ describe Gathering, type: :model do
   end
 
   context 'Basic Validation' do
-    it 'requires a Community' do
-      @gathering.community = nil
-      expect(@gathering).to be_invalid
-      expect(@gathering.errors).to have_key(:community)
-    end
-
-    it 'does not require a campus' do
-      @gathering.campus = nil
-      expect(@gathering).to be_valid
-      expect(@gathering.errors).to_not have_key(:campus)
-    end
-
     it 'accepts a campus' do
-      @gathering.campus = build(:campus)
+      @gathering.campus = create(:campus)
       expect(@gathering).to be_valid
       expect(@gathering.errors).to_not have_key(:campus)
+    end
+
+    it 'requires campus' do
+      @gathering.campus = nil
+      expect(@gathering).to_not be_valid
+      expect(@gathering.errors).to have_key(:campus)
     end
 
     it 'requires a minimum number of members' do

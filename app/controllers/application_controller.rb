@@ -1,17 +1,10 @@
 class ApplicationController < ActionController::Base
-  before_action :configure_permitted_parameters, if: :devise_controller?
-
-  protected
-
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:username])
-  end
-end
-class ApplicationController < ActionController::Base
+  include Devised
+  include MemberSignup
 
   COLLECTION_ACTIONS = %w(index)
   GROUPABLE_ACTIONS = %w(index new create)
-  SCOPED_ACTIONS = COLLECTION_ACTIONS + %w(show)
+  CONTEXTUAL_ACTIONS = COLLECTION_ACTIONS + %w(show)
 
   protect_from_forgery with: :exception
 
@@ -28,26 +21,27 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :first_name, :last_name, :password, :password_confirmation, :phone, :postal_code])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:current_password, :email, :first_name, :last_name, :password, :password_confirmation, :phone, :postal_code])
-  end
+    def dump_exception(e)
+      return unless Rails.env.development?
+      puts "EXCEPTION: #{e}"
+      e.backtrace.each {|l| puts l}
+    end
 
-  def is_collection_action?
-    self.class::COLLECTION_ACTIONS.include?(self.action_name)
-  end
+    def is_collection_action?
+      self.class::COLLECTION_ACTIONS.include?(self.action_name)
+    end
 
-  def is_scoped_action?
-    self.class::SCOPED_ACTIONS.include?(self.action_name)
-  end
-   
-  def set_locale
-    I18n.locale = params[:locale] || I18n.default_locale
-  end
+    def is_contextual_action?
+      self.class::CONTEXTUAL_ACTIONS.include?(self.action_name)
+    end
+    
+    def set_locale
+      I18n.locale = params[:locale] || I18n.default_locale
+    end
 
-  def set_timezone(&block)
-    time_zone = member_signed_in? ? current_member.time_zone : TheGatherings::Application.default_time_zone
-    Time.use_zone(time_zone, &block)
-  end
+    def set_timezone(&block)
+      time_zone = member_signed_in? ? current_member.time_zone : TheGatherings::Application.default_time_zone
+      Time.use_zone(time_zone, &block)
+    end
 
 end

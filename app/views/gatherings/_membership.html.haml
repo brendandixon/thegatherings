@@ -2,19 +2,11 @@
   .small-2.columns= membership.member.full_name
   .small-3.columns= membership.member.email
   .small-2.columns= membership.member.phone
-  .small-2.columns
-    =form_for(membership, method: :patch) do |f|
-      - ApplicationAuthorizer::PARTICIPANTS.each do |p|
-        .row.small.columns
-          = f.radio_button :participant, p, data: { autosubmit: true }
-          = f.label p
   .small-2.columns.end
-    =form_for(membership, method: :patch) do |f|
-      - ApplicationAuthorizer::GATHERING_ROLES.each do |r|
-        .row.small.columns
-          = f.radio_button :role, r, data: { autosubmit: true }
-          = f.label r
-      .row.small.columns
-        = f.radio_button :role, "", data: { autosubmit: true }
-        = f.label "None"
+    - if membership.group.is_a?(Gathering)
+      =form_for(membership, method: :patch) do |f|
+        - ApplicationAuthorizer::GATHERING_ROLES.each do |r|
+          .row.small.columns
+            = f.radio_button :role, r, data: { autosubmit: true }
+            = f.label r
 = render template: 'shared/bind_autosubmit'

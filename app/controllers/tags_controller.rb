@@ -1,5 +1,4 @@
 class TagsController < ApplicationController
-  include MemberSignup
 
   before_action :set_resource_and_community
   before_action :ensure_authorized
@@ -9,8 +8,13 @@ class TagsController < ApplicationController
   end
 
   def update
-    @resource.attributes = tag_params
     ensure_authorized
+    params = tag_params[:tags]
+    @resource.class.transaction do
+      params.keys.each do |tag_set|
+        @resource.set_tags!(*params[tag_set], tag_set: tag_set)
+      end
+    end
     respond_to do |format|
       if @resource.save
         format.html { redirect_to after_update_path, notice: "#{@resource_type.to_s.classify} was successfully updated." }
@@ -23,22 +27,22 @@ class TagsController < ApplicationController
   private
 
     def after_update_path
-      case
-      when for_gathering? then gathering_path(@resource)
-      when in_member_signup? then member_signup_path
-      else membership_path(@resource)
-      end
+      return signup_path_for(@resource.member) if for_preference? && in_signup_for?(@resource.member)
+      return gathering_path(id: @resource.id) if for_gathering?
+      return community_member_path(community_id: @resource.community, id: @resource.member.id) if for_preference?
+      member_root_path
     end
 
     def ensure_authorized
-      authorize_action_for @resource, community: @community
+      context = in_signup_for?(@resource.member) ? :as_signup : :as_leader
+      authorize_action_for @resource, community: @community, context: context
     end
 
     def for_gathering?
       @mode == :gathering
     end
 
-    def for_membership?
+    def for_preference?
       @mode == :preference
     end
 
@@ -47,20 +51,27 @@ class TagsController < ApplicationController
         @mode = :gathering
         @resource = Gathering.find(params[:gathering_id])
         @resource_type = :gathering
-        @community = @resource.community
-      elsif params[:membership_id].present?
+      elsif params[:preference_id].present?
         @mode = :preference
-        @resource = Membership.find(params[:membership_id])
-        @resource_type = :membership
-        @community = @resource.group
+        @resource = Preference.find(params[:preference_id])
+        @resource_type = :preference
+      else
+        raise
       end
-      @tags = params[:tags].present? ? (params[:tags].split(',').map{|t| t.strip} & Taggable::TAGS) : Taggable::TAGS
-    rescue
-      redirect_to :root
+      @community = @resource.community
+      
+      @tag_sets = params[:tag_sets].split(',').map{|t| @community.tag_sets.with_name(t).take} if params[:tag_sets].present?
+      @tag_sets ||= []
+      @tag_sets.compact!
+      @tag_sets = @community.tag_sets if @tag_sets.empty?
+
+    rescue Exception => e
+      dump_exception(e)
+      redirect_to member_root_path
     end
 
     def tag_params
-      params.require(@resource_type).permit(:signup, Taggable::TAGS.inject({}) {|h, tag| h["#{tag}_list".to_sym] = []; h})
+      params.require(@resource_type).permit(tags: {})
     end
 
 end

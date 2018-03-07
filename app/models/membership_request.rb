@@ -2,14 +2,16 @@
 #
 # Table name: membership_requests
 #
-#  id           :integer          not null, primary key
-#  member_id    :integer          not null
-#  gathering_id :integer          not null
+#  id           :bigint(8)        not null, primary key
+#  member_id    :bigint(8)        not null
+#  gathering_id :bigint(8)        not null
 #  sent_on      :datetime         not null
 #  expires_on   :datetime         not null
 #  message      :text(65535)
 #  responded_on :datetime
 #  status       :string(25)
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
 #
 
 class MembershipRequest < ApplicationRecord
@@ -18,8 +20,13 @@ class MembershipRequest < ApplicationRecord
 
   STATES = %w(answered accepted dismissed)
 
+  FORM_FIELDS = [:member_id, :gathering_id, :message]
+
   belongs_to :member, inverse_of: :membership_requests
   belongs_to :gathering, inverse_of: :membership_requests
+  
+  has_one :campus, through: :gathering
+  has_one :community, through: :gathering
 
   after_initialize :ensure_defaults, unless: :persisted?
 
@@ -34,7 +41,8 @@ class MembershipRequest < ApplicationRecord
   validates_inclusion_of :status, in: STATES, allow_blank: true
   validates_length_of :message, maximum: 2048
 
-  validate :membership_status
+  validate :has_valid_membership_status
+  validate :has_valid_responded_on
 
   scope :for_gathering, lambda{|gathering| where(gathering: gathering)}
   scope :for_member, lambda{|member| where(member: member)}
@@ -46,6 +54,10 @@ class MembershipRequest < ApplicationRecord
   scope :unaccepted, lambda{where.not(accepted: true)}
   scope :unexpired, lambda{where("expires_on >= ?", DateTime.current.end_of_day)}
 
+  def unanswer!
+    respond!(nil, nil)
+  end
+  
   def unanswered?
     self.status.blank?
   end
@@ -70,6 +82,10 @@ class MembershipRequest < ApplicationRecord
     accepted? || dismissed?
   end
 
+  def incomplete?
+    !completed?
+  end
+
   def dismiss!
     respond!('dismissed')
   end
@@ -78,7 +94,7 @@ class MembershipRequest < ApplicationRecord
     self.status == 'dismissed'
   end
 
-  private
+  protected
 
     def ensure_dates
       self.sent_on = DateTime.current unless self.sent_on.present?
@@ -89,15 +105,17 @@ class MembershipRequest < ApplicationRecord
       self.message ||= "I would like to join your Gathering."
     end
 
-    def membership_status
+    def has_valid_membership_status
       return unless self.gathering.present?
       return unless self.member.present?
 
-      membership = self.member.memberships.for_group(self.gathering.community).take
-      self.errors.add(:member, I18n.t(:unknown_member, scope: [:errors, :membership_request])) if membership.blank? || !membership.as_affiliate?
-
       membership = self.member.memberships.for_group(self.gathering).take
-      self.errors.add(:member, I18n.t(:already_member, scope: [:errors, :membership_request])) if membership.present? && membership.as_participant?
+      self.errors.add(:member, I18n.t(:already_member, scope: [:errors, :membership_request])) if membership.present?
+    end
+
+    def has_valid_responded_on
+      return if self.status.present? == self.responded_on.present?
+      self.errors.add(:responded_on, "status and responded_on must be both present or absent")
     end
 
     def normalize_dates
@@ -105,13 +123,11 @@ class MembershipRequest < ApplicationRecord
       self.expires_on = self.expires_on.end_of_day if self.expires_on.acts_like?(:time)
     end
 
-    def respond!(state)
-      return unless state.present?
-      if %w(accepted dismissed).include?(state) || self.status != 'accepted'
-        self.status = state
-        self.responded_on = DateTime.current
-        self.save
-      end
+    def respond!(state, responded_on = DateTime.current)
+      state = "accepted" if accepted? && state == "answered"
+      self.status = state
+      self.responded_on = responded_on
+      self.save
     end
 
 end

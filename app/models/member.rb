@@ -2,14 +2,18 @@
 #
 # Table name: members
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint(8)        not null, primary key
 #  first_name             :string(255)
 #  last_name              :string(255)
 #  gender                 :string(25)       default(""), not null
-#  email                  :string(255)      default(""), not null
+#  street_primary         :string(255)
+#  street_secondary       :string(255)
+#  city                   :string(255)
+#  state                  :string(255)
+#  country                :string(255)
+#  postal_code            :string(255)
+#  email                  :string(255)
 #  phone                  :string(255)
-#  postal_code            :string(25)
-#  country                :string(2)
 #  time_zone              :string(255)
 #  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
@@ -27,41 +31,38 @@
 #  failed_attempts        :integer          default(0), not null
 #  unlock_token           :string(255)
 #  locked_at              :datetime
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
 #  provider               :string(255)
 #  uid                    :string(255)
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 
 class Member < ApplicationRecord
   include Authority::UserAbilities
   include Authority::Abilities
   include Addressed
+  include Emailable
+  include InTimeZone
   include Phoneable
 
   GENDERS = %w(female male)
 
-  has_address_of :country, :postal_code, :time_zone
+  FORM_FIELDS = ADDRESS_FIELDS + EMAIL_FIELDS + PHONE_FIELDS + TIME_ZONE_FIELDS + [:first_name, :last_name, :gender]
 
   has_many :memberships, inverse_of: :member, dependent: :destroy
   has_many :communities, through: :memberships, source: :group, source_type: "Community"
   has_many :campuses, through: :memberships, source: :group, source_type: "Campus"
   has_many :gatherings, through: :memberships, source: :group, source_type: "Gathering"
+  has_many :preferences, inverse_of: :member, dependent: :destroy
   
   has_many :attendance_records, through: :memberships, dependent: :destroy
   has_many :membership_requests, inverse_of: :member, dependent: :destroy
 
   before_validation :ensure_password
-  before_validation :ensure_time_zone
 
   validates_length_of :first_name, within: 1..255
   validates_length_of :last_name, within: 1..255
-  validates_length_of :email, within: 6..255
-  validates :email, email: true
-  validates_uniqueness_of :email
   validates_inclusion_of :gender, in: GENDERS
-
-  scope :for_email, lambda{|email| where(email: email)}
 
   devise :database_authenticatable,
     :lockable,
@@ -74,54 +75,74 @@ class Member < ApplicationRecord
     # :validatable,
     # :omniauthable, :omniauth_providers => [:developer]
 
-  def become!(group, role)
-    Membership.become!(group, self, role)
+  def activate!(grantor, group, role = nil)
+    Membership.activate!(grantor, group, self, role)
+  end
+
+  def become!(grantor, group, role)
+    Membership.become!(grantor, group, self, role)
   end
 
   def join!(group, role = nil)
     Membership.join!(group, self, role)
   end
 
-  def affiliate_of?(group)
-    m = membership_in(group)
-    m.present? && m.as_affiliate?
-  end
-
-  def overseer_for?(group)
-    m = membership_in(group)
-    m.present? && m.as_overseer?
-  end
-
   def assistant_for?(group)
-    m = membership_in(group)
+    m = active_member_of(group)
     m.present? && m.as_assistant?
   end
 
-  def coach_for?(group)
-    m = membership_in(group)
-    m.present? && m.as_coach?
+  def leader_of?(group)
+    m = active_member_of(group)
+    m.present? && m.as_leader?
+  end
+
+  def member_of?(group)
+    active_member_of(group).present?
   end
 
   def participant_in?(group)
-    m = membership_in(group)
+    m = active_member_of(group)
     m.present? && m.as_participant?
   end
 
   def visitor_to?(group)
-    m = membership_in(group)
+    m = active_member_of(group)
     m.present? && m.as_visitor?
   end
 
-  def member_of?(group)
-    membership_in(group).present?
+  def active_communities
+    self.memberships.in_communities.is_active
   end
 
-  def membership_in(group)
-    self.memberships.for_group(group).take
+  def active_campuses
+    self.memberships.in_campuses.is_active
   end
 
-  def memberships_in(klass)
-    self.memberships.in_collection(klass)
+  def active_gatherings
+    self.memberships.in_gatherings.is_active
+  end
+
+  def default_community
+    self.active_communities.first
+  end
+
+  def default_campus(community)
+    p = self.preferences.for_community(community)
+    p.exists? ? p.campus : self.active_campuses.first
+  end
+
+  def default_gathering(community)
+    p = self.preferences.for_community(community)
+    p.exists? ? p.gathering : self.active_gatherings.first
+  end
+
+  def active_member_of(group)
+    self.memberships.for_group(group).is_active.take
+  end
+
+  def inactive_member_of(group)
+    self.memberships.for_group(group).is_inactive.take
   end
 
   def abbreviated_name
@@ -159,8 +180,8 @@ class Member < ApplicationRecord
       end unless self.persisted?
     end
 
-    def ensure_time_zone
-      self.time_zone = TheGatherings::Application.default_time_zone if self.time_zone.blank?
+    def is_required_address_field?(field)
+      false
     end
 
 end

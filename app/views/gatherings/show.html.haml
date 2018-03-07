@@ -14,19 +14,19 @@
       = render partial: 'shared/spacer'
       .row
         .small-10.small-centered.columns.end
-          - Taggable::TAGS.each do |t|
+          - @gathering.tag_sets.each do |tag_set|
             .row
               .small-3.columns
-                = t(:title, scope: [:tags, t.pluralize])
+                = tag_set.plural
               .small-9.columns
-                = @gathering.send("#{t}_list").map{|i| t(i, scope: [:tags, t.pluralize])}.join(', ')
+                = @gathering.tags_from_set(tag_set).map{|t| t.to_s}.join(', ')
 
-      - if @gathering.readable_by?(current_member, scope: :as_member)
+      - if @gathering.readable_by?(current_member, context: :as_member)
         = render partial: 'shared/spacer'
         .row
           .small-10.small-centered.columns.end
             %h4 Overseers
-            = render partial: 'membership', collection: @gathering.memberships.with_role
+            = render partial: 'membership', collection: @gathering.assigned_overseers.map{|overseer| overseer.membership}
         .row
           .small-10.small-centered.columns.end
             %h4 Members

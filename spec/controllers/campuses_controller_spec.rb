@@ -1,25 +1,3 @@
-# == Schema Information
-#
-# Table name: campuses
-#
-#  id               :integer          not null, primary key
-#  community_id     :integer          not null
-#  name             :string(255)
-#  email            :string(255)
-#  phone            :string(255)
-#  street_primary   :string(255)
-#  street_secondary :string(255)
-#  city             :string(255)
-#  state            :string(255)
-#  postal_code      :string(255)
-#  time_zone        :string(255)
-#  country          :string(255)
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  active_on        :datetime
-#  inactive_on      :datetime
-#
-
 require 'rails_helper'
 
 describe CampusesController, type: :controller do
@@ -31,7 +9,7 @@ describe CampusesController, type: :controller do
     @campuses = []
     10.times { @campuses << create(:campus, community: @community) }
 
-    create(:membership, :as_administrator, member: @member, group: @community)
+    create(:membership, :as_leader, member: @member, group: @community)
   end
 
   after :all do
@@ -52,7 +30,7 @@ describe CampusesController, type: :controller do
   describe "GET #index" do
     it 'responds with HTTP 200' do
       get :index, params: {community_id: @community.id}
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -70,7 +48,7 @@ describe CampusesController, type: :controller do
   describe "GET #show" do
     it 'responds with HTTP 200' do
       get :show, params: { id: @campuses.first.id }
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 
@@ -88,7 +66,7 @@ describe CampusesController, type: :controller do
   describe "GET #new" do
     it 'responds with HTTP 200' do
       get :new, params: { community_id: @community.id }
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response).to have_http_status(200)
     end
 

@@ -2,29 +2,32 @@ class CommunityAuthorizer < ApplicationAuthorizer
 
   def creatable_by?(member, options = {})
     super
+    for_community_resource? ? acts_as_community_leader? : false
   end
 
   def readable_by?(member, options = {})
     super
+    as_anyone? ||
     as_visitor? ||
-    (as_member? && is_community_affiliate?) || 
-    (as_overseer? && (is_community_overseer? || is_community_assistant?))
+    for_community_resource? ||
+    (as_member? && acts_as_community_member?) ||
+    (as_leader? && acts_as_community_leader?)
   end
 
   def updatable_by?(member, options = {})
     super
-    is_community_overseer? || is_community_assistant?
+    acts_as_community_leader?
   end
 
   def deletable_by?(member, options = {})
     super
+    for_community_resource? ? acts_as_community_leader? : false
   end
 
   protected
 
-    def determine_memberships(member, options)
-      super
-      @community_membership = member.membership_in(resource) rescue nil
+    def for_community_resource?
+      resource.is_a?(RoleName) || resource.is_a?(Tag) || resource.is_a?(TagSet)
     end
 
 end

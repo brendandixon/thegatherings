@@ -1,7 +1,8 @@
 require "rails_helper"
 
-class EmailModel < FauxModel
-  define_attributes :email, :email_blank
+class EmailModel < TestModelBase
+  define_attribute :email, :string
+  define_attribute :email_blank, :string
 
   validates :email, email: true
   validates :email_blank, email: {allow_blank: true}

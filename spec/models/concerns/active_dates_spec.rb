@@ -1,9 +1,10 @@
 require "rails_helper"
 
-class ActiveDatesModel < FauxModel
+class ActiveDatesModel < TestModelBase
   include ActiveDates
 
-  define_attributes :active_on, :inactive_on
+  define_attribute :active_on, :datetime
+  define_attribute :inactive_on, :datetime
 end
 
 describe ActiveDates, type: :concern do
