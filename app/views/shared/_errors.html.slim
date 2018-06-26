@@ -1,0 +1,4 @@
+- unless resource.errors.empty?
+  #error_explanation
+    h2= I18n.t(:not_saved, scope:[:errors, :common], count: resource.errors.count, resource: resource.class.model_name.human)
+    ul= resource.errors.full_messages.map { |msg| content_tag(:li, msg) }.join.html_safe

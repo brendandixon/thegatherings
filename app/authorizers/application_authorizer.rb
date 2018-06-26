@@ -178,21 +178,21 @@ class ApplicationAuthorizer < Authority::Authorizer
 
     def community_membership_for(member, options)
       @community = options[:community] || (for_community? ? resource : resource.community)
-      @community.present? ? member.active_member_of(@community) : nil
+      @community.present? ? member.active_member_of?(@community) : nil
     rescue
       nil
     end
 
     def campus_membership_for(member, options)
       @campus = options[:campus] || (for_campus? ? resource : resource.campus)
-      @campus.present? ? member.active_member_of(@campus) : nil
+      @campus.present? ? member.active_member_of?(@campus) : nil
     rescue
       nil
     end
 
     def gathering_membership_for(member, options)
       @gathering = options[:gathering] || (for_gathering? ? resource : resource.gathering)
-      @gathering.present? ? member.active_member_of(@gathering) : nil
+      @gathering.present? ? member.active_member_of?(@gathering) : nil
     rescue
       nil
     end

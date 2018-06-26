@@ -33,4 +33,19 @@ module ApplicationHelper
                       end
   end
 
+
+  # Usage: embedded_svg('images/foo.svg', class: 'bar')
+  def embedded_svg(filename, options = {})
+    # assets = Rails.application.assets
+    # file = assets.find_asset(filename).source.force_encoding("UTF-8")
+    File.open("app/assets/images/#{filename}", 'rb') do |file|
+      doc = Nokogiri::HTML::DocumentFragment.parse file
+      svg = doc.at_css "svg"
+      if options[:class].present?
+        svg["class"] = options[:class]
+      end
+      raw doc
+    end
+  end
+
 end

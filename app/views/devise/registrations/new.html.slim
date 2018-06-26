@@ -1,0 +1,12 @@
+- props = { action:  registration_url(resource_name), for: 'member', excludePassword: true }
+- if resource.present?
+-   props = props.merge({ firstName: resource.first_name, lastName: resource.last_name, email: resource.email, phone: resource.phone })
+-   props[:alerts] = resource.errors.full_messages if resource.errors.present?
+body
+  .welcome.w-100.h-100
+    .container.w-100.h-100
+      .row.h-100.align-items-center.justify-content-center
+        .col-8
+          .card
+            .card-body
+              = react_component 'Forms/NewMemberForm', props

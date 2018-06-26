@@ -1,0 +1,8 @@
+Hi <%= @request.member.first_name %>,
+
+  You asked: <%= @request.message %>
+
+  <%= @answer %>
+
+<%= @responder.full_name %>
+<%= @request.gathering.name if @request.gathering.present? %>

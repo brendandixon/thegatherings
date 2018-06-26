@@ -1,77 +1,82 @@
 class TagsController < ApplicationController
 
-  before_action :set_resource_and_community
+  before_action :set_tag, except: COLLECTION_ACTIONS
+  before_action :set_tag_set
+  before_action :set_community
   before_action :ensure_authorized
 
+  def index
+    @tags = @tag_set.tags
+    respond_to do |format|
+      format.html { render }
+      format.json { render json: @tags.as_json }
+    end
+  end
+
+  def show
+    respond_to do |format|
+      format.html { render }
+      format.json { render json: @tag.as_json }
+    end
+  end
+
+  def new
+  end
+
   def edit
-    render :edit
+  end
+
+  def create
+    respond_to do |format|
+      if @tag.save
+        format.html { redirect_to tag_path(@tag), notice: 'Tag was successfully created.' }
+      else
+        format.html { render :new }
+      end
+    end
   end
 
   def update
+    @tag.attributes = tag_params[:tag_set]
     ensure_authorized
-    params = tag_params[:tags]
-    @resource.class.transaction do
-      params.keys.each do |tag_set|
-        @resource.set_tags!(*params[tag_set], tag_set: tag_set)
-      end
-    end
     respond_to do |format|
-      if @resource.save
-        format.html { redirect_to after_update_path, notice: "#{@resource_type.to_s.classify} was successfully updated." }
+      if @tag.save
+        format.html { redirect_to tag_path(@tag), notice: 'Tag was successfully updated.' }
       else
         format.html { render :edit }
       end
     end
   end
 
+  def destroy
+    @tag.destroy
+    respond_to do |format|
+      format.html { redirect_to tag_path(@tag), notice: 'Tag was successfully destroyed.' }
+    end
+  end
+
   private
 
-    def after_update_path
-      return signup_path_for(@resource.member) if for_preference? && in_signup_for?(@resource.member)
-      return gathering_path(id: @resource.id) if for_gathering?
-      return community_member_path(community_id: @resource.community, id: @resource.member.id) if for_preference?
-      member_root_path
-    end
-
     def ensure_authorized
-      context = in_signup_for?(@resource.member) ? :as_signup : :as_leader
-      authorize_action_for @resource, community: @community, context: context
+      authorize_action_for @community
     end
 
-    def for_gathering?
-      @mode == :gathering
+    def set_community
+      @community = @tag_set.community if @tag_set.present?
+      redirect_to root_path unless @community.present?
     end
 
-    def for_preference?
-      @mode == :preference
+    def set_tag
+      @tag = Tag.find(params[:id]) rescue nil if params[:id].present?
+      @tag ||= Tag.new(tag_params[:tag])
     end
 
-    def set_resource_and_community
-      if params[:gathering_id].present?
-        @mode = :gathering
-        @resource = Gathering.find(params[:gathering_id])
-        @resource_type = :gathering
-      elsif params[:preference_id].present?
-        @mode = :preference
-        @resource = Preference.find(params[:preference_id])
-        @resource_type = :preference
-      else
-        raise
-      end
-      @community = @resource.community
-      
-      @tag_sets = params[:tag_sets].split(',').map{|t| @community.tag_sets.with_name(t).take} if params[:tag_sets].present?
-      @tag_sets ||= []
-      @tag_sets.compact!
-      @tag_sets = @community.tag_sets if @tag_sets.empty?
-
-    rescue Exception => e
-      dump_exception(e)
-      redirect_to member_root_path
+    def set_tag_set
+      @tag_set = TagSet.find(params[:tag_set_id]) rescue nil if params[:tag_set_id].present?
     end
 
     def tag_params
-      params.require(@resource_type).permit(tags: {})
+      params.permit(tags: Tag::FORM_FIELDS)
     end
 
 end

@@ -48,6 +48,26 @@ class Member < ApplicationRecord
   GENDERS = %w(female male)
 
   FORM_FIELDS = ADDRESS_FIELDS + EMAIL_FIELDS + PHONE_FIELDS + TIME_ZONE_FIELDS + [:first_name, :last_name, :gender]
+  JSON_EXCLUDES = JSON_EXCLUDES + %w(
+    encrypted_password
+    reset_password_token
+    reset_password_sent_at
+    remember_created_at
+    sign_in_count
+    current_sign_in_at
+    last_sign_in_at
+    current_sign_in_ip
+    last_sign_in_ip
+    confirmation_token
+    confirmed_at
+    confirmation_sent_at
+    unconfirmed_email
+    failed_attempts
+    unlock_token
+    locked_at
+    provider
+    uid
+  )
 
   has_many :memberships, inverse_of: :member, dependent: :destroy
   has_many :communities, through: :memberships, source: :group, source_type: "Community"
@@ -56,7 +76,7 @@ class Member < ApplicationRecord
   has_many :preferences, inverse_of: :member, dependent: :destroy
   
   has_many :attendance_records, through: :memberships, dependent: :destroy
-  has_many :membership_requests, inverse_of: :member, dependent: :destroy
+  has_many :requests, inverse_of: :member, dependent: :destroy
 
   before_validation :ensure_password
 
@@ -88,60 +108,65 @@ class Member < ApplicationRecord
   end
 
   def assistant_for?(group)
-    m = active_member_of(group)
+    m = active_member_of?(group)
     m.present? && m.as_assistant?
   end
 
   def leader_of?(group)
-    m = active_member_of(group)
+    m = active_member_of?(group)
     m.present? && m.as_leader?
   end
 
   def member_of?(group)
-    active_member_of(group).present?
+    active_member_of?(group).present?
   end
 
   def participant_in?(group)
-    m = active_member_of(group)
+    m = active_member_of?(group)
     m.present? && m.as_participant?
   end
 
   def visitor_to?(group)
-    m = active_member_of(group)
+    m = active_member_of?(group)
     m.present? && m.as_visitor?
   end
 
-  def active_communities
+  def active_community_memberships
     self.memberships.in_communities.is_active
   end
 
-  def active_campuses
+  def active_campus_memberships
     self.memberships.in_campuses.is_active
   end
 
-  def active_gatherings
+  def active_gathering_memberships
     self.memberships.in_gatherings.is_active
   end
 
   def default_community
-    self.active_communities.first
+    m = self.active_community_memberships.first
+    m.community if m.present?
   end
 
   def default_campus(community)
-    p = self.preferences.for_community(community)
-    p.exists? ? p.campus : self.active_campuses.first
+    p = self.preferences.for_community(community).first
+    return p.campus if p.present? && p.campus.present?
+    m = self.active_campus_memberships.first
+    m.campus if m.present?
   end
 
   def default_gathering(community)
-    p = self.preferences.for_community(community)
-    p.exists? ? p.gathering : self.active_gatherings.first
+    p = self.preferences.for_community(community).first
+    return p.gathering if p.present? && p.gathering.present?
+    m = self.active_gathering_memberships.first
+    m.gathering if m.present?
   end
 
-  def active_member_of(group)
+  def active_member_of?(group)
     self.memberships.for_group(group).is_active.take
   end
 
-  def inactive_member_of(group)
+  def inactive_member_of?(group)
     self.memberships.for_group(group).is_inactive.take
   end
 
@@ -165,6 +190,14 @@ class Member < ApplicationRecord
 
   def is_self?(member)
     self.id == member.id
+  end
+
+  def as_json(*)
+    super.except(*JSON_EXCLUDES).tap do |m|
+      id = m['id']
+      m['path'] = member_path(id, format: :json)
+      m['signout_path'] = signout_path(format: :json)
+    end
   end
 
   def to_s

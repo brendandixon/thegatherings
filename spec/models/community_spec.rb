@@ -125,8 +125,7 @@ describe Community, type: :model do
     end
 
     def validate_default_tags(key, actual)
-      values = TagSet::DEFAULT_TAG_SETS[key].map{|t| I18n.t(t, scope: [:tags, key])}
-      expect(actual.map{|tag| tag.to_s}.sort).to eq(values.sort)
+      expect(actual.map{|tag| tag.name}.sort).to eq(TagSet::DEFAULT_TAG_SETS[key].sort)
     end
 
   end

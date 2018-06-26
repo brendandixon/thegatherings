@@ -7,9 +7,17 @@ class CampusesController < ApplicationController
 
   def index
     @campuses = @community.campuses
+    respond_to do |format|
+      format.html { render }
+      format.json { render json: @campuses.as_json }
+    end
   end
 
   def show
+    respond_to do |format|
+      format.html { render }
+      format.json { render json: @campus.as_json }
+    end
   end
 
   def new

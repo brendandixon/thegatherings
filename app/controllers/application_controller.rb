@@ -1,12 +1,12 @@
 class ApplicationController < ActionController::Base
   include Devised
-  include MemberSignup
 
   COLLECTION_ACTIONS = %w(index)
   GROUPABLE_ACTIONS = %w(index new create)
   CONTEXTUAL_ACTIONS = COLLECTION_ACTIONS + %w(show)
 
-  protect_from_forgery with: :exception
+  protect_from_forgery with: :exception, unless: -> { request.format.json? }
+  prepend_view_path Rails.root.join('frontend')
 
   before_action :set_locale
   before_action :configure_permitted_parameters, if: :devise_controller?

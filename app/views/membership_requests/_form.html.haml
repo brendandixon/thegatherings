@@ -1,4 +1,4 @@
-= form_for @membership_request, url: url do |f|
+= form_for @request, url: url do |f|
   = f.hidden_field :member_id
   = f.hidden_field :gathering_id
   .row
@@ -17,12 +17,12 @@
     .small-2.columns
       .actions
         = link_to t(:cancel, scope: [:common]), gathering_path(@gathering), class: 'button small expanded'
-    - if @membership_request.persisted?
+    - if @request.persisted?
       .small-2.columns
         .action
-          = link_to t(:delete, scope: [:common]), membership_request_path(@membership_request), method: :delete, class: 'button small expanded'
+          = link_to t(:delete, scope: [:common]), request_path(@request), method: :delete, class: 'button small expanded'
     .small-2.columns.end
       .actions
         = f.submit t(:send, scope: [:common]), class: 'button small expanded'
 
-= render partial: 'shared/errors', locals: {resource: @membership_request}
+= render partial: 'shared/errors', locals: {resource: @request}

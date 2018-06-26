@@ -40,19 +40,19 @@ class Membership < ApplicationRecord
   scope :as_participant, lambda{in_role(ApplicationAuthorizer::PARTICIPANTS)}
   scope :as_visitor, lambda{in_role(ApplicationAuthorizer::VISITORS)}
 
-  scope :for_group, lambda{|group| where(group: group)}
-  scope :for_member, lambda{|member| where(member: member)}
-  scope :affiliated_with, lambda{|group, member| for_group(group).for_member(member) }
-
   scope :in_collection, lambda{|klass| where(group_type: klass.to_s)}
   scope :in_communities, lambda{in_collection(Community)}
   scope :in_campuses, lambda{in_collection(Campus)}
   scope :in_gatherings, lambda{in_collection(Gathering)}
 
+  scope :for_group, lambda{|group| where(group: group)}
   scope :for_campus, lambda{|campus| for_group(campus)}
   scope :for_campuses, lambda{|*campuses| for_group(campuses)}
   scope :for_community, lambda{|community| for_group(community)}
   scope :for_gathering, lambda{|gathering| for_group(gathering)}
+
+  scope :for_member, lambda{|member| where(member: member)}
+  scope :affiliated_with, lambda{|group, member| for_group(group).for_member(member) }
 
   class << self
 
@@ -84,8 +84,8 @@ class Membership < ApplicationRecord
 
     def join!(group, member, role = nil)
       role = ApplicationAuthorizer::MEMBER if role.blank?
-      m = Membership.affiliated_with(group, member).take
-      m = self.create(group: group, member: member, role: role) if m.blank?
+      m = Membership.affiliated_with(group, member).take rescue nil
+      m ||= self.create(group: group, member: member, role: role)
       m
     end
 
@@ -150,6 +150,16 @@ class Membership < ApplicationRecord
 
   def gathering
     self.group.is_a?(Gathering) ? self.group : nil
+  end
+
+  def as_json(*)
+    super.except(*JSON_EXCLUDES).tap do |m|
+      id = m['id']
+      m['path'] = membership_path(id, format: :json)
+      m['community_path'] = community_path(self.community, format: :json)
+      m['campus_path'] = self.campus.present? ? campus_path(self.campus, format: :json) : nil
+      m['gathering_path'] = self.gathering.present? ? gathering_path(self.gathering, format: :json) : nil
+    end
   end
 
   protected

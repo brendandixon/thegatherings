@@ -1,0 +1,45 @@
+body
+  .welcome.w-100.h-100
+    .container.w-100.h-100
+      .row.h-100.align-items-center
+        .col
+          .container
+            .row.text-center
+              .col
+                img.w-50 src=asset_path('logo-white.svg')
+            .row.justify-content-center
+              .col-8
+                .card-deck
+                  .card.mt-3
+                    .card-header.display-4.text-muted.text-center= t(:signin, scope: :common)
+                    .card-body
+                      - alerts = flash[:alert].present? ? [flash[:alert]] : []
+                      - email = resource.email.present? ? resource.email : ''
+                      = react_component 'Forms/SignInForm', action: session_url(resource_name), alerts: alerts, email: email
+
+                    - if is_devise_recoverable? || is_devise_confirmable? || is_devise_unlockable? || is_devise_omniauthable?
+                      .card-footer.text-muted.justify-content-around
+                        ul.list-inline.mb-0.font-weight-light.small
+                          - if is_devise_recoverable?
+                            li.list-inline-item= link_to "Forgot your password?", new_password_path(resource_name)
+
+                          - if is_devise_confirmable?
+                            li.list-inline-item= link_to "Need confirmation instructions?", new_confirmation_path(resource_name)
+
+                          - if is_devise_unlockable?
+                            li.list-inline-item= link_to "Need unlock instructions?", new_unlock_path(resource_name)
+
+                          - if is_devise_omniauthable?
+                            - resource_class.omniauth_providers.each do |provider|
+                              li.list-inline-item= link_to "Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider)
+
+                  .card.mt-3
+                    .card-header.display-4.text-muted.text-center= t(:signup, scope: :common)
+                    .card-body
+                      .text-center.text-muted.lead.pb-2.pt-2
+                        div= t(:promo1, scope: :common)
+                        div= t(:promo2, scope: :common)
+                        div= t(:promo3, scope: :common)
+                        div= t(:tagline, scope: :common)
+                      .mt-3= link_to t(:signup, scope: [:common]).html_safe, signup_path, class: 'btn btn-outline-primary w-100'
+                      / .mt-3= link_to t(:signup, scope: [:common]).html_safe, signup_path(mode: :single), class: 'btn btn-outline-primary w-100'

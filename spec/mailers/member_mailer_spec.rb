@@ -21,16 +21,16 @@ describe MemberMailer, type: :mailer do
     Member.delete_all
   end
 
-  describe "answer_membership_request" do
+  describe "answer_request" do
 
     before :each do
-      @membership_request = create(:membership_request, member: @member, gathering: @gathering)
-      @membership_request.answer!
-      @mail = MemberMailer.answer_membership_request(@leader, @membership_request, "You may join")
+      @request = create(:request, campus: @campus, member: @member, gathering: @gathering)
+      @request.answer!
+      @mail = MemberMailer.answer_request(@leader, @request, "You may join")
     end
 
     after :each do
-      MembershipRequest.delete_all
+      Request.delete_all
     end
 
     it "renders the headers" do

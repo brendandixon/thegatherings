@@ -17,7 +17,7 @@ class TagSet < ApplicationRecord
   self.authorizer_name = 'CommunityAuthorizer'
 
   DEFAULT_TAG_SETS = {
-    age_groups: [
+    demographics: [
       'college',
       'twenties',
       'thirties',
@@ -85,7 +85,8 @@ class TagSet < ApplicationRecord
   validates_format_of :plural, with: REGEX_WORD
 
   validates_presence_of :prompt
-  validates_format_of :prompt, with: REGEX_PHRASE
+  validates_length_of :prompt, within: 3..255
+  validates_format_of :prompt, with: REGEX_PHRASE, unless: Proc.new{|t| t.errors.has_key?(:prompt)}
 
   scope :for_community, lambda{|community| where(community: community)}
   scope :with_name, lambda{|name| where(name: name)}
@@ -111,19 +112,20 @@ class TagSet < ApplicationRecord
         prompt = I18n.t(:prompt, scope: [:tags, name])
 
         tag_set = community.tag_sets.create(name: name, single: single, plural: plural, prompt: prompt)
-        tag_set.add_tags!(*DEFAULT_TAG_SETS[name].map{|tag| I18n.t(tag, scope: [:tags, name])})
+        tag_set.add_tags!(*DEFAULT_TAG_SETS[name].map{|tag| {name: tag, prompt: I18n.t(tag, scope: [:tags, name])}})
       end
     end
 
   end
 
-  def add_tags!(*names)
-    names.flatten!
+  def add_tags!(*tags)
+    tags.flatten!
+    tags = tags.map{|tag| tag.is_a?(String) ? {name: tag} : tag}
     if new_record?
-      names.each {|name| self.tags.build(name: name)}
+      tags.each {|tag| self.tags.build(tag)}
     else
       self.class.transaction do
-        names.each {|name| self.tags.create!(name: name)}
+        tags.each {|tag| self.tags.create!(tag)}
       end
     end
   end
@@ -135,6 +137,35 @@ class TagSet < ApplicationRecord
     self.tags.reload
   end
   alias :remove_tag! :remove_tags!
+
+  def normalize_tags(*possible_tags)
+    return [] if possible_tags.blank?
+
+    tags = self.tags.to_a
+    possible_tags = possible_tags.map do |pt|
+                      if pt.is_a?(Tag)
+                        tags.find{|t| t.id == pt.id}
+                      elsif pt.is_a?(Integer)
+                        tags.find{|t| t.id == pt}
+                      elsif pt.is_a?(String) || pt.is_a?(Symbol)
+                        tags.find{|t| t.name == pt.to_s}
+                      else
+                        nil
+                      end
+                    end
+
+    possible_tags.compact
+  end
+
+  def as_json(*)
+    super.except(*JSON_EXCLUDES).tap do |ts|
+      id = ts['id']
+      ts['tags'] = self.tags
+      ts['path'] = tag_set_path(id, format: :json)
+      ts['community_path'] = community_path(ts['community_id'], format: :json)
+      ts['tags_path'] = tag_set_tags_path(id, format: :json)
+    end
+  end
 
   def to_s
     self.name

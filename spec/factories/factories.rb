@@ -11,7 +11,7 @@ def add_factories
 end
 
 def apply_tags!(o, tag_set, *tags)
-  o.add_tags!(o.community.tag_sets.with_name(tag_set).take.tags.with_name(tn(tag_set, *tags)).all)
+  o.add_tags!(tag_set => tags)
 end
 
 def ts(ts)
@@ -65,15 +65,15 @@ Time.use_zone TheGatherings::Application.default_time_zone do
 
     # Age Mix
     trait :millennials do
-      after(:create) {|o| apply_tags!(o, :age_groups, *%w(twenties thirties)) }
+      after(:create) {|o| apply_tags!(o, :demographics, *%w(twenties thirties)) }
     end
 
     trait :boomers do
-      after(:create) {|o| apply_tags!(o, :age_groups, *%w(forties fifties sixties)) }
+      after(:create) {|o| apply_tags!(o, :demographics, *%w(forties fifties sixties)) }
     end
 
     trait :mixed_ages do
-      after(:create) {|o| apply_tags!(o, :age_groups, *%w(twenties thirties forties fifties sixties)) }
+      after(:create) {|o| apply_tags!(o, :demographics, *%w(twenties thirties forties fifties sixties)) }
     end
 
     # Gender Mix
@@ -213,7 +213,7 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       end
     end
 
-    factory :membership_request do
+    factory :request do
       gathering
       member
 
@@ -242,13 +242,13 @@ Time.use_zone TheGatherings::Application.default_time_zone do
     factory :tag_set do
       community
 
-      sequence(:name) {|n| "TagSet#{n}"}
+      sequence(:name) {|n| "tagset#{n}"}
     end
 
     factory :tag do
       tag_set
 
-      sequence(:name) {|n| "#{tag_set}-Tag#{n}"}
+      sequence(:name) {|n| "#{tag_set}_tag#{n}"}
     end
 
     factory :tagging do

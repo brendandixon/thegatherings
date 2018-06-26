@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180613000000) do
+ActiveRecord::Schema.define(version: 20180807000000) do
 
   create_table "assigned_overseers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.references "membership", null: false
@@ -170,25 +170,6 @@ ActiveRecord::Schema.define(version: 20180613000000) do
     t.index ["time_zone"], name: "index_members_on_time_zone"
   end
 
-  create_table "membership_requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "member", null: false
-    t.references "gathering", null: false
-
-    t.datetime "sent_on", null: false
-    t.datetime "expires_on", null: false
-    t.text "message"
-    t.datetime "responded_on"
-    t.string "status", limit: 25
-    t.timestamps
-
-    t.index ["id"], name: "index_membership_requests_on_id", unique: true
-    t.index ["gathering_id"], name: "index_membership_requests_on_gathering"
-    t.index ["id", "member_id", "gathering_id"], name: "index_id_member_gathering", unique: true
-    t.index ["member_id"], name: "index_membership_requests_on_member"
-    t.index ["responded_on"], name: "index_membership_requests_on_responded_on"
-    t.index ["status"], name: "index_membership_requests_on_status"
-  end
-
   create_table "memberships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.references "member", null: false
 
@@ -208,18 +189,39 @@ ActiveRecord::Schema.define(version: 20180613000000) do
   end
 
   create_table "preferences", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "community"
     t.references "member"
+    t.references "community"
     t.references "campus"
     t.references "gathering"
     t.timestamps
     
     t.index ["id"], name: "index_preferences_on_id", unique: true
-    t.index ["community_id"], name: "index_preferences_on_community"
-    t.index ["member_id"], name: "index_preferences_on_member"
-    t.index ["community_id", "member_id"], name: "index_preferences_on_community_and_member", unique: true
     t.index ["campus_id"], name: "index_preferences_on_campus"
+    t.index ["community_id"], name: "index_preferences_on_community"
+    t.index ["community_id", "member_id"], name: "index_preferences_on_community_and_member", unique: true
     t.index ["gathering_id"], name: "index_preferences_on_gathering"
+    t.index ["member_id"], name: "index_preferences_on_member"
+  end
+
+  create_table "requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "member", null: false
+    t.references "campus", null: false
+    t.references "gathering"
+
+    t.datetime "sent_on", null: false
+    t.datetime "expires_on", null: false
+    t.text "message"
+    t.datetime "responded_on"
+    t.string "status", limit: 25
+    t.timestamps
+
+    t.index ["id"], name: "index_requests_on_id", unique: true
+    t.index ["campus_id"], name: "index_requests_on_campus"
+    t.index ["gathering_id"], name: "index_requests_on_gathering"
+    t.index ["id", "member_id", "gathering_id"], name: "index_id_member_gathering", unique: true
+    t.index ["member_id"], name: "index_requests_on_member"
+    t.index ["responded_on"], name: "index_requests_on_responded_on"
+    t.index ["status"], name: "index_requests_on_status"
   end
 
   create_table "role_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -269,6 +271,7 @@ ActiveRecord::Schema.define(version: 20180613000000) do
     t.references "tag_set", null: false
 
     t.string "name"
+    t.string "prompt"
     t.timestamps
 
     t.index ["id"], name: "index_tags_on_id", unique: true

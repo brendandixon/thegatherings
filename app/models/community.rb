@@ -30,6 +30,8 @@ class Community < ApplicationRecord
 
   validates_length_of :name, within: 10..255
 
+  scope :for_member, lambda{|member| joins(:memberships).where('memberships.member_id = ?', member)}
+
   def add_default_role_names!
     self.role_names.delete_all
     RoleName.add_defaults!(self)
@@ -72,6 +74,18 @@ class Community < ApplicationRecord
 
   def meetings
     Meeting.for_community(self)
+  end
+
+  def as_json(*)
+    super.except(*JSON_EXCLUDES).tap do |c|
+      id = c['id']
+      c['path'] = community_path(id, format: :json)
+      c['campuses_path'] = community_campuses_path(id, format: :json)
+      c['gatherings_path'] = community_gatherings_path(id, format: :json)
+      c['memberships_path'] = community_memberships_path(id, format: :json)
+      c['preferences_path'] = community_preferences_path(id, format: :json)
+      c['tag_sets_path'] = community_tag_sets_path(id, format: :json)
+    end
   end
 
   def to_s

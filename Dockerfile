@@ -11,7 +11,13 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 RUN apt-get -y update \
     && apt-get install -y --no-install-recommends \
     apt-transport-https \
+    golang \
+    tmux \
     nodejs
+
+RUN mkdir /go
+ENV GOPATH=/go
+RUN go get -u -f github.com/DarthSim/hivemind
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
@@ -33,3 +39,4 @@ RUN yarn install
 RUN bundle install
 
 EXPOSE 3000
+EXPOSE 3035

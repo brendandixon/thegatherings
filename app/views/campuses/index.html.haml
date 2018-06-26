@@ -14,7 +14,7 @@
                 = link_to campus.name, campus_path(campus)
               - if member.present?
                 .small-2.columns
-                  - membership = member.active_member_of(campus)
+                  - membership = member.active_member_of?(campus)
                   - if membership.blank?
                     = button_to "Join", campus_memberships_path(member_id: member.id, campus_id: campus.id), method: :post, class: 'button small expanded'
                   - else

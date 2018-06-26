@@ -5,9 +5,17 @@ class CommunitiesController < ApplicationController
 
   def index
     @communities = Community.all
+    respond_to do |format|
+      format.html { render }
+      format.json { render json: @communities.as_json }
+    end
   end
 
   def show
+    respond_to do |format|
+      format.html { render }
+      format.json { render json: @community.as_json }
+    end
   end
 
   def new
@@ -45,21 +53,22 @@ class CommunitiesController < ApplicationController
     end
   end
 
-  private
+  protected
 
     def ensure_authorized
-      if !is_collection_action?
-        context = is_contextual_action? ? :as_anyone : :as_member
-        authorize_action_for @community, context: context
-      end
+      return true if is_collection_action?
+      resource = @member.present? ? @member : @community
+      context = is_contextual_action? ? :as_anyone : :as_member
+      authorize_action_for resource, community: @community, context: context
     end
 
     def set_community
-      @community = Community.find(params[:id]) rescue nil if params[:id].present?
+      id = params[:id] || params[:community_id]
+      @community = Community.find(id) rescue nil if id.present?
       @community ||= Community.new(community_params[:community])
     end
 
     def community_params
-      params.permit(community: Community::FORM_FIELDS)
+      params.permit(:community_id, :format, community: Community::FORM_FIELDS)
     end
 end

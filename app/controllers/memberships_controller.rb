@@ -1,12 +1,16 @@
 class MembershipsController < ApplicationController
+  include HasMembers
 
   before_action :set_community
   before_action :set_campus
   before_action :set_gathering
+  before_action :set_member
   before_action :set_membership
   before_action :ensure_campus
   before_action :ensure_community
   before_action :ensure_gathering
+  before_action :ensure_member
+  before_action :ensure_membership
   before_action :ensure_authorized
 
   def index
@@ -25,10 +29,11 @@ class MembershipsController < ApplicationController
   def create
     respond_to do |format|
       if @membership.save
-        establish_memberships
-        format.html { redirect_to signup_path_for(@membership.member), notice: 'Membership was successfully created.' }
+        format.html { redirect_to :back, notice: 'Membership was successfully created.'}
+        format.json { render json:@membership.as_json }
       else
-        format.html { redirect_to :back }
+        format.html { redirect_to :back, notice: 'Unable to create Membership.'}
+        format.json { render json:@membership.as_json }
       end
     end
   end
@@ -39,9 +44,10 @@ class MembershipsController < ApplicationController
     respond_to do |format|
       if @membership.save
         format.html { redirect_to :back, notice: 'Membership was successfully updated.'}
-        # format.html { redirect_to membership_path(@membership), notice: 'Membership was successfully updated.' }
+        format.json { render json:@membership.as_json }
       else
         format.html { render :edit }
+        format.json { render json:@membership.as_json }
       end
     end
   end
@@ -58,6 +64,7 @@ class MembershipsController < ApplicationController
     @membership.destroy
     respond_to do |format|
       format.html { redirect_to url, notice: 'Membership was successfully destroyed.' }
+      format.json { render json:@membership.as_json }
     end
   end
 
@@ -65,7 +72,7 @@ class MembershipsController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @group : @membership
-      context = is_collection_action? || in_signup_for?(@membership.member) ? :as_member : :as_leader
+      context = is_collection_action? ? :as_member : :as_leader
       authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering
     end
 
@@ -81,13 +88,13 @@ class MembershipsController < ApplicationController
       @gathering ||= @membership.gathering if @membership.present?
     end
 
-    def establish_memberships
-      groups =  case
-                when @gathering.present? then [@community, @campus]
-                when @campus.present? then [@community]
-                else []
-                end
-      groups.each {|group| @membership.member.join!(group) if group.present?}
+    def ensure_membership
+      unless @membership.present?
+        @membership = Membership.new(membership_params[:membership])
+        @membership.group ||= @group
+        @membership.member ||= @member
+        @membership.role ||= ApplicationAuthorizer::MEMBER
+      end
     end
 
     def set_community
@@ -111,15 +118,10 @@ class MembershipsController < ApplicationController
     def set_membership
       return if is_collection_action?
       @membership = Membership.find(params[:id]) rescue nil if params[:id].present?
-      if @membership.blank?
-        @membership ||= Membership.new(membership_params[:membership])
-        @membership.group = @group
-        @membership.member = current_member
-      end
     end
 
     def membership_params
-      params.permit(membership: Membership::FORM_FIELDS)
+      params.permit(:campus_id, :community_id, :format, :gathering_id, :member_id, membership: Membership::FORM_FIELDS)
     end
 
 end

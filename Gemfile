@@ -14,7 +14,17 @@ gem 'sass-rails', '~> 5.0'                # Use SCSS for stylesheets
 
 # http://haml.info
 gem 'haml', '~> 5.0'                      # Use HAML for views
+
+# http://slim-lang.com
+gem 'slim', '~> 3.0'                      # Use Slim for views
 # gem 'erubis', '~>2.7.0'                   # Include ERB for temporary use
+
+# https://www.rubydoc.info/gems/responders/2.4.0
+gem 'responders', '~>2.4'
+
+gem 'puma', '~> 3.6'                        # Use Puma for the web server
+
+gem 'turbolinks', '~> 5'
 
 # http://fortawesome.github.io/Font-Awesome/
 # https://github.com/FortAwesome/font-awesome-sass
@@ -33,15 +43,22 @@ gem 'validates_timeliness', '~>4.0'       # Date and Time validation
 gem 'validates_zipcode', '~> 0.0.17'       # Zipcode validation
 
 gem 'jquery-rails'                        # Use jquery as the JavaScript library
-gem 'jbuilder', '~> 2.0'                  # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'jbuilder', '~> 2.5'                  # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'sdoc', '~> 0.4', group: :doc         # bundle exec rake doc:rails generates the API under doc/api.
 
-# gem 'unicorn'                             # Use Unicorn as the app server
-# gem 'thin'                                # Use thin for the web server
-gem 'puma', '~> 3.6'                        # Use Puma for the web server
-
 # https://github.com/Shopify/bootsnap -- load performance improvement
-gem 'bootsnap', require: false
+gem 'bootsnap', '>= 1.1.0', require: false
+
+# https://github.com/rails/webpacker
+# https://webpack.js.org
+# You need to allow webpack-dev-server host as allowed origin for connect-src.
+# This can be done in Rails 5.2+ for development environment in the CSP initializer
+# config/initializers/content_security_policy.rb with a snippet like this:
+# policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
+gem 'webpacker', '~> 3.5'
+
+# https://github.com/reactjs/react-rails
+gem 'react-rails', '~> 2.4'
 
 #--------------------------------------------------------------------------------------------------
 # AuthN / AuthZ
@@ -65,17 +82,16 @@ gem 'omniauth-twitter', '~> 1.4'          # Use OmniAuth for Twitter, see https:
 
 # gem 'therubyracer', platforms: :ruby    # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'bcrypt', '~> 3.1.7'                # Use ActiveModel has_secure_password
-# gem 'turbolinks'                        # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 
 group :development do
+  gem 'annotate', '~> 2.7'                # Annotate models
+  gem 'spring'                            # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '~> 3.4'             # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'foreman'                           # Foreman to run dependent processes. Read more: https://github.com/ddollar/foreman
 end
 
 group :development, :test do
-  gem 'annotate', '~> 2.7'                # Annotate models
   gem 'byebug'                            # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'spring'                            # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 
   # https://github.com/thoughtbot/factory_bot/blob/v4.9.0/GETTING_STARTED.md
   # https://www.rubydoc.info/gems/factory_bot/file/README.md

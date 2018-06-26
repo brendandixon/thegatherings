@@ -31,6 +31,7 @@ class PreferenceAuthorizer < ApplicationAuthorizer
   protected
 
     def for_self?(member)
+      Rails.logger.debug(resource.inspect)
       resource.member_id == member.id
     end
 

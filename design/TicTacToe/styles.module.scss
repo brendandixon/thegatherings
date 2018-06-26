@@ -1,0 +1,57 @@
+@import "../../styles/colors";
+
+button {
+  color:$black;
+
+  &:hover {
+    font-weight: bold;
+  }
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.boardRow:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  color: #0a0a0a;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 34px;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.pink {
+  background-color: pink;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 25px 0 0 250px;
+}
+
+.gameBoard {
+}
+
+.gameInfo {
+  margin-left: 20px;
+}

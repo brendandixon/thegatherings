@@ -28,7 +28,7 @@ class Meeting < ApplicationRecord
 
   scope :for_campus, lambda{|campus| joins(:gathering).where('gatherings.campus_id = ?', campus)}
   scope :for_campuses, lambda{|*campuses| joins(:gathering).where('gatherings.campus_id IN (?)', campuses)}
-  scope :for_community, lambda{|community| joins(:gathering).for_community(community)}
+  scope :for_community, lambda{|community| joins(:gathering).where('gatherings.community_id = ?', community)}
   scope :for_gathering, lambda{|gathering| where(gathering_id: gathering.id)}
 
   scope :for_datetime, lambda{|dt| where(datetime: dt)}

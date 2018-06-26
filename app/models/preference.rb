@@ -39,6 +39,23 @@ class Preference < ApplicationRecord
   scope :for_community, lambda{|community| where(community: community)}
   scope :for_member, lambda{|member| where(member: member)}
 
+  def as_json(*)
+    super.except(*JSON_EXCLUDES).tap do |p|
+      id = p['id']
+      campus_id = p['campus_id']
+      community_id = p['community_id']
+      gathering_id = p['gathering_id']
+      p['path'] = campus_path(id, format: :json)
+      p['member_path'] = member_path(p['member_id'], format: :json)
+      p['community_path'] = community_path(community_id, format: :json)
+      p['campus_path'] = campus_id.present? ? campus_path(campus_id, format: :json) : nil
+      p['gathering_path'] = gathering_id.present? ? gathering_path(gathering_id, format: :json) : nil
+      p['add_taggings_path'] = add_preference_taggings_path(id, format: :json)
+      p['remove_taggings_path'] = remove_preference_taggings_path(id, format: :json)
+      p['set_taggings_path'] = set_preference_taggings_path(id, format: :json)
+    end
+  end
+
   protected
 
     def has_active_campus_membership

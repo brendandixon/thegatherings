@@ -40,8 +40,3 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 end
-
-TheGatherings::Application.globalize_version = '1.0.0'
-TheGatherings::Application.jquery_version = '3.3.1'
-TheGatherings::Application.jquery_ui_version = '1.12.1'
-TheGatherings::Application.modernizr_version = '3.5.0'

@@ -18,7 +18,7 @@ describe TagSet, type: :model do
 
   before :example do
     @ts = build(:tag_set)
-    @tags = %w(aa bb cc dd ee ff gg)
+    @tags = %w(aaa bbb ccc ddd eee fff ggg)
   end
 
   it 'validates' do
@@ -86,7 +86,7 @@ describe TagSet, type: :model do
   end
 
   it 'ensures a single value' do
-    @ts.name = "age_groups"
+    @ts.name = "demographics"
     @ts.single = nil
     expect(@ts).to be_valid
     expect(@ts.errors).to_not have_key(:single)

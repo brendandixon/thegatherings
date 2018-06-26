@@ -1,0 +1,19 @@
+- props = { \
+    registrationPath: member_registration_path(format: :json), \
+    communitiesPath: communities_path(format: :json), \
+  }
+- if @complete_path.present?
+-   props[:completedPath] = @complete_path
+-   props[:skipWelcome] = true
+body
+  .welcome.w-100.h-100.pt-4
+    .container.w-100.h-100
+      .row.h-100.align-items-center
+        .col
+          .container
+            .row.text-center
+              .col
+                img.w-50 src=asset_path('logo-white.svg')
+            .row.justify-content-center
+              .col-8
+                .mt-3= react_component 'SignUp/SignUp', props

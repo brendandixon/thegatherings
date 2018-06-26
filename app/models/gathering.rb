@@ -45,7 +45,7 @@ class Gathering < ApplicationRecord
   has_many :meetings, inverse_of: :gathering, dependent: :destroy
 
   has_many :memberships, as: :group, dependent: :destroy
-  has_many :membership_requests, inverse_of: :gathering, dependent: :destroy
+  has_many :requests, inverse_of: :gathering, dependent: :destroy
 
   has_many :members, through: :memberships
   has_many :assigned_overseers, inverse_of: :gathering, dependent: :destroy
@@ -76,6 +76,7 @@ class Gathering < ApplicationRecord
   scope :for_campus, lambda{|campus| where(campus_id: campus.id)}
   scope :for_campuses, lambda{|*campuses| where(campus_id: campuses)}
   scope :for_community, lambda{|community| where(community_id: community)}
+  scope :for_member, lambda{|member| joins(:memberships).where('memberships.member_id = ?', member)}
 
   scope :is_open, lambda{|f = true| where(open: f)}
 

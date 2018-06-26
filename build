@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+docker-compose down 2>/dev/null
+
+IMAGE_ID=$(docker images | grep thegatherings_app | awk 'match($0, /[0-9a-f]{12,12}/) {print substr($0, RSTART, RLENGTH)}')
+docker rmi -f $IMAGE_ID 1>/dev/null 2>&1
+
+docker-compose build
+
+docker run --name extract thegatherings_app 1>/dev/null 2>&1
+docker cp extract:/tmp/Gemfile.lock .
+docker cp extract:/tmp/yarn.lock .
+# Copy node_modules for webpacker...it assumes they live under /app
+rm -drf node_modules 1>/dev/null 2>&1
+docker cp extract:/tmp/node_modules .
+docker stop extract 1>/dev/null 2>&1
+docker rm extract 1>/dev/null 2>&1

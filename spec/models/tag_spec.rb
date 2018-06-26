@@ -5,6 +5,7 @@
 #  id         :bigint(8)        unsigned, not null, primary key
 #  tag_set_id :bigint(8)        not null
 #  name       :string(255)
+#  prompt     :string(255)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
@@ -54,7 +55,7 @@ describe TagSet, type: :model do
     expect(@tag.errors).to have_key(:name)
   end
 
-  it 'rejects invalid name characters' do
+  it 'rejects names with puncutation characters' do
     TestConstants::PUNCUATION_CHARACTERS.each do |ch|
       @tag.name = ch * 10
       expect(@tag).to be_invalid
@@ -63,21 +64,21 @@ describe TagSet, type: :model do
   end
 
   it 'requires name starts with a word character' do
-    @tag.name = ' 20s'
+    @tag.name = ' twenties'
     expect(@tag).to be_invalid
     expect(@tag.errors).to have_key(:name)
   end
 
   it 'requires name to end with a word character' do
-    @tag.name = '20s '
+    @tag.name = 'twenties '
     expect(@tag).to be_invalid
     expect(@tag.errors).to have_key(:name)
   end
 
-  it 'allows name to contain blanks' do
-    @tag.name = '20s and 30s'
-    expect(@tag).to be_valid
-    expect(@tag.errors).to_not have_key(:name)
+  it 'rejects names containing non-word characters' do
+    @tag.name = 'twenties and thirties'
+    expect(@tag).to be_invalid
+    expect(@tag.errors).to have_key(:name)
   end
 
   it 'disallows duplicate names in a tag set' do
@@ -94,6 +95,44 @@ describe TagSet, type: :model do
     tag = build(:tag, name: @tag.name)
     expect(tag).to be_valid
     expect(tag.errors).to be_empty
+  end
+
+  it 'rejects short names' do
+    @tag.name = 'xx'
+    expect(@tag).to be_invalid
+    expect(@tag.errors).to have_key(:name)
+  end
+
+  it 'rejects long names' do
+    @tag.name = 'x' * 500
+    expect(@tag).to be_invalid
+    expect(@tag.errors).to have_key(:name)
+  end
+
+  it 'allows puncuation prompt characters' do
+    (TestConstants::PUNCUATION_CHARACTERS + %w(' -)).each do |ch|
+      @tag.prompt = 'x' + ch * 10
+      expect(@tag).to be_valid
+      expect(@tag.errors).to_not have_key(:prompt)
+    end
+  end
+
+  it 'requires prompt starts with a word character' do
+    @tag.prompt = ' 20s'
+    expect(@tag).to be_invalid
+    expect(@tag.errors).to have_key(:prompt)
+  end
+
+  it 'requires prompt to end with a word character' do
+    @tag.prompt = '20s '
+    expect(@tag).to be_invalid
+    expect(@tag.errors).to have_key(:prompt)
+  end
+
+  it 'allows prompt to contain blanks' do
+    @tag.prompt = '20s and 30s'
+    expect(@tag).to be_valid
+    expect(@tag.errors).to_not have_key(:prompt)
   end
 
 end

@@ -40,18 +40,18 @@
               = button_to t(:button, scope:[:meetings, :create]), gathering_meetings_path(@gathering), method: :post, class: 'button small expanded'
           .small-2.columns
             .actions
-              = link_to t(:button, scope: [:gatherings, :requests]), gathering_membership_requests_path(gathering_id: @gathering.id), class: 'button small expanded'
+              = link_to t(:button, scope: [:gatherings, :requests]), gathering_requests_path(gathering_id: @gathering.id), class: 'button small expanded'
           .small-2.columns
             .actions
               = link_to "Attendance Report", attendance_gathering_reports_path(gathering_id: @gathering.id), class: 'button small expanded'
         - if !current_member.participant_in?(@gathering)
           .small-2.columns
             .actions
-              - request = current_member.membership_requests.for_gathering(@gathering).unexpired.take
+              - request = current_member.requests.for_gathering(@gathering).unexpired.take
               - if request.blank?
-                = link_to t(:title, scope:[:membership_requests, :new]), new_gathering_membership_request_path(gathering_id: @gathering.id), class: 'button small expanded'
+                = link_to t(:title, scope:[:requests, :new]), new_gathering_request_path(gathering_id: @gathering.id), class: 'button small expanded'
               - else
-                = link_to t(:title, scope:[:membership_requests, :edit]), edit_membership_request_path(request), class: 'button small expanded'
+                = link_to t(:title, scope:[:requests, :edit]), edit_request_path(request), class: 'button small expanded'
         .small-2.columns.end
           .float-right
             - if @gathering.updatable_by?(current_member)

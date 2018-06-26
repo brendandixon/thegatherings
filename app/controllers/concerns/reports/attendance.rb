@@ -5,7 +5,8 @@ module Reports::Attendance
     class<<self
       # JSON Format
       # {
-      #   group: <group>_<group_id>,
+      #   groupType: <group>,
+      #   groupId: <group_id>,
       #   attendance : {
       #     "<date>" : {
       #       "present" : <num>,
@@ -15,7 +16,7 @@ module Reports::Attendance
       #   }
       # }
       def data_for(group, options = {})
-        attendance = {}
+        attendance = []
         query = group.meetings
         week_start = DateTime.current.beginning_of_month - 3.months
         week_end = week_start.end_of_week
@@ -26,8 +27,10 @@ module Reports::Attendance
             present += m.number_present
             absent += m.number_absent
           else
-            attendance[week_start.to_s(:date)] = {
-              present: present, absent: absent
+            attendance << {
+              date: week_start.to_s(:date),
+              present: present,
+              absent: absent
             }
             week_start = week_end + 1.second
             week_end = week_start.end_of_week
@@ -36,44 +39,9 @@ module Reports::Attendance
           end
         end
         {
-          group: "#{group.class.to_s.underscore}_#{group.id}",
+          groupType: group.class.to_s.underscore,
+          groupId: group.id,
           attendance: attendance
-        }
-      end
-
-      # JSON Format
-      # {
-      #   container: <group>_<group_id>,
-      #   labels: [<date>, <date>, . . .],
-      #   present: {
-      #     name: 'Present',
-      #     values: [<num>, <num>, . . .]
-      #   },
-      #   absent: {
-      #     name: 'Absent',
-      #     values: [<num>, <num>, . . .]
-      #   },
-      # }
-      def to_chartjs(data)
-        labels = []
-        present = []
-        absent = []
-        data[:attendance].each do |k, v|
-          labels << k
-          present << v[:present]
-          absent << v[:absent]
-        end
-        {
-          container: data[:group],
-          labels: labels,
-          present: {
-            name: 'Present',
-            values: present
-          },
-          absent: {
-            name: 'Absent',
-            values: absent
-          }
         }
       end
     end
@@ -81,11 +49,9 @@ module Reports::Attendance
 
   def attendance
     respond_to do |format|
-      data = AttendanceReport.data_for(@group)
-      format.html do
-        @chart_data = [AttendanceReport.to_chartjs(data)]
-        render
-      end
+      @data = AttendanceReport.data_for(@group)
+      format.json { render json: @data}
+      format.html { render }
     end
   end
 

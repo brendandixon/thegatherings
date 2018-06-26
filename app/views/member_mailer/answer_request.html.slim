@@ -1,0 +1,15 @@
+p
+  = "Hi #{@request.member.first_name},"
+p
+p
+  = "You asked:"
+  blockquote= @request.message
+p
+p
+  = @answer
+p
+p
+  = @responder.full_name
+- if @request.gathering.present?
+  p
+    = @request.gathering.name

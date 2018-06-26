@@ -1,0 +1,13 @@
+body
+  .welcome.w-100.h-100
+    .container.w-100.h-100
+      .row.h-100.align-items-center
+        .col
+          .container
+            .row.text-center
+              .col
+                img.w-50 src=asset_path('logo-white.svg')
+            .row.text-center
+              .col
+                = link_to t(:signup, scope: [:common]).html_safe, new_member_registration_path, class: 'btn btn-light d-inline-block mr-2'
+                = link_to t(:signin, scope: [:common]).html_safe, new_member_session_path, class: 'btn btn-secondary s d-inline-block'

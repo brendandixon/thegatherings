@@ -44,19 +44,19 @@ class MemberAuthorizer < ApplicationAuthorizer
     end
 
     def belongs_to_community?
-      (!resource.persisted? || (@community.present? && resource.active_member_of(@community).present?))
+      (!resource.persisted? || (@community.present? && resource.active_member_of?(@community).present?))
     rescue
       false
     end
 
     def belongs_to_campus?
-      (!resource.persisted? || (@campus.present? && resource.active_member_of(@campus).present?))
+      (!resource.persisted? || (@campus.present? && resource.active_member_of?(@campus).present?))
     rescue
       false
     end
 
     def belongs_to_gathering?
-      (!resource.persisted? || (@gathering.present? && resource.active_member_of(@gathering).present?))
+      (!resource.persisted? || (@gathering.present? && resource.active_member_of?(@gathering).present?))
     rescue
       false
     end

@@ -1,0 +1,6 @@
+- if flash[:alert]
+  .alert.alert-danger.alert-dismissible.fade.show role='alert'
+    = flash[:alert]
+    button.close data-dismiss='alert'
+      span
+        | &times;

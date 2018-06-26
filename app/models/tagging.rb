@@ -14,6 +14,7 @@ class Tagging < ApplicationRecord
   include Authority::Abilities
 
   FORM_FIELDS = [:tag_id, :taggable_id, :taggable_type]
+  JSON_EXCLUDES = JSON_EXCLUDES + %w(tag_id taggable_id taggable_type)
 
   belongs_to :tag
   belongs_to :taggable, polymorphic: true, inverse_of: :taggings
@@ -28,6 +29,12 @@ class Tagging < ApplicationRecord
   scope :for_taggable, lambda{|taggable| where(taggable: taggable)}
   scope :for_tags, lambda{|tags| where(tag: tags)}
   scope :from_set, lambda{|tag_set| joins(:tag).where(tags: { tag_set: tag_set })}
+
+  def as_json(*)
+    super.except(*JSON_EXCLUDES).tap do |p|
+      p['tag'] = self.tag.as_json
+    end
+  end
 
   def to_s
     self.tag.to_s

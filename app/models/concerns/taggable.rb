@@ -13,24 +13,30 @@ module Taggable
 
   def add_tags!(*tags)
     tags = normalize_tags(*tags)
-    return if tags.empty?
+    return if tags.blank?
 
     if self.new_record?
-      tags.each {|tag| self.taggings.build(tag: tag)}
+      tags.each {|tag| self.taggings.build(tag: tag) unless self.tags.exists?(tag.id) }
     else
       self.class.transaction do
-        tags.each {|tag| self.taggings.create!(tag: tag)}
+        tags.each {|tag| self.taggings.create!(tag: tag) unless self.tags.exists?(tag.id) }
       end
     end
 
   end
   alias :add_tag! :add_tags!
 
-  def remove_tags!(*tags)
-    return self.taggings.clear if tags.empty?
+  def add_tags(*tags)
+    self.add_tags!(*tags)
+    return true
+  rescue Exception => e
+    return false
+  end
+  alias :add_tag :add_tags
 
+  def remove_tags!(*tags)
     tags = normalize_tags(*tags)
-    return if tags.empty?
+    return if tags.blank?
 
     taggings = self.taggings.for_tags(tags).all
     self.taggings.delete(taggings) if taggings.present?
@@ -38,37 +44,53 @@ module Taggable
   end
   alias :remove_tag! :remove_tags!
 
-  def set_tags!(*tags, **options)
+  def remove_tags(*tags)
+    self.remove_tags!(*tags)
+    return true
+  rescue Exception => e
+    return false
+  end
+  alias :remove_tag :remove_tags
+
+  def set_tags!(*tags)
+    self.taggings.clear if tags.blank?
+
     tags = normalize_tags(*tags)
-    return if tags.empty?
+    return if tags.blank?
 
-    if options[:tag_set].present?
-      tag_set = options[:tag_set]
-      tag_set = TagSet.for_community(self.community).with_name(tag_set).first if tag_set.is_a?(String) || tag_set.is_a?(Symbol)
-      return unless tag_set.is_a?(TagSet) && tag_set.community == self.community
-      taggings = self.taggings.from_set(tag_set)
+    taggings = self.taggings.to_a
+    if self.new_record?
+      self.taggings.clear
+      tags.each {|tag| self.taggings.build(tag: tag)}
     else
-      taggings = self.taggings
-    end
-
-    self.class.transaction do
-      taggings.each {|tagging| tagging.delete unless tags.include?(tagging.tag)}
-      tags.each {|tag| self.taggings.create(tag: tag) unless self.tags.exists?(tag.id)}
+      self.class.transaction do
+        taggings.each {|tagging| tagging.delete unless tags.include?(tagging.tag)}
+        tags.each {|tag| self.taggings.create!(tag: tag) unless self.tags.exists?(tag.id)}
+      end
     end
   end
+  alias :set_tag! :set_tags!
 
-  def has_tags?(*tags)
-    return self.is_tagged? if tags.empty?
+  def set_tags(*tags)
+    self.set_tags!(*tags)
+    return true
+  rescue Exception => e
+    return false
+  end
+  alias :set_tag :set_tags
 
-    tags = normalize_tags(*tags).map{|tag| tag.id}
-    return false if tags.empty?
+  def has_tags?(*tags, **possible_tags)
+    return self.is_tagged? if tags.blank?
+
+    tags = normalize_tags(*tags, possible_tags).map{|tag| tag.id}
+    return false if tags.blank?
  
     tags.all?{|tag| self.tags.exists?(tag)}
   end
   alias :has_tag? :has_tags?
 
   def is_tagged?
-    !self.taggings.empty?
+    !self.taggings.blank?
   end
 
   def tag_sets
@@ -77,27 +99,34 @@ module Taggable
 
   def tags_from_set(tag_set)
     return [] unless self.community.present?
+
+    tag_set = normalize_tag_set(tag_set)
     return [] unless tag_set.is_a?(TagSet)
 
-    self.tags.from_set(tag_set)
+    tag_set.tags.to_a
   end
 
   protected
 
+    def normalize_tag_set(tag_set)
+      tag_set = self.tag_sets.find{|ts| ts.id == tag_set} if tag_set.is_a?(Integer)
+      tag_set = self.tag_sets.find{|ts| ts.name == tag_set.to_s} if tag_set.is_a?(String) || tag_set.is_a?(Symbol)
+      tag_set.is_a?(TagSet) && tag_set.community == self.community ? tag_set : nil
+    end
+
     def normalize_tags(*tags)
-      tags = tags.flatten.map do |tag|
-                if tag.is_a?(Tag)
-                  tag
-                elsif tag.is_a?(String) && tag =~ /\A\d+\z/
-                  Tag.find(tag.to_i) rescue nil
-                elsif tag.is_a?(Integer)
-                  Tag.find(tag) rescue nil
-                else
-                  nil
-                end
+      possible_tags = tags.extract_options!
+      tags = tags.map{|t| t.is_a?(Tag) && t.community == self.community ? t : nil}.compact
+      return [] if tags.blank? && possible_tags.blank?
+
+      tags += possible_tags.map do |tag_set, tags|
+                tag_set = normalize_tag_set(tag_set)
+                next unless tag_set.is_a?(TagSet)
+                tag_set.normalize_tags(*tags)
               end
 
+      tags.flatten!
       tags.compact
     end
 
-end
+  end

@@ -10,7 +10,7 @@
             .small-4.columns= "Name"
             .small-2.columns= "Sent On"
             .small-2.columns.end= "Expires On"
-          - @membership_requests.each do |mr|
+          - @requests.each do |mr|
             .row
               .small-4.columns
                 = mr.member.full_name
@@ -19,7 +19,7 @@
               .small-2.columns
                 = mr.expires_on.to_formatted_s(:date)
               .small-2.columns
-                = link_to t(:show, scope: [:common]), membership_request_path(mr), class: 'button small expanded'
+                = link_to t(:show, scope: [:common]), request_path(mr), class: 'button small expanded'
 
       = render partial: 'shared/spacer'
       .row

@@ -1,15 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
-require "rails"
-# Pick the frameworks you want:
-require "active_model/railtie"
-require "active_job/railtie"
-require "active_record/railtie"
-require "action_controller/railtie"
-require "action_mailer/railtie"
-require "action_view/railtie"
-require "sprockets/railtie"
-# require "rails/test_unit/railtie"
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -17,12 +8,11 @@ Bundler.require(*Rails.groups)
 
 module TheGatherings
   class Application < Rails::Application
-    class << self
-      attr_accessor :globalize_version
-      attr_accessor :jquery_version
-      attr_accessor :jquery_ui_version
-      attr_accessor :modernizr_version
+    config.generators do |g|
+      g.template_engine = :slim
+    end
 
+    class << self
       attr_accessor :default_time_zone
     end
 
@@ -45,7 +35,6 @@ module TheGatherings
     config.autoload_paths << Rails.root.join("app", "models", "validators")
     config.autoload_paths << Rails.root.join("lib")
     config.autoload_paths << Rails.root.join("lib", "extensions")
-    config.autoload_paths << Rails.root.join("lib", "reports")
   end
 end
 

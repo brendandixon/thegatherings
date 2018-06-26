@@ -45,7 +45,7 @@ namespace :dev do
 
   def purge_all
     AttendanceRecord.delete_all
-    MembershipRequest.delete_all
+    Request.delete_all
     Membership.delete_all
     Gathering.delete_all
     Campus.delete_all
@@ -86,9 +86,11 @@ namespace :dev do
     campuses.each_with_index do |campus, i|
       gatherings[i].each do |gathering|
         create_list(:member, sizes.next).each do |member|
-          create(:preference, *blends[i], community: community, member: member)
+          create(:membership, :as_member, group: community, member: member)
           create(:membership, :as_member, group: campus, member: member)
           create(:membership, :as_member, group: gathering, member: member)
+          Preference.for_community(community).for_member(member).take.destroy! rescue nil
+          create(:preference, *blends[i], community: community, member: member)
         end
       end
       gatherings[i].each do |gathering|

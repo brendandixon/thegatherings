@@ -17,7 +17,7 @@ in a [Docker Volume](https://docs.docker.com/storage/volumes/).
 ### Prepare the Environment
 
 ```
-    docker-compose build
+    ./build
     docker-compose run --rm dev bundle exec rails dev:prime
     docker-compose run --rm test bundle exec rails db:environment:set
 ```
@@ -43,7 +43,7 @@ This launches a Bash terminal within which you can run all Rails and Gem command
 ### Run the development server
 
 ```
-    docker-compose run --rm -p 3000:3000 server
+    docker-compose run --rm -p 3000:3000 -p 3035:3035 server
 ```
 
 This command launches the application in the foreground, much like running [Rails](http://rubyonrails.org) locally.

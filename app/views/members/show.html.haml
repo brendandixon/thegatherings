@@ -1,7 +1,6 @@
-- community_membership = @member.memberships.for_group(@community).take
-- campus_memberships = @member.memberships.in_campuses.for_community(:campuses, community_membership.community) if community_membership.present?
-- gathering_memberships = @member.memberships.in_gatherings.for_community(:gatherings, community_membership.community) if community_membership.present?
-- preferences = @member.preferences.for_community(community_membership.community).take if community_membership.present?
+- campuses = Campus.for_community(@community).for_member(current_member) if @community.present?
+- gatherings = Gathering.for_campuses(campuses).for_member(current_member) if campuses.present?
+- preferences = Preference.for_community(@community).for_member(current_member) if @community.present?
 %section
   .row
     .small-12.columns.small-centered
@@ -14,35 +13,35 @@
         %h4 Your Preferences
         = render partial: 'tags/show', locals: {resource: preferences}
 
-  - if campus_memberships.present?
+  - if campuses.present?
     = render partial: 'shared/spacer'
     .row
       .small-12.columns.small-centered
         %h4 Your Affiations
-        - campus_memberships.each_with_index do |cm, i|
+        - campuses.each_with_index do |campus, i|
           - if i > 0
             = ", "
-          = link_to cm.group, campus_path(cm.group)
+          = link_to campus, campus_path(campus)
 
-  - if gathering_memberships.present?
+  - if gatherings.present?
     = render partial: 'shared/spacer'
     .row
       .small-12.columns.small-centered
         = I18n.t(:title, scope: [:gatherings])
-    - gathering_memberships.each do |gathering_membership|
+    - gatherings.each do |gathering|
       .row
         .small-12.columns.small-centered
-          = link_to gathering_membership.group, gathering_path(gathering_membership.group)
+          = link_to gathering, gathering_path(gathering)
 
   = render partial: 'shared/spacer'
   .row
     - if @community.present?
       .small-3.columns
         = link_to t(:title, scope: [:campuses, :index]), community_campuses_path(@community), class: 'button small', style: 'width: 100%'
-    - if Member.new.creatable_by?(current_member, community: @community)
-      .small-3.columns
-        = link_to t(:title_html, scope: [:welcome, :signup]), new_community_member_path(@community), class: 'button small', style: 'width: 100%'
-    - if current_member.active_member_of(@community).present? && current_member.active_member_of(@community).as_overseer?
+    -# - if Member.new.creatable_by?(current_member, community: @community)
+    -#   .small-3.columns
+    -#     = link_to t(:title_html, scope: [:welcome, :signup]), new_community_membership_path(@community), class: 'button small', style: 'width: 100%'
+    - if current_member.active_member_of?(@community).present? && current_member.active_member_of?(@community).as_overseer?
       .small-3.columns
         = link_to t(:button, scope:[:communities, :report]), gap_community_reports_path(@community), class: 'button small', style: 'width: 100%'
     .small-3.columns
