@@ -28,11 +28,4 @@ class PreferenceAuthorizer < ApplicationAuthorizer
     acts_as_campus_leader?
   end
 
-  protected
-
-    def for_self?(member)
-      Rails.logger.debug(resource.inspect)
-      resource.member_id == member.id
-    end
-
 end

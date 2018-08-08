@@ -23,3 +23,6 @@ export const errorsToMessages = (errors, defaultErrors = {}) => {
 
     return fullMessages
 }
+
+export const makeRailsId= (model, member) => `${model}_${member}`
+export const makeRailsName = (model, member) => `${model}[${member}]`

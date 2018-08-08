@@ -7,6 +7,12 @@ module Devised
 
   protected
 
+    def after_sign_in_path_for(member)
+      m = member.default_campus_membership
+      m ||= member.default_community_membership
+      m.present? && m.as_overseer? ? dashboard_root_path : member_root_path
+    end
+
     # If you have extra params to permit, append them to the sanitizer.
     def configure_account_update_params
       devise_parameter_sanitizer.permit(:account_update, keys: UPDATE_KEYS)

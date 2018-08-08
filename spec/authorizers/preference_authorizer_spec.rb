@@ -27,7 +27,7 @@ describe PreferenceAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      ApplicationAuthorizer::COMMUNITY_ROLES.each do |role|
+      RoleContext::COMMUNITY_ROLES.each do |role|
         member = self.instance_variable_get("@#{role}")
         create(:membership, "as_#{role}".to_sym, group: @community, member: member)
       end
@@ -44,7 +44,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@preferences.authorizer).to be_creatable_by(@assistant, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_creatable_by(@assistant, community: @community, perspective: :as_signup)
       end
 
       it 'allows reading' do
@@ -52,7 +52,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows reading signups' do
-        expect(@preferences.authorizer).to be_readable_by(@assistant, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_readable_by(@assistant, community: @community, perspective: :as_signup)
       end
 
       it 'allows updating' do
@@ -60,7 +60,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows updating signups' do
-        expect(@preferences.authorizer).to be_updatable_by(@assistant, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_updatable_by(@assistant, community: @community, perspective: :as_signup)
       end
 
       it 'allows deletion' do
@@ -68,7 +68,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows deleting signups' do
-        expect(@preferences.authorizer).to be_deletable_by(@assistant, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_deletable_by(@assistant, community: @community, perspective: :as_signup)
       end
     end
 
@@ -78,7 +78,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@preferences.authorizer).to be_creatable_by(@leader, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_creatable_by(@leader, community: @community, perspective: :as_signup)
       end
 
       it 'allows reading' do
@@ -86,7 +86,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows reading signups' do
-        expect(@preferences.authorizer).to be_readable_by(@leader, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_readable_by(@leader, community: @community, perspective: :as_signup)
       end
 
       it 'allows updating' do
@@ -94,7 +94,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows updating signups' do
-        expect(@preferences.authorizer).to be_updatable_by(@leader, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_updatable_by(@leader, community: @community, perspective: :as_signup)
       end
 
       it 'allows deletion' do
@@ -102,7 +102,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows deleting signups' do
-        expect(@preferences.authorizer).to be_deletable_by(@leader, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_deletable_by(@leader, community: @community, perspective: :as_signup)
       end
     end
 
@@ -112,7 +112,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@preferences.authorizer).to be_creatable_by(@member, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_creatable_by(@member, community: @community, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -120,7 +120,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows reading signups' do
-        expect(@preferences.authorizer).to be_readable_by(@member, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_readable_by(@member, community: @community, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -128,7 +128,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows updating signups' do
-        expect(@preferences.authorizer).to be_updatable_by(@member, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_updatable_by(@member, community: @community, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -136,7 +136,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows deleting signups' do
-        expect(@preferences.authorizer).to be_deletable_by(@member, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to be_deletable_by(@member, community: @community, perspective: :as_signup)
       end
     end
 
@@ -146,7 +146,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@overseer, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@overseer, community: @community, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -154,7 +154,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading signups' do
-        expect(@preferences.authorizer).to_not be_readable_by(@overseer, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_readable_by(@overseer, community: @community, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -162,7 +162,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows updating signups' do
-        expect(@preferences.authorizer).to_not be_updatable_by(@overseer, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_updatable_by(@overseer, community: @community, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -170,7 +170,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows deleting signups' do
-        expect(@preferences.authorizer).to_not be_deletable_by(@overseer, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_deletable_by(@overseer, community: @community, perspective: :as_signup)
       end
     end
 
@@ -180,7 +180,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@visitor, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@visitor, community: @community, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -188,7 +188,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading signups' do
-        expect(@preferences.authorizer).to_not be_readable_by(@visitor, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_readable_by(@visitor, community: @community, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -196,7 +196,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows updating signups' do
-        expect(@preferences.authorizer).to_not be_updatable_by(@visitor, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_updatable_by(@visitor, community: @community, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -204,7 +204,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows deleting signups' do
-        expect(@preferences.authorizer).to_not be_deletable_by(@visitor, community: @community, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_deletable_by(@visitor, community: @community, perspective: :as_signup)
       end
     end
   end
@@ -212,7 +212,7 @@ describe PreferenceAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      ApplicationAuthorizer::CAMPUS_ROLES.each do |role|
+      RoleContext::CAMPUS_ROLES.each do |role|
         member = self.instance_variable_get("@#{role}")
         create(:membership, "as_#{role}".to_sym, group: @campus, member: member)
       end
@@ -229,7 +229,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@preferences.authorizer).to be_creatable_by(@assistant, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_creatable_by(@assistant, campus: @campus, perspective: :as_signup)
       end
 
       it 'allows reading' do
@@ -237,7 +237,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows reading signups' do
-        expect(@preferences.authorizer).to be_readable_by(@assistant, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_readable_by(@assistant, campus: @campus, perspective: :as_signup)
       end
 
       it 'allows updating' do
@@ -245,7 +245,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows updating signups' do
-        expect(@preferences.authorizer).to be_updatable_by(@assistant, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_updatable_by(@assistant, campus: @campus, perspective: :as_signup)
       end
 
       it 'allows deletion' do
@@ -253,7 +253,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows deleting signups' do
-        expect(@preferences.authorizer).to be_deletable_by(@assistant, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_deletable_by(@assistant, campus: @campus, perspective: :as_signup)
       end
     end
 
@@ -263,7 +263,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@preferences.authorizer).to be_creatable_by(@leader, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_creatable_by(@leader, campus: @campus, perspective: :as_signup)
       end
 
       it 'allows reading' do
@@ -271,7 +271,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows reading signups' do
-        expect(@preferences.authorizer).to be_readable_by(@leader, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_readable_by(@leader, campus: @campus, perspective: :as_signup)
       end
 
       it 'allows updating' do
@@ -279,7 +279,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows updating signups' do
-        expect(@preferences.authorizer).to be_updatable_by(@leader, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_updatable_by(@leader, campus: @campus, perspective: :as_signup)
       end
 
       it 'allows deletion' do
@@ -287,7 +287,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows deleting signups' do
-        expect(@preferences.authorizer).to be_deletable_by(@leader, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_deletable_by(@leader, campus: @campus, perspective: :as_signup)
       end
     end
 
@@ -297,7 +297,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@preferences.authorizer).to be_creatable_by(@member, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_creatable_by(@member, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -305,7 +305,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows reading signups' do
-        expect(@preferences.authorizer).to be_readable_by(@member, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_readable_by(@member, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -313,7 +313,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows updating signups' do
-        expect(@preferences.authorizer).to be_updatable_by(@member, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_updatable_by(@member, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -321,7 +321,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows deleting signups' do
-        expect(@preferences.authorizer).to be_deletable_by(@member, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_deletable_by(@member, campus: @campus, perspective: :as_signup)
       end
     end
 
@@ -331,7 +331,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@preferences.authorizer).to be_creatable_by(@overseer, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_creatable_by(@overseer, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -339,7 +339,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows reading signups' do
-        expect(@preferences.authorizer).to be_readable_by(@overseer, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_readable_by(@overseer, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -347,7 +347,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows updating signups' do
-        expect(@preferences.authorizer).to be_updatable_by(@overseer, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_updatable_by(@overseer, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -355,7 +355,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'allows deleting signups' do
-        expect(@preferences.authorizer).to be_deletable_by(@overseer, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to be_deletable_by(@overseer, campus: @campus, perspective: :as_signup)
       end
     end
 
@@ -365,7 +365,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@visitor, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@visitor, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -373,7 +373,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading signups' do
-        expect(@preferences.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -381,7 +381,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows updating signups' do
-        expect(@preferences.authorizer).to_not be_updatable_by(@visitor, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_updatable_by(@visitor, campus: @campus, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -389,7 +389,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows deleting signups' do
-        expect(@preferences.authorizer).to_not be_deletable_by(@visitor, campus: @campus, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_deletable_by(@visitor, campus: @campus, perspective: :as_signup)
       end
     end
   end
@@ -397,7 +397,7 @@ describe PreferenceAuthorizer, type: :authorizer do
   context "for a Gathering" do
 
     before :context do
-      ApplicationAuthorizer::GATHERING_ROLES.each do |role|
+      RoleContext::GATHERING_ROLES.each do |role|
         member = self.instance_variable_get("@#{role}")
         create(:membership, "as_#{role}".to_sym, group: @gathering, member: member)
       end
@@ -414,7 +414,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@assistant, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@assistant, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows reading' do
@@ -422,7 +422,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading signups' do
-        expect(@preferences.authorizer).to_not be_readable_by(@assistant, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_readable_by(@assistant, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -430,7 +430,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows updating signups' do
-        expect(@preferences.authorizer).to_not be_updatable_by(@assistant, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_updatable_by(@assistant, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -438,7 +438,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows deleting signups' do
-        expect(@preferences.authorizer).to_not be_deletable_by(@assistant, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_deletable_by(@assistant, gathering: @gathering, perspective: :as_signup)
       end
     end
 
@@ -448,7 +448,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@leader, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@leader, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows reading' do
@@ -456,7 +456,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading signups' do
-        expect(@preferences.authorizer).to_not be_readable_by(@leader, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_readable_by(@leader, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -464,7 +464,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows updating signups' do
-        expect(@preferences.authorizer).to_not be_updatable_by(@leader, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_updatable_by(@leader, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -472,7 +472,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows deleting signups' do
-        expect(@preferences.authorizer).to_not be_deletable_by(@leader, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_deletable_by(@leader, gathering: @gathering, perspective: :as_signup)
       end
     end
 
@@ -482,7 +482,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@member, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@member, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -490,7 +490,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading signups' do
-        expect(@preferences.authorizer).to_not be_readable_by(@member, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_readable_by(@member, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -498,7 +498,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows updating signups' do
-        expect(@preferences.authorizer).to_not be_updatable_by(@member, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_updatable_by(@member, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -506,7 +506,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows deleting signups' do
-        expect(@preferences.authorizer).to_not be_deletable_by(@member, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_deletable_by(@member, gathering: @gathering, perspective: :as_signup)
       end
     end
 
@@ -516,7 +516,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@overseer, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@overseer, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -524,7 +524,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading signups' do
-        expect(@preferences.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -532,7 +532,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows updating signups' do
-        expect(@preferences.authorizer).to_not be_updatable_by(@overseer, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_updatable_by(@overseer, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -540,7 +540,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows deleting signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@overseer, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@overseer, gathering: @gathering, perspective: :as_signup)
       end
     end
 
@@ -550,7 +550,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@preferences.authorizer).to_not be_creatable_by(@visitor, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_creatable_by(@visitor, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows reading the preferences' do
@@ -558,7 +558,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading signups' do
-        expect(@preferences.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows updating' do
@@ -566,7 +566,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows updating signups' do
-        expect(@preferences.authorizer).to_not be_updatable_by(@visitor, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_updatable_by(@visitor, gathering: @gathering, perspective: :as_signup)
       end
 
       it 'disallows deletion' do
@@ -574,7 +574,7 @@ describe PreferenceAuthorizer, type: :authorizer do
       end
 
       it 'disallows deleting signups' do
-        expect(@preferences.authorizer).to_not be_deletable_by(@visitor, gathering: @gathering, context: :as_signup)
+        expect(@preferences.authorizer).to_not be_deletable_by(@visitor, gathering: @gathering, perspective: :as_signup)
       end
     end
   end

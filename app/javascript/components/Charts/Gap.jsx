@@ -35,9 +35,14 @@ export default class Gap extends BaseChart {
                 position: 'nearest'
             }
         }
+        this.verb = 'gap'
     }
 
-    transformData(data = this.props.data) {
+    transformData(data) {
+        if (jQuery.isEmptyObject(data) || jQuery.isEmptyObject(data.gaps)) {
+            return null
+        }
+
         let labels = []
         let available = []
         let requested = []
@@ -52,15 +57,15 @@ export default class Gap extends BaseChart {
             datasets: [{
                 label: 'Available',
                 data: available,
-                backgroundColor: 'rgba(50, 50, 155, 0.5)',
-                borderColor: 'rgba(50, 50, 155, 0.7)',
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 0.7)',
                 borderWidth: 1
             },
             {
                 label: 'Requested',
                 data: requested,
-                backgroundColor: 'rgba(20, 20, 255, 0.2)',
-                borderColor: 'rgba(20, 20, 255, 0.5)',
+                backgroundColor: 'rgba(200, 200, 200, 0.5)',
+                borderColor: 'rgba(100, 100, 100, 0.5)',
                 borderWidth: 1
             }]
         }

@@ -28,10 +28,4 @@ class RequestAuthorizer < ApplicationAuthorizer
     acts_as_gathering_leader?
   end
 
-  protected
-
-    def for_self?(member)
-      resource.member_id == member.id
-    end
-
 end

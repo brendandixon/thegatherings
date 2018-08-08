@@ -8,7 +8,7 @@ class MembersController < ApplicationController
   before_action :ensure_authorized
 
   def index
-    authorize_action_for @community, context: :as_member
+    authorize_action_for @community, perspective: :as_member
     @members = @community.members
   end
 

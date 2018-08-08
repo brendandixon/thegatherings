@@ -1,23 +1,25 @@
 # == Schema Information
 #
-# Table name: tag_sets
+# Table name: categories
 #
 #  id           :bigint(8)        unsigned, not null, primary key
 #  community_id :bigint(8)
 #  name         :string(255)
 #  single       :string(255)
 #  plural       :string(255)
+#  singleton    :boolean
 #  prompt       :string(255)
+#  all_prompt   :string(255)
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #
 
 require 'rails_helper'
 
-describe TagSet, type: :model do
+describe Category, type: :model do
 
   before :example do
-    @ts = build(:tag_set)
+    @ts = build(:category)
     @tags = %w(aaa bbb ccc ddd eee fff ggg)
   end
 
@@ -71,7 +73,7 @@ describe TagSet, type: :model do
   it 'disallows duplicate names by community' do
     @ts.save!
 
-    ts = build(:tag_set, name: @ts.name, community: @ts.community)
+    ts = build(:category, name: @ts.name, community: @ts.community)
     expect(ts).to be_invalid
     expect(ts.errors).to have_key(:name)
   end
@@ -79,7 +81,7 @@ describe TagSet, type: :model do
   it 'allows duplicate names across communities' do
     @ts.save!
 
-    ts = build(:tag_set)
+    ts = build(:category)
     expect(@ts.community).to_not be(ts.community)
     expect(ts).to be_valid
     expect(ts.errors).to be_empty

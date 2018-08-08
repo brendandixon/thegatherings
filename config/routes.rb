@@ -1,21 +1,16 @@
 # == Route Map
 #
 #                        Prefix Verb   URI Pattern                                                                              Controller#Action
-#                          root GET    /                                                                                        member/sessions#new
-#                       welcome GET    /welcome(.:format)                                                                       member/sessions#new
-#                        signup GET    /signup(.:format)                                                                        member/registrations#signup
-#                        signin GET    /signin(.:format)                                                                        member/sessions#new
-#                       signout DELETE /signout(.:format)                                                                       member/sessions#destroy
-#            new_member_session GET    /member/sign_in(.:format)                                                                member/sessions#new
-#                member_session POST   /member/sign_in(.:format)                                                                member/sessions#create
-#        destroy_member_session DELETE /member/sign_out(.:format)                                                               member/sessions#destroy
+#            new_member_session GET    /member/signin(.:format)                                                                 member/sessions#new
+#                member_session POST   /member/signin(.:format)                                                                 member/sessions#create
+#        destroy_member_session DELETE /member/signout(.:format)                                                                member/sessions#destroy
 #           new_member_password GET    /member/password/new(.:format)                                                           devise/passwords#new
 #          edit_member_password GET    /member/password/edit(.:format)                                                          devise/passwords#edit
 #               member_password PATCH  /member/password(.:format)                                                               devise/passwords#update
 #                               PUT    /member/password(.:format)                                                               devise/passwords#update
 #                               POST   /member/password(.:format)                                                               devise/passwords#create
 #    cancel_member_registration GET    /member/cancel(.:format)                                                                 member/registrations#cancel
-#       new_member_registration GET    /member/sign_up(.:format)                                                                member/registrations#new
+#       new_member_registration GET    /member/signup(.:format)                                                                 member/registrations#new
 #      edit_member_registration GET    /member/edit(.:format)                                                                   member/registrations#edit
 #           member_registration PATCH  /member(.:format)                                                                        member/registrations#update
 #                               PUT    /member(.:format)                                                                        member/registrations#update
@@ -24,7 +19,16 @@
 #             new_member_unlock GET    /member/unlock/new(.:format)                                                             devise/unlocks#new
 #                 member_unlock GET    /member/unlock(.:format)                                                                 devise/unlocks#show
 #                               POST   /member/unlock(.:format)                                                                 devise/unlocks#create
-#                   member_root GET    /mygatherings(.:format)                                                                  members#mygatherings
+#                          root GET    /                                                                                        member/sessions#new
+#                        signin GET    /signin(.:format)                                                                        member/sessions#new
+#                       signout DELETE /signout(.:format)                                                                       member/sessions#destroy
+#                        signup GET    /signup(.:format)                                                                        member/registrations#signup
+#                   member_root GET    /welcome(.:format)                                                                       welcome#show
+#                dashboard_root GET    /dashboard(.:format)                                                                     dashboard/overview#show
+#            dashboard_overview GET    /dashboard/overview(.:format)                                                            dashboard/overview#show
+#  attendance_dashboard_reports GET    /dashboard/reports/attendance(.:format)                                                  dashboard/reports#attendance
+#         gap_dashboard_reports GET    /dashboard/reports/gap(.:format)                                                         dashboard/reports#gap
+#             dashboard_reports GET    /dashboard/reports(.:format)                                                             dashboard/reports#show
 #                   memberships GET    /memberships(.:format)                                                                   memberships#index
 #                               POST   /memberships(.:format)                                                                   memberships#create
 #                new_membership GET    /memberships/new(.:format)                                                               memberships#new
@@ -74,8 +78,6 @@
 #                               PATCH  /meetings/:id(.:format)                                                                  meetings#update
 #                               PUT    /meetings/:id(.:format)                                                                  meetings#update
 #                               DELETE /meetings/:id(.:format)                                                                  meetings#destroy
-#  attendance_gathering_reports GET    /gatherings/:gathering_id/reports/attendance(.:format)                                   reports#attendance
-#             gathering_reports GET    /gatherings/:gathering_id/reports(.:format)                                              reports#show
 #         gathering_memberships GET    /gatherings/:gathering_id/memberships(.:format)                                          memberships#index
 #                               POST   /gatherings/:gathering_id/memberships(.:format)                                          memberships#create
 #      new_gathering_membership GET    /gatherings/:gathering_id/memberships/new(.:format)                                      memberships#new
@@ -117,9 +119,6 @@
 #                               PATCH  /gatherings/:id(.:format)                                                                gatherings#update
 #                               PUT    /gatherings/:id(.:format)                                                                gatherings#update
 #                               DELETE /gatherings/:id(.:format)                                                                gatherings#destroy
-#     attendance_campus_reports GET    /campuses/:campus_id/reports/attendance(.:format)                                        reports#attendance
-#            gap_campus_reports GET    /campuses/:campus_id/reports/gap(.:format)                                               reports#gap
-#                campus_reports GET    /campuses/:campus_id/reports(.:format)                                                   reports#show
 #            campus_memberships GET    /campuses/:campus_id/memberships(.:format)                                               memberships#index
 #                               POST   /campuses/:campus_id/memberships(.:format)                                               memberships#create
 #         new_campus_membership GET    /campuses/:campus_id/memberships/new(.:format)                                           memberships#new
@@ -159,26 +158,23 @@
 #                               PATCH  /preferences/:id(.:format)                                                               preferences#update
 #                               PUT    /preferences/:id(.:format)                                                               preferences#update
 #                               DELETE /preferences/:id(.:format)                                                               preferences#destroy
-#  attendance_community_reports GET    /communities/:community_id/reports/attendance(.:format)                                  reports#attendance
-#         gap_community_reports GET    /communities/:community_id/reports/gap(.:format)                                         reports#gap
-#             community_reports GET    /communities/:community_id/reports(.:format)                                             reports#show
 #            community_requests GET    /communities/:community_id/requests(.:format)                                            requests#index
-#                  tag_set_tags GET    /tag_sets/:tag_set_id/tags(.:format)                                                     tags#index
-#                               POST   /tag_sets/:tag_set_id/tags(.:format)                                                     tags#create
-#               new_tag_set_tag GET    /tag_sets/:tag_set_id/tags/new(.:format)                                                 tags#new
+#                  category_tags GET    /categories/:category_id/tags(.:format)                                                     tags#index
+#                               POST   /categories/:category_id/tags(.:format)                                                     tags#create
+#               new_category_tag GET    /categories/:category_id/tags/new(.:format)                                                 tags#new
 #                      edit_tag GET    /tags/:id/edit(.:format)                                                                 tags#edit
 #                           tag GET    /tags/:id(.:format)                                                                      tags#show
 #                               PATCH  /tags/:id(.:format)                                                                      tags#update
 #                               PUT    /tags/:id(.:format)                                                                      tags#update
 #                               DELETE /tags/:id(.:format)                                                                      tags#destroy
-#            community_tag_sets GET    /communities/:community_id/tag_sets(.:format)                                            tag_sets#index
-#                               POST   /communities/:community_id/tag_sets(.:format)                                            tag_sets#create
-#         new_community_tag_set GET    /communities/:community_id/tag_sets/new(.:format)                                        tag_sets#new
-#                  edit_tag_set GET    /tag_sets/:id/edit(.:format)                                                             tag_sets#edit
-#                       tag_set GET    /tag_sets/:id(.:format)                                                                  tag_sets#show
-#                               PATCH  /tag_sets/:id(.:format)                                                                  tag_sets#update
-#                               PUT    /tag_sets/:id(.:format)                                                                  tag_sets#update
-#                               DELETE /tag_sets/:id(.:format)                                                                  tag_sets#destroy
+#            community_categories GET    /communities/:community_id/categories(.:format)                                            categories#index
+#                               POST   /communities/:community_id/categories(.:format)                                            categories#create
+#         new_community_category GET    /communities/:community_id/categories/new(.:format)                                        categories#new
+#                  edit_category GET    /categories/:id/edit(.:format)                                                             categories#edit
+#                       category GET    /categories/:id(.:format)                                                                  categories#show
+#                               PATCH  /categories/:id(.:format)                                                                  categories#update
+#                               PUT    /categories/:id(.:format)                                                                  categories#update
+#                               DELETE /categories/:id(.:format)                                                                  categories#destroy
 #         community_memberships GET    /communities/:community_id/memberships(.:format)                                         memberships#index
 #                               POST   /communities/:community_id/memberships(.:format)                                         memberships#create
 #      new_community_membership GET    /communities/:community_id/memberships/new(.:format)                                     memberships#new
@@ -203,16 +199,6 @@
 #          rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create
 
 Rails.application.routes.draw do
-  JOINABLE_TYPES = [Community, Campus, Gathering].map{|o| o.to_s.tableize}.join('|')
-
-  concern :attendance_reportable do
-    get 'attendance', to: 'reports#attendance'
-  end
-
-  concern :gap_reportable do
-    get 'gap', to: 'reports#gap'
-  end
-
   concern :joinable do
     resources :memberships, shallow: true
     resources :members, only: [:index]
@@ -243,22 +229,34 @@ Rails.application.routes.draw do
     end
   end
 
-  # root 'welcome#index'
-  # get 'welcome', to: 'welcome#index', as: :welcome
+  devise_for :member,
+    controllers: {
+      registrations: 'member/registrations',
+      sessions: 'member/sessions'
+    },
+    path_names: {
+      sign_in: 'signin',
+      sign_out: 'signout',
+      sign_up: 'signup'
+    }
  
   devise_scope :member do
     root 'member/sessions#new'
-    get 'welcome', to: 'member/sessions#new', as: :welcome
-
-    get 'signup', to: 'member/registrations#signup'
     get 'signin', to: 'member/sessions#new'
     delete 'signout', to: 'member/sessions#destroy'
+    get 'signup', to: 'member/registrations#signup'
   end
-  devise_for :member, controllers: {
-    registrations: 'member/registrations',
-    sessions: 'member/sessions'
-  }
-  get 'mygatherings', to: 'members#mygatherings', as: :member_root
+
+  resource :welcome, only: [:show], controller: :welcome, as: :member_root
+
+  namespace :dashboard do
+    root 'overview#show'
+    resource :overview, controller: :overview, only: [:show]
+    resource :reports, only: [:show] do
+      get 'attendance'
+      get 'gap'
+    end
+  end
 
   resources :memberships
   resources :members, only: [:show, :edit, :update, :destroy] do
@@ -269,26 +267,19 @@ Rails.application.routes.draw do
   resources :communities, concerns: [:joinable] do
 
     resources :campuses, shallow: true, concerns: [:joinable, :requestable] do
-
       resources :gatherings, shallow: true, concerns: [:joinable, :requestable, :searchable, :taggable] do
-
         resources :meetings, shallow: true, except: [:create, :new] do
           resources :attendance_records, path: :attendance
         end
-
-        resource :reports, concerns: [:attendance_reportable], only: [:show]
       end
-
-      resource :reports, concerns: [:attendance_reportable, :gap_reportable], only: [:show]
     end
 
-    resources :gatherings, shallow: true, only: [:index], concerns: [:searchable]
-    resources :preferences, shallow: true, concerns: [:searchable]
-    resource :reports, concerns: [:attendance_reportable, :gap_reportable], only: [:show]
-    resources :requests, only: [:index]
-    resources :tag_sets, shallow: true do
+    resources :categories, shallow: true do
       resources :tags
     end
+    resources :gatherings, shallow: true, only: [:index], concerns: [:searchable]
+    resources :preferences, shallow: true, concerns: [:searchable]
+    resources :requests, only: [:index]
 
   end
 

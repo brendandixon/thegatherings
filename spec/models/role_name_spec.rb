@@ -52,7 +52,7 @@ describe RoleName, type: :model do
   end
 
   it 'accepts known roles' do
-    ApplicationAuthorizer::ROLES.each do |role|
+    RoleContext::ROLES.each do |role|
       @rn.role = role
       expect(@rn).to be_valid
       expect(@rn.errors).to be_empty
@@ -94,7 +94,7 @@ describe RoleName, type: :model do
   it 'allows duplicate names across roles' do
     @rn.save!
 
-    ApplicationAuthorizer::ROLES.each do |role|
+    RoleContext::ROLES.each do |role|
       next if role == @rn.role
 
       rn = build(:role_name, community: @rn.community, role: role)

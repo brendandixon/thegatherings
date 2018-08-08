@@ -6,8 +6,8 @@ describe Taggable, type: :concern do
     @c = create(:community)
     @ca = create(:campus, community: @c)
 
-    @ts1 = @c.tag_sets.create!(name: "tagset1")
-    @ts2 = @c.tag_sets.create!(name: "tagset2")
+    @ts1 = @c.categories.create!(name: "category1")
+    @ts2 = @c.categories.create!(name: "category2")
 
     @tags1 = (0..2).map{|n| @ts1.tags.create!(name: "#{@ts1.name}_tag#{n}")}
     @tags2 = (0..2).map{|n| @ts2.tags.create!(name: "#{@ts2.name}_tag#{n}")}
@@ -71,10 +71,10 @@ describe Taggable, type: :concern do
   end
 
   it 'can return the available tag sets' do
-    tag_sets = @g.tag_sets
-    expect(tag_sets.length).to be(@c.tag_sets.length)
-    expect(tag_sets.find(@ts1)).to be_present
-    expect(tag_sets.find(@ts2)).to be_present
+    categories = @g.categories
+    expect(categories.length).to be(@c.categories.length)
+    expect(categories.find(@ts1)).to be_present
+    expect(categories.find(@ts2)).to be_present
   end
 
   it 'returns taggings from a given tag set' do

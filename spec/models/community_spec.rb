@@ -44,7 +44,7 @@ describe Community, type: :model do
       @c.save
       @c.add_default_role_names!
 
-      n = ApplicationAuthorizer::COMMUNITY_ROLES.length + ApplicationAuthorizer::CAMPUS_ROLES.length + ApplicationAuthorizer::GATHERING_ROLES.length
+      n = RoleContext::COMMUNITY_ROLES.length + RoleContext::CAMPUS_ROLES.length + RoleContext::GATHERING_ROLES.length
       expect(@c.role_names.length).to be_equal(n)
       @c.role_names.each do |rn|
         expect(rn.name).to eq(I18n.t(rn.role, scope: :roles))
@@ -53,10 +53,10 @@ describe Community, type: :model do
 
     it 'returns Community role names' do
       @c.save
-      @c.role_names.create!(name: "FauxLeader", group_type: Community, role: ApplicationAuthorizer::LEADER)
+      @c.role_names.create!(name: "FauxLeader", group_type: Community, role: RoleContext::LEADER)
 
       @c.community_role_names.each do |r, n|
-        if r == ApplicationAuthorizer::LEADER
+        if r == RoleContext::LEADER
           expect(n).to eq("FauxLeader")
         else
           expect(n).to eq(I18n.t(r, scope: :roles))
@@ -66,10 +66,10 @@ describe Community, type: :model do
 
     it 'returns Campus role names' do
       @c.save
-      @c.role_names.create!(name: "FauxLeader", group_type: Campus, role: ApplicationAuthorizer::LEADER)
+      @c.role_names.create!(name: "FauxLeader", group_type: Campus, role: RoleContext::LEADER)
 
       @c.campus_role_names.each do |r, n|
-        if r == ApplicationAuthorizer::LEADER
+        if r == RoleContext::LEADER
           expect(n).to eq("FauxLeader")
         else
           expect(n).to eq(I18n.t(r, scope: :roles))
@@ -79,10 +79,10 @@ describe Community, type: :model do
 
     it 'returns Gathering role names' do
       @c.save
-      @c.role_names.create!(name: "FauxLeader", group_type: Gathering, role: ApplicationAuthorizer::LEADER)
+      @c.role_names.create!(name: "FauxLeader", group_type: Gathering, role: RoleContext::LEADER)
 
       @c.gathering_role_names.each do |r, n|
-        if r == ApplicationAuthorizer::LEADER
+        if r == RoleContext::LEADER
           expect(n).to eq("FauxLeader")
         else
           expect(n).to eq(I18n.t(r, scope: :roles))
@@ -96,7 +96,7 @@ describe Community, type: :model do
 
     before :example do
       @c.save
-      @c.add_default_tag_sets!
+      @c.add_default_categories!
     end
 
     after :example do
@@ -104,28 +104,28 @@ describe Community, type: :model do
     end
 
     it 'adds default tag sets' do
-      dts = TagSet::DEFAULT_TAG_SETS.keys
-      expect(@c.tag_sets.size).to eq(dts.length)
+      dts = Category::DEFAULT_CATEGORIES.keys
+      expect(@c.categories.size).to eq(dts.length)
 
       dts.each do |name|
-        ts = @c.tag_sets.with_name(name).take
-        expect(ts).to be_a(TagSet)
+        ts = @c.categories.with_name(name).take
+        expect(ts).to be_a(Category)
         validate_default_tags(name, ts.tags)
       end
     end
 
     it 'removes tag sets' do
-      ts1 = @c.tag_sets.first
-      ts2 = @c.tag_sets.second
-      prior = @c.tag_sets.size
-      @c.remove_tag_sets!(ts1, ts2)
-      expect(@c.tag_sets.size).to eq(prior-2)
-      expect(@c.tag_sets.exists?(id: ts1.id)).to be false
-      expect(@c.tag_sets.exists?(id: ts2.id)).to be false
+      ts1 = @c.categories.first
+      ts2 = @c.categories.second
+      prior = @c.categories.size
+      @c.remove_categories!(ts1, ts2)
+      expect(@c.categories.size).to eq(prior-2)
+      expect(@c.categories.exists?(id: ts1.id)).to be false
+      expect(@c.categories.exists?(id: ts2.id)).to be false
     end
 
     def validate_default_tags(key, actual)
-      expect(actual.map{|tag| tag.name}.sort).to eq(TagSet::DEFAULT_TAG_SETS[key].sort)
+      expect(actual.map{|tag| tag.name}.sort).to eq(Category::DEFAULT_CATEGORIES[key][:values].sort)
     end
 
   end

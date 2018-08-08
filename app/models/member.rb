@@ -143,27 +143,46 @@ class Member < ApplicationRecord
     self.memberships.in_gatherings.is_active
   end
 
+  def default_community_membership
+    self.active_community_memberships.first
+  end
+
   def default_community
-    m = self.active_community_memberships.first
+    m = default_community_membership
     m.community if m.present?
   end
 
-  def default_campus(community)
-    p = self.preferences.for_community(community).first
-    return p.campus if p.present? && p.campus.present?
-    m = self.active_campus_memberships.first
+  def default_campus_membership(community = nil)
+    m = self.active_campus_memberships
+    community ||= self.default_community
+    p = (community.present? ? self.preferences.for_community(community) : self.preferences).first
+    m = m.for_campus(p.campus) if p.present? && p.campus.present?
+    m.first
+  end
+
+  def default_campus(community = nil)
+    m = default_campus_membership(community)
     m.campus if m.present?
   end
 
-  def default_gathering(community)
-    p = self.preferences.for_community(community).first
-    return p.gathering if p.present? && p.gathering.present?
-    m = self.active_gathering_memberships.first
+  def default_gathering_membership(community = nil)
+    m = self.active_gathering_memberships
+    community ||= self.default_community
+    p = (community.present? ? self.preferences.for_community(community) : self.preferences).first
+    m = m.for_gathering(p.gathering) if p.present? && p.gathering.present?
+    m.first
+  end
+
+  def default_gathering(community = nil)
+    m = default_gathering_membership(community)
     m.gathering if m.present?
   end
 
   def active_member_of?(group)
+    return nil unless group.present?
     self.memberships.for_group(group).is_active.take
+  rescue
+    nil
   end
 
   def inactive_member_of?(group)

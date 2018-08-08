@@ -1,3 +1,5 @@
+import jQuery from 'jquery'
+
 import BaseChart from './BaseChart'
 
 // JSON data format:
@@ -18,6 +20,12 @@ export default class Attendance extends BaseChart {
         super(props)
         this.chartType = 'bar'
         this.chartOptions = {
+            legend: {
+                labels: {
+                    fontSize: 20
+                },
+                position: 'bottom'
+            },
             scales: {
                 xAxes: [{
                     stacked: true
@@ -32,9 +40,14 @@ export default class Attendance extends BaseChart {
                 position: 'average'
             }
         }
+        this.verb = 'attendance'
     }
 
-    transformData(data = this.props.data) {
+    transformData(data) {
+        if (jQuery.isEmptyObject(data) || jQuery.isEmptyObject(data.attendance)) {
+            return null
+        }
+
         let labels = []
         let present = []
         let absent = []
@@ -49,15 +62,15 @@ export default class Attendance extends BaseChart {
             datasets: [{
                 label: 'Present',
                 data: present,
-                backgroundColor: 'rgba(50, 50, 155, 0.5)',
-                borderColor: 'rgba(50, 50, 155, 0.7)',
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 0.7)',
                 borderWidth: 1
             },
             {
                 label: 'Absent',
                 data: absent,
-                backgroundColor: 'rgba(20, 20, 255, 0.2)',
-                borderColor: 'rgba(20, 20, 255, 0.5)',
+                backgroundColor: 'rgba(200, 200, 200, 0.5)',
+                borderColor: 'rgba(100, 100, 100, 0.5)',
                 borderWidth: 1
             }]
         }

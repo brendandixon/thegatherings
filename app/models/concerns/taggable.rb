@@ -7,7 +7,7 @@ module Taggable
 
     if self < ApplicationRecord
       scope :tagged_with, lambda{|tags| joins(:taggings).where(taggings: {tag_id: tags})}
-      scope :tagged_with_set, lambda{|tag_set| tagged_with(tag_set.tags)}
+      scope :tagged_with_category, lambda{|category| tagged_with(category.tags)}
     end
   end
 
@@ -93,25 +93,25 @@ module Taggable
     !self.taggings.blank?
   end
 
-  def tag_sets
-    self.community.present? ? self.community.tag_sets.to_a : []
+  def categories
+    self.community.present? ? self.community.categories.to_a : []
   end
 
-  def tags_from_set(tag_set)
+  def tags_from_set(category)
     return [] unless self.community.present?
 
-    tag_set = normalize_tag_set(tag_set)
-    return [] unless tag_set.is_a?(TagSet)
+    category = normalize_category(category)
+    return [] unless category.is_a?(Category)
 
-    tag_set.tags.to_a
+    category.tags.to_a
   end
 
   protected
 
-    def normalize_tag_set(tag_set)
-      tag_set = self.tag_sets.find{|ts| ts.id == tag_set} if tag_set.is_a?(Integer)
-      tag_set = self.tag_sets.find{|ts| ts.name == tag_set.to_s} if tag_set.is_a?(String) || tag_set.is_a?(Symbol)
-      tag_set.is_a?(TagSet) && tag_set.community == self.community ? tag_set : nil
+    def normalize_category(category)
+      category = self.categories.find{|ts| ts.id == category} if category.is_a?(Integer)
+      category = self.categories.find{|ts| ts.name == category.to_s} if category.is_a?(String) || category.is_a?(Symbol)
+      category.is_a?(Category) && category.community == self.community ? category : nil
     end
 
     def normalize_tags(*tags)
@@ -119,10 +119,10 @@ module Taggable
       tags = tags.map{|t| t.is_a?(Tag) && t.community == self.community ? t : nil}.compact
       return [] if tags.blank? && possible_tags.blank?
 
-      tags += possible_tags.map do |tag_set, tags|
-                tag_set = normalize_tag_set(tag_set)
-                next unless tag_set.is_a?(TagSet)
-                tag_set.normalize_tags(*tags)
+      tags += possible_tags.map do |category, tags|
+                category = normalize_category(category)
+                next unless category.is_a?(Category)
+                category.normalize_tags(*tags)
               end
 
       tags.flatten!

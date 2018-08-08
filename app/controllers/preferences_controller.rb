@@ -82,8 +82,8 @@ class PreferencesController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @community : @preference
-      context = is_collection_action? ? :as_member : :as_leader
-      authorize_action_for resource, community: @community, context: context
+      perspective = is_collection_action? ? :as_member : :as_leader
+      authorize_action_for resource, community: @community, perspective: perspective
     end
 
     def ensure_community

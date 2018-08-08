@@ -72,7 +72,7 @@ describe Membership, type: :model do
 
     it 'allows all Community roles' do
       @membership.group = @community
-      ApplicationAuthorizer::roles_allowed_for(@membership.group).each do |role|
+      RoleContext::roles_allowed_for(@membership.group).each do |role|
         @membership.role = role
         expect(@membership).to be_valid
         expect(@membership.errors).to_not have_key(:role)
@@ -88,7 +88,7 @@ describe Membership, type: :model do
 
     it 'allows all Campus roles' do
       @membership.group = @campus
-      ApplicationAuthorizer::roles_allowed_for(@membership.group).each do |role|
+      RoleContext::roles_allowed_for(@membership.group).each do |role|
         @membership.role = role
         expect(@membership).to be_valid
         expect(@membership.errors).to_not have_key(:role)
@@ -104,18 +104,18 @@ describe Membership, type: :model do
 
     it 'disallows downgrading Overseers if assigned Gatherings to oversee' do
       @membership.group = @campus
-      @membership.role = ApplicationAuthorizer::OVERSEER
+      @membership.role = RoleContext::OVERSEER
       @membership.save!
       overseer = create(:assigned_overseer, gathering: @gathering, membership: @membership)
 
-      @membership.role = ApplicationAuthorizer::MEMBER
+      @membership.role = RoleContext::MEMBER
       expect(@membership).to_not be_valid
       expect(@membership.errors).to have_key(:role)
     end
 
     it 'allows all Gathering roles' do
       @membership.group = @gathering
-      ApplicationAuthorizer::roles_allowed_for(@membership.group).each do |role|
+      RoleContext::roles_allowed_for(@membership.group).each do |role|
         @membership.role = role
         expect(@membership).to be_valid
         expect(@membership.errors).to_not have_key(:role)

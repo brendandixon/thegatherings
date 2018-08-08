@@ -98,8 +98,8 @@ class RequestsController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @gathering : @request
-      context = is_collection_action? ? :as_leader : :as_member
-      authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering, context: context
+      perspective = is_collection_action? ? :as_leader : :as_member
+      authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering, perspective: perspective
     end
 
     def ensure_campus

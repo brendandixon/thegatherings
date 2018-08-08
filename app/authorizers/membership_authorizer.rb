@@ -39,10 +39,6 @@ class MembershipAuthorizer < ApplicationAuthorizer
 
   protected
 
-    def for_self?(member)
-      resource.member_id == member.id
-    end
-
     def to_community?
       resource.group.is_a?(Community)
     end

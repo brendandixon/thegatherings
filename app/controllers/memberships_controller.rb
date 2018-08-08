@@ -72,7 +72,7 @@ class MembershipsController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @group : @membership
-      context = is_collection_action? ? :as_member : :as_leader
+      perspective = is_collection_action? ? :as_member : :as_leader
       authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering
     end
 
@@ -93,7 +93,7 @@ class MembershipsController < ApplicationController
         @membership = Membership.new(membership_params[:membership])
         @membership.group ||= @group
         @membership.member ||= @member
-        @membership.role ||= ApplicationAuthorizer::MEMBER
+        @membership.role ||= RoleContext::MEMBER
       end
     end
 

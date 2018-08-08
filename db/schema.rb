@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180807000000) do
+ActiveRecord::Schema.define(version: 20180815000000) do
 
   create_table "assigned_overseers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.references "membership", null: false
@@ -238,19 +238,21 @@ ActiveRecord::Schema.define(version: 20180807000000) do
     t.index ["role"], name: "index_role_names_on_role"
   end
 
-  create_table "tag_sets", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "categories", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.references "community", null: true
 
     t.string "name"
     t.string "single"
     t.string "plural"
+    t.boolean "singleton"
     t.string "prompt"
+    t.string "all_prompt"
     t.timestamps
 
-    t.index ["id"], name: "index_tag_sets_on_id", unique: true
-    t.index ["name"], name: "index_tag_sets_on_name"
-    t.index ["community_id"], name: "index_tag_sets_on_community"
-    t.index ["name", "community_id"], name: "index_tag_sets_on_name_and_community", unique: true
+    t.index ["id"], name: "index_categories_on_id", unique: true
+    t.index ["name"], name: "index_categories_on_name"
+    t.index ["community_id"], name: "index_categories_on_community"
+    t.index ["name", "community_id"], name: "index_categories_on_name_and_community", unique: true
   end
 
   create_table "taggings", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -268,7 +270,7 @@ ActiveRecord::Schema.define(version: 20180807000000) do
   end
 
   create_table "tags", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "tag_set", null: false
+    t.references "category", null: false
 
     t.string "name"
     t.string "prompt"
@@ -276,8 +278,8 @@ ActiveRecord::Schema.define(version: 20180807000000) do
 
     t.index ["id"], name: "index_tags_on_id", unique: true
     t.index ["name"], name: "index_tags_on_name"
-    t.index ["tag_set_id"], name: "index_tags_on_tag_set"
-    t.index ["name", "tag_set_id"], name: "index_tags_on_name_and_tag_set", unique: true
+    t.index ["category_id"], name: "index_tags_on_category"
+    t.index ["name", "category_id"], name: "index_tags_on_name_and_category", unique: true
   end
 
 end

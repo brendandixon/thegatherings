@@ -56,8 +56,8 @@ class AttendanceRecordsController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @gathering : @attendance_record
-      context = is_contextual_action? ? :as_anyone : :as_leader
-      authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering, context: context
+      perspective = is_perspective_action? ? :as_anyone : :as_leader
+      authorize_action_for resource, community: @community, campus: @campus, gathering: @gathering, perspective: perspective
     end
 
     def ensure_campus

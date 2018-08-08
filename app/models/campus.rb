@@ -42,7 +42,7 @@ class Campus < ApplicationRecord
   has_many :requests, inverse_of: :campus, dependent: :destroy
 
   validates :community, belonging: {models: [Community]}
-  validates_length_of :name, within: 10..255
+  validates_length_of :name, within: 4..255
 
   scope :for_community, lambda{|community| where(community: community)}
   scope :for_member, lambda{|member| joins(:memberships).where('memberships.member_id = ?', member)}

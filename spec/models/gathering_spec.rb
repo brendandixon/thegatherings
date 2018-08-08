@@ -36,6 +36,33 @@ describe Gathering, type: :model do
     end
   end
 
+  it 'identifies as belonging to the owning campus' do
+    @campus = create(:campus)
+    @gathering.campus = @campus
+    expect(@gathering.belongs_to?(@campus)).to be true
+  end
+
+  it 'identifies as belonging to the owning community' do
+    @community = create(:community)
+    @gathering.community = @community
+    expect(@gathering.belongs_to?(@community)).to be true
+  end
+
+  it 'denies belonging to a campus if unassigned' do
+    @campus = create(:campus)
+    expect(@gathering.belongs_to?(@campus)).to be false
+  end
+
+  it 'denies belonging to a community if unassigned' do
+    @community = create(:community)
+    expect(@gathering.belongs_to?(@community)).to be false
+  end
+
+  it 'denies belonging to any group not a campus or community' do
+    @group = create(:member)
+    expect(@gathering.belongs_to?(@group)).to be false
+  end
+
   context 'Basic Validation' do
     it 'accepts a campus' do
       @gathering.campus = create(:campus)
@@ -102,7 +129,7 @@ describe Gathering, type: :model do
     end
 
     it 'rejects short names' do
-      @gathering.name = "short"
+      @gathering.name = "a"
       expect(@gathering).to be_invalid
       expect(@gathering.errors).to have_key(:name)
     end

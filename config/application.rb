@@ -32,6 +32,7 @@ module TheGatherings
     config.action_controller.per_form_csrf_tokens = true
 
     # Add Extensions to the autoload path
+    config.autoload_paths << Rails.root.join("app", "controllers", "dashboard", "concerns")
     config.autoload_paths << Rails.root.join("app", "models", "validators")
     config.autoload_paths << Rails.root.join("lib")
     config.autoload_paths << Rails.root.join("lib", "extensions")

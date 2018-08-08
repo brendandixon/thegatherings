@@ -24,7 +24,7 @@ describe CampusAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      ApplicationAuthorizer::COMMUNITY_ROLES.each do |affiliation|
+      RoleContext::COMMUNITY_ROLES.each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
@@ -40,15 +40,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@assistant, context: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@assistant, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@assistant, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@assistant, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@assistant, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@assistant, perspective: :as_anyone)
       end
 
       it 'allows updating' do
@@ -66,15 +66,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@leader, context: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@leader, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@leader, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@leader, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@leader, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@leader, perspective: :as_anyone)
       end
 
       it 'allows updating' do
@@ -92,15 +92,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, context: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -118,15 +118,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@overseer, context: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@overseer, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@overseer, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@overseer, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@overseer, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@overseer, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -144,15 +144,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@visitor, context: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@visitor, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@visitor, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@visitor, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@visitor, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@visitor, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -168,7 +168,7 @@ describe CampusAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      ApplicationAuthorizer::CAMPUS_ROLES.each do |affiliation|
+      RoleContext::CAMPUS_ROLES.each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
       end
@@ -184,15 +184,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@assistant, context: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@assistant, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@assistant, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@assistant, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@assistant, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@assistant, perspective: :as_anyone)
       end
 
       it 'allows updating' do
@@ -210,15 +210,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@leader, context: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@leader, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@leader, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@leader, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@leader, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@leader, perspective: :as_anyone)
       end
 
       it 'allows updating' do
@@ -236,15 +236,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, context: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -262,15 +262,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@overseer, context: :as_member)
+        expect(@campus.authorizer).to be_readable_by(@overseer, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@overseer, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@overseer, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@overseer, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@overseer, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -288,15 +288,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@visitor, context: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@visitor, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@visitor, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@visitor, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@visitor, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@visitor, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -312,7 +312,7 @@ describe CampusAuthorizer, type: :authorizer do
   context "for a Gathering" do
 
     before :context do
-      ApplicationAuthorizer::GATHERING_ROLES.each do |affiliation|
+      RoleContext::GATHERING_ROLES.each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
       end
@@ -328,15 +328,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@assistant, context: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@assistant, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@assistant, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@assistant, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@assistant, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@assistant, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -354,15 +354,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@leader, context: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@leader, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@leader, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@leader, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@leader, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@leader, perspective: :as_anyone)
       end
       it 'disallows updating' do
         expect(@campus.authorizer).to_not be_updatable_by(@leader)
@@ -379,15 +379,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@member, context: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@member, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -405,15 +405,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@overseer, context: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@overseer, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@overseer, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@overseer, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@overseer, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@overseer, perspective: :as_anyone)
       end
 
       it 'disallows updating' do
@@ -431,15 +431,15 @@ describe CampusAuthorizer, type: :authorizer do
       end
 
       it 'disallows reading the member profile' do
-        expect(@campus.authorizer).to_not be_readable_by(@visitor, context: :as_member)
+        expect(@campus.authorizer).to_not be_readable_by(@visitor, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do
-        expect(@campus.authorizer).to be_readable_by(@visitor, context: :as_visitor)
+        expect(@campus.authorizer).to be_readable_by(@visitor, perspective: :as_visitor)
       end
 
       it 'allows reading the public profile' do
-        expect(@campus.authorizer).to be_readable_by(@visitor, context: :as_anyone)
+        expect(@campus.authorizer).to be_readable_by(@visitor, perspective: :as_anyone)
       end
 
       it 'disallows updating' do

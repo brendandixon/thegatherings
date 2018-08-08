@@ -27,7 +27,7 @@ describe MemberAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      ApplicationAuthorizer::COMMUNITY_ROLES.each do |role|
+      RoleContext::COMMUNITY_ROLES.each do |role|
         member = self.instance_variable_get("@#{role}")
         create(:membership, "as_#{role}".to_sym, group: @community, member: member)
       end
@@ -44,16 +44,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@assistant, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@assistant, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, perspective: :as_anyone)
         end
 
         it 'allows updating' do
@@ -67,11 +67,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -90,16 +90,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@leader, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@leader, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, perspective: :as_anyone)
         end
 
         it 'allows updating' do
@@ -113,11 +113,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -136,16 +136,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@member, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@member, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -159,11 +159,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -182,16 +182,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@overseer, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to_not be_creatable_by(@overseer, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -205,11 +205,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -228,16 +228,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -251,11 +251,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -272,7 +272,7 @@ describe MemberAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      ApplicationAuthorizer::CAMPUS_ROLES.each do |role|
+      RoleContext::CAMPUS_ROLES.each do |role|
         member = self.instance_variable_get("@#{role}")
         create(:membership, "as_#{role}".to_sym, group: @campus, member: member)
       end
@@ -289,16 +289,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@assistant, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@assistant, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, perspective: :as_anyone)
         end
 
         it 'allows updating' do
@@ -312,11 +312,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -335,16 +335,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@leader, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@leader, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, campus: @campus, perspective: :as_anyone)
         end
 
         it 'allows updating' do
@@ -358,11 +358,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -381,16 +381,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@member, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@member, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -404,11 +404,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -427,16 +427,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@overseer, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@overseer, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@overseer, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@overseer, campus: @campus, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@overseer, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@overseer, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -450,11 +450,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -473,16 +473,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, campus: @campus, context: :as_signup)
+        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_member)
+          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_anyone)
+          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -496,11 +496,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, campus: @campus, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -517,7 +517,7 @@ describe MemberAuthorizer, type: :authorizer do
   context "for a Gathering" do
 
     before :context do
-      ApplicationAuthorizer::GATHERING_ROLES.each do |role|
+      RoleContext::GATHERING_ROLES.each do |role|
         member = self.instance_variable_get("@#{role}")
         create(:membership, "as_#{role}".to_sym, group: @gathering, member: member)
       end
@@ -534,16 +534,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@assistant, gathering: @gathering, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@assistant, gathering: @gathering, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@assistant, gathering: @gathering, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, gathering: @gathering, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@assistant, gathering: @gathering, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@assistant, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'allows updating' do
@@ -557,11 +557,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, gathering: @gathering, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, gathering: @gathering, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, gathering: @gathering, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@assistant, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -580,16 +580,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@leader, gathering: @gathering, context: :as_signup)
+        expect(@new_member.authorizer).to be_creatable_by(@leader, gathering: @gathering, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@leader, gathering: @gathering, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, gathering: @gathering, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@leader, gathering: @gathering, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@leader, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'allows updating' do
@@ -603,11 +603,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, gathering: @gathering, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, gathering: @gathering, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, gathering: @gathering, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@leader, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -626,16 +626,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@member, gathering: @gathering, context: :as_signup)
+        expect(@new_member.authorizer).to_not be_creatable_by(@member, gathering: @gathering, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@member, gathering: @gathering, context: :as_member)
+          expect(@affiliated.authorizer).to be_readable_by(@member, gathering: @gathering, perspective: :as_member)
         end
 
         it 'allows reading the public profile' do
-          expect(@affiliated.authorizer).to be_readable_by(@member, gathering: @gathering, context: :as_anyone)
+          expect(@affiliated.authorizer).to be_readable_by(@member, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -649,11 +649,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, gathering: @gathering, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, gathering: @gathering, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, gathering: @gathering, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@member, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -672,16 +672,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@overseer, gathering: @gathering, context: :as_signup)
+        expect(@new_member.authorizer).to_not be_creatable_by(@overseer, gathering: @gathering, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, context: :as_member)
+          expect(@affiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, context: :as_anyone)
+          expect(@affiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -695,11 +695,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -718,16 +718,16 @@ describe MemberAuthorizer, type: :authorizer do
       end
 
       it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, gathering: @gathering, context: :as_signup)
+        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, gathering: @gathering, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, context: :as_member)
+          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, context: :as_anyone)
+          expect(@affiliated.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -741,11 +741,11 @@ describe MemberAuthorizer, type: :authorizer do
 
       context 'with unaffiliated Members' do
         it 'disallows reading the full profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, context: :as_member)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, perspective: :as_member)
         end
 
         it 'disallows reading the public profile' do
-          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, context: :as_anyone)
+          expect(@unaffiliated.authorizer).to_not be_readable_by(@visitor, gathering: @gathering, perspective: :as_anyone)
         end
 
         it 'disallows updating' do
@@ -765,11 +765,11 @@ describe MemberAuthorizer, type: :authorizer do
     end
 
     it 'allows reading the full profile' do
-      expect(@unaffiliated.authorizer).to be_readable_by(@unaffiliated, context: :as_member)
+      expect(@unaffiliated.authorizer).to be_readable_by(@unaffiliated, perspective: :as_member)
     end
 
     it 'allows reading the public profile' do
-      expect(@unaffiliated.authorizer).to be_readable_by(@unaffiliated, context: :as_anyone)
+      expect(@unaffiliated.authorizer).to be_readable_by(@unaffiliated, perspective: :as_anyone)
     end
 
     it 'allows updating' do

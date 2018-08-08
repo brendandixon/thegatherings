@@ -60,7 +60,7 @@ class Gathering < ApplicationRecord
   validates :campus, belonging: {models: [Campus]}
   validate :community_owns_campus
 
-  validates_length_of :name, within: 10..255
+  validates_length_of :name, within: 4..255
   validates_length_of :description, within: 25..1000
 
   validates_datetime :meeting_starts
@@ -110,6 +110,18 @@ class Gathering < ApplicationRecord
 
     self.minimum = 6 if self.minimum.blank?
     self.maximum = 12 if self.maximum.blank?
+  end
+
+  def belongs_to?(group)
+    (group.is_a?(Campus) && self.campus == group) || (group.is_a?(Community) && self.community == group)
+  end
+
+  def active_overseers
+    self.assigned_overseers.active_on(DateTime.current)
+  end
+
+  def is_active_overseer?(member)
+    active_overseers.for_member(member).exists?
   end
 
   def meeting_starts=(v)
@@ -223,6 +235,15 @@ class Gathering < ApplicationRecord
       pm << m
     end
     pm
+  end
+
+  def as_json(*)
+    super.except(*JSON_EXCLUDES).tap do |g|
+      id = g['id']
+      g['path'] = campus_path(id, format: :json)
+      g['campus_path'] = campus_path(g['campus_id'], format: :json)
+      g['community_path'] = community_path(g['community_id'], format: :json)
+    end
   end
 
   def to_s

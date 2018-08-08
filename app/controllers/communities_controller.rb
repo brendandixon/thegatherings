@@ -58,8 +58,8 @@ class CommunitiesController < ApplicationController
     def ensure_authorized
       return true if is_collection_action?
       resource = @member.present? ? @member : @community
-      context = is_contextual_action? ? :as_anyone : :as_member
-      authorize_action_for resource, community: @community, context: context
+      perspective = is_perspective_action? ? :as_anyone : :as_member
+      authorize_action_for resource, community: @community, perspective: perspective
     end
 
     def set_community

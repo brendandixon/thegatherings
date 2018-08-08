@@ -5,6 +5,7 @@ import BaseComponent from '../BaseComponent';
 
 export default class SubmitButton extends BaseComponent {
     static propTypes = {
+        disabled: PropTypes.bool,
         title: PropTypes.string.isRequired,
         position: PropTypes.oneOf(['full', 'left', 'center', 'right'])
     }
@@ -14,16 +15,16 @@ export default class SubmitButton extends BaseComponent {
         this._submitButton = null
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        this.ensureEnabled()
-    }
-
     componentDidMount() {
         this.ensureEnabled()
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        this.ensureEnabled()
+    }
+
     ensureEnabled() {
-        if (this._submitButton) {
+        if (this._submitButton && !this.props.disabled) {
             jQuery(this._submitButton).removeAttr('disabled')
         }
     }
@@ -55,7 +56,7 @@ export default class SubmitButton extends BaseComponent {
                             type='submit'
                             value={this.props.title}
                             className='w-100 btn btn-outline-primary'
-                            data-disable-with={this.props.title}
+                            disabled={this.props.disabled}
                             ref={c => (this._submitButton = c)}
                         />
                     </div>

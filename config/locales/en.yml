@@ -79,11 +79,12 @@ en:
         one: "Membership"
         other: "Memberships"
   tags:
-    prompt: "Preferred %{tag_set_name}?"
+    prompt: "Preferred %{category_name}?"
     demographics:
       single: "Demographic"
       plural: "Demographics"
       prompt: "What Demographic mix do you prefer?"
+      all_prompt: "Any"
       junior_high: "Junior High"
       high_school: "High School"
       college: "College"
@@ -99,6 +100,7 @@ en:
       single: "Gender"
       plural: "Genders"
       prompt: "What mix of Women and Men?"
+      all_prompt: ''
       men: "Men Only"
       mixed: "A Mix of Women and Men"
       women: "Women Only"
@@ -106,6 +108,7 @@ en:
       single: "Life Stage"
       plural: "Life Stages"
       prompt: "Which Life Stages best fit?"
+      all_prompt: "Any"
       college: "Still in College"
       early_career: "Just starting a Career"
       established_career: "Established in a Career"
@@ -115,6 +118,7 @@ en:
       single: "Relationship"
       plural: "Relationships"
       prompt: "With what Relationships are you comfortable?"
+      all_prompt: "All"
       divorced: "Recovering from a Divorce"
       early_family: "Just starting a Family"
       empty_nester: "Savoring an Empty Nest"
@@ -125,6 +129,7 @@ en:
       single: "Topic"
       plural: "Topics"
       prompt: "What Topics do you prefer?"
+      all_prompt: "Any"
       bible: "Bible Studies"
       topical: "Topical Studies"
       devotional: "Devotional"
@@ -135,52 +140,6 @@ en:
       women: "Women's Concerns"
     gathering_title: "Gathering Profile"
     preference_title: "Your Preferences"
-  # charts:
-  #   absent: "Absent"
-  #   available: "Available"
-  #   present: "Present"
-  #   requests: "Requests"
-  #   age_group:
-  #     junior_high: "Junior High"
-  #     high_school: "High School"
-  #     college: "College"
-  #     fifties: "50s"
-  #     forties: "40s"
-  #     plus: "Beyond"
-  #     sixties: "60s"
-  #     thirties: "30s"
-  #     twenties: "20s"
-  #     title: "Age Groups"
-  #   gender:
-  #     men: "Men Only"
-  #     mixed: "Women and Men"
-  #     women: "Women Only"
-  #     title: "Gender Mix"
-  #   life_stage:
-  #     college: "College"
-  #     early_career: "Early Career"
-  #     established_career: "Established Career"
-  #     post_career: "Post Career"
-  #     post_college: "Post College"
-  #     title: "Life Stages"
-  #   relationship:
-  #     divorced: "Divorced"
-  #     early_family: "Early Family"
-  #     empty_nester: "Empty Nester"
-  #     established_family: "Established Family"
-  #     single: "Single"
-  #     young_married: "Young Married"
-  #     title: "Relational Status"
-  #   topic:
-  #     bible: "Bible"
-  #     topical: "Topical"
-  #     devotional: "Devotional"
-  #     family: "Family"
-  #     marriage: "Marriage"
-  #     singleness: "Singleness"
-  #     men: "Men"
-  #     women: "Women"
-  #     title: "Topic Mix"
   errors:
     belonging:
       illegal: "must be a %{models.to_sentence(two_words_connector: 'or', last_word_connector: 'or')}."
@@ -286,20 +245,12 @@ en:
       title: "%{name} Community"
     title: "Communities"
   gatherings:
-    # age_group:
-    #   title_html: "Those attending the Gathering will be in their&#8230;"
     create:
       title_html: "What would you like to name your Gathering?"
     edit:
       title: "Edit the %{name} Gathering"
-    # gender:
-    #   title_html: "Who will attend your Gathering? (Pick one)"
     index:
       title: "%{name} Gatherings"
-    # life_stage:
-    #   title_html: "The Gathering members will be&#8230;"
-    # relationship:
-    #   title_html: "What kind of relationships will the Gathering cater to?"
     requests:
       button: "Requests"
     location:

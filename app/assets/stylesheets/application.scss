@@ -28,6 +28,7 @@
 @import 'font-awesome-sprockets';
 @import 'font-awesome';
 
+$enable-gradients: true;
 @import './bootstrap-4.1.2/bootstrap';
 
 .welcome {
@@ -41,4 +42,8 @@
 
 .outline {
   outline: 1px solid red;
+}
+
+.border-gray-light {
+  border-color: $gray-300 !important;
 }

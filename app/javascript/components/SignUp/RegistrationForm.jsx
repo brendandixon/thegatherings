@@ -6,7 +6,7 @@ import Alert from '../Utilities/Alert'
 import { errorsToMessages } from '../Utilities/RailsUtilities'
 
 import JsonForm from '../Forms/JsonForm'
-import LabeledRadio from '../Forms/LabeledRadio'
+import ButtonRadioGroup from '../Forms/ButtonRadioGroup'
 import LabeledInput from '../Forms/LabeledInput'
 
 import SubmitStepButton from './SubmitStepButton'
@@ -118,7 +118,7 @@ export default class RegistrationForm extends BaseComponent {
                             />
                         </div>
                         <div className='col-3'>
-                            <LabeledRadio
+                            <ButtonRadioGroup
                                 label='Gender'
                                 name='member[gender]'
                                 id='member_gender'

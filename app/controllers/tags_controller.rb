@@ -1,12 +1,12 @@
 class TagsController < ApplicationController
 
   before_action :set_tag, except: COLLECTION_ACTIONS
-  before_action :set_tag_set
+  before_action :set_category
   before_action :set_community
   before_action :ensure_authorized
 
   def index
-    @tags = @tag_set.tags
+    @tags = @category.tags
     respond_to do |format|
       format.html { render }
       format.json { render json: @tags.as_json }
@@ -37,7 +37,7 @@ class TagsController < ApplicationController
   end
 
   def update
-    @tag.attributes = tag_params[:tag_set]
+    @tag.attributes = tag_params[:category]
     ensure_authorized
     respond_to do |format|
       if @tag.save
@@ -62,7 +62,7 @@ class TagsController < ApplicationController
     end
 
     def set_community
-      @community = @tag_set.community if @tag_set.present?
+      @community = @category.community if @category.present?
       redirect_to root_path unless @community.present?
     end
 
@@ -71,8 +71,8 @@ class TagsController < ApplicationController
       @tag ||= Tag.new(tag_params[:tag])
     end
 
-    def set_tag_set
-      @tag_set = TagSet.find(params[:tag_set_id]) rescue nil if params[:tag_set_id].present?
+    def set_category
+      @category = Category.find(params[:category_id]) rescue nil if params[:category_id].present?
     end
 
     def tag_params

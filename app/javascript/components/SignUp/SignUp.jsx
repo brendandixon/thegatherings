@@ -11,7 +11,7 @@ import { errorsToMessages } from '../Utilities/RailsUtilities'
 
 import RegistrationForm from './RegistrationForm'
 import SelectForm from './SelectForm'
-import TagSetForm from './TagSetForm'
+import CategoryForm from './CategoryForm'
 import TimedMessage from './TimedMessage'
 
 export default class SignUp extends BaseComponent {
@@ -29,13 +29,13 @@ export default class SignUp extends BaseComponent {
             renderBody: null,
 
             phase: this.props.skipWelcome ? 1 : 0,
-            tagSetPhase: 0,
+            categoryPhase: 0,
             errors: [],
 
             member: null,
             communities: null,
             community: null,
-            tagSets: null,
+            categories: null,
             communityMembership: null,
             campuses: null,
             campus: null,
@@ -52,7 +52,7 @@ export default class SignUp extends BaseComponent {
         this.ensureCommunities = this.ensureCommunities.bind(this)
         this.selectCommunity = this.selectCommunity.bind(this)
         this.joinCommunity = this.joinCommunity.bind(this)
-        this.ensureTagSets = this.ensureTagSets.bind(this)
+        this.ensureCategories = this.ensureCategories.bind(this)
         this.ensureCampuses = this.ensureCampuses.bind(this)
         this.selectCampus = this.selectCampus.bind(this)
         this.joinCampus = this.joinCampus.bind(this)
@@ -96,9 +96,9 @@ export default class SignUp extends BaseComponent {
                 onSuccess: ((state, json) => setJson(state, json, 'communityMembership'))
             },
             {
-                name: 'ensureTagSets',
-                action: this.ensureTagSets,
-                onSuccess: ((state, json) => setJson(state, json, 'tagSets'))
+                name: 'ensureCategories',
+                action: this.ensureCategories,
+                onSuccess: ((state, json) => setJson(state, json, 'categories'))
             },
             {
                 name: 'ensureCampuses',
@@ -135,9 +135,9 @@ export default class SignUp extends BaseComponent {
                         setJson(state, taggings, 'taggings')
                     }
 
-                    state.tagSetPhase += 1
-                    this.setState({ tagSetPhase: state.tagSetPhase })
-                    return (state.tagSetPhase >= state.tagSets.length)
+                    state.categoryPhase += 1
+                    this.setState({ categoryPhase: state.categoryPhase })
+                    return (state.categoryPhase >= state.categories.length)
                 })
             },
             {
@@ -177,7 +177,7 @@ export default class SignUp extends BaseComponent {
     initiateSignUp(state) {
         this.setState({
             phase: 0,
-            tagSetPhase: 0,
+            categoryPhase: 0,
             errors: [],
 
             member: null,
@@ -194,14 +194,14 @@ export default class SignUp extends BaseComponent {
             this.setState({
                 communities: null,
                 community: null,
-                tagSets: null
+                categories: null
             })
             campuses = null
         }
         else if (communities.length > 1) {
             this.setState({
                 community: null,
-                tagSets: null
+                categories: null
             })
             campuses = null
         }
@@ -306,16 +306,16 @@ export default class SignUp extends BaseComponent {
             .catch(error => this.handleError(error))
     }
 
-    ensureTagSets(state) {
-        let tagSets = state.tagSets
-        let promise = !tagSets
-            ? fetch(state.community.tag_sets_path, {
+    ensureCategories(state) {
+        let categories = state.categories
+        let promise = !categories
+            ? fetch(state.community.categories_path, {
                 credentials: 'same-origin',
                 method: 'GET'
                 })
                     .then(readJSONResponse)
                     .then(evaluateJSONResponse)
-            : Promise.resolve(tagSets)
+            : Promise.resolve(categories)
     
         promise
             .then(json => this.handleSuccess(json))
@@ -384,19 +384,19 @@ export default class SignUp extends BaseComponent {
     }
 
     selectPreferences(state) {
-        if (state.tagSets.length > 0) {
-            let tagSet = state.tagSets[state.tagSetPhase]
+        if (state.categories.length > 0) {
+            let category = state.categories[state.categoryPhase]
             this.setState({
                 renderTitle: (<span>Select Preferences</span>),
                 renderBody: (
-                    <TagSetForm
-                        key={`selectPreferences_${tagSet.plural}`}
-                        tagSet={tagSet}
+                    <CategoryForm
+                        key={`selectPreferences_${category.plural}`}
+                        category={category}
                         onError={this.handleError}
                         onSuccess={this.handleSuccess}
                     >
-                        <p className='lead text-muted pb-2 pt-2'>{tagSet.prompt}</p>
-                    </TagSetForm>
+                        <p className='lead text-muted pb-2 pt-2'>{category.prompt}</p>
+                    </CategoryForm>
                 )
             })
         }
@@ -404,23 +404,21 @@ export default class SignUp extends BaseComponent {
 
     submitPreferences(state) {
         if (state.taggings.length > 0) {
-            const railsName = /^(\w+)\[(\w+)\]$/
             let taggings = {}
 
             for (let o of state.taggings) {
                 for (let p in o) {
-                    let m = railsName.exec(p)
-                    if (m && m.length > 1) {
-                        let k = m[1]
-                        let v = m[2]
-                        taggings[k] = taggings[k] || []
-                        if (o[p] == 'on') {
-                            taggings[k].push(v)
-                        }
+                    let k = p.split('[')
+                    let category = k && k.length > 0 ? k[0] : null
+                    if (category) {
+                        taggings[category] = taggings[category] || []
+                        taggings[category].push(o[p])
                     }
                 }
             }
 
+            // console.log('SUBMITTING')
+            // console.log(taggings)
             fetch(`${state.preferences.set_taggings_path}`, {
                 credentials: 'same-origin',
                 method: 'POST',

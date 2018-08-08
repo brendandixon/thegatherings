@@ -26,7 +26,7 @@ describe RequestAuthorizer, type: :authorizer do
   context "for a Community" do
 
     before :context do
-      ApplicationAuthorizer::COMMUNITY_ROLES.each do |affiliation|
+      RoleContext::COMMUNITY_ROLES.each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
@@ -185,7 +185,7 @@ describe RequestAuthorizer, type: :authorizer do
   context "for a Campus" do
 
     before :context do
-      ApplicationAuthorizer::CAMPUS_ROLES.each do |affiliation|
+      RoleContext::CAMPUS_ROLES.each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
       end
@@ -371,7 +371,7 @@ describe RequestAuthorizer, type: :authorizer do
   context "for a Gathering" do
 
     before :context do
-      ApplicationAuthorizer::GATHERING_ROLES.each do |affiliation|
+      RoleContext::GATHERING_ROLES.each do |affiliation|
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
       end

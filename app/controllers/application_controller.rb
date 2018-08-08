@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   COLLECTION_ACTIONS = %w(index)
   GROUPABLE_ACTIONS = %w(index new create)
-  CONTEXTUAL_ACTIONS = COLLECTION_ACTIONS + %w(show)
+  PERSPECTIVE_ACTIONS = COLLECTION_ACTIONS + %w(show)
 
   protect_from_forgery with: :exception, unless: -> { request.format.json? }
   prepend_view_path Rails.root.join('frontend')
@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_member!
   around_action :set_timezone
+
+  helper_method :controller_name
   
   def authority_forbidden(error)
     Authority.logger.warn(error.message)
@@ -31,8 +33,8 @@ class ApplicationController < ActionController::Base
       self.class::COLLECTION_ACTIONS.include?(self.action_name)
     end
 
-    def is_contextual_action?
-      self.class::CONTEXTUAL_ACTIONS.include?(self.action_name)
+    def is_perspective_action?
+      self.class::PERSPECTIVE_ACTIONS.include?(self.action_name)
     end
     
     def set_locale

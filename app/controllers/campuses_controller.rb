@@ -59,8 +59,8 @@ class CampusesController < ApplicationController
 
     def ensure_authorized
       resource = is_collection_action? ? @community : @campus
-      context = is_contextual_action? ? :as_anyone : :as_member
-      authorize_action_for resource, community: @community, context: context
+      perspective = is_perspective_action? ? :as_anyone : :as_member
+      authorize_action_for resource, community: @community, perspective: perspective
     end
 
     def ensure_community

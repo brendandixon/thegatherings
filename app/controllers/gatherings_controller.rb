@@ -11,12 +11,15 @@ class GatheringsController < ApplicationController
   before_action :ensure_campus
   before_action :ensure_community
   before_action :ensure_gathering
+  before_action :ensure_group
   before_action :ensure_authorized
 
   def index
-    context = current_member.member_of?(@community) ? :as_member : :as_anyone
-    authorize_action_for @community, context: context
-    @gatherings = @community.gatherings.is_open
+    @gatherings = @group.present? ? @group.gatherings : []
+    respond_to do |format|
+      format.html { render }
+      format.json { render json:@gatherings.as_json }
+    end
   end
 
   def show
@@ -85,22 +88,25 @@ class GatheringsController < ApplicationController
     render :index
   end
 
-  private
+  protected
 
     def ensure_authorized
+      raise Authority::SecurityViolation.new(current_member, "the #{@gathering.name} Gathering") unless @gathering.blank? || @gathering.belongs_to?(@campus)
+
       resource = is_collection_action? ? @campus : @gathering
-      context = is_contextual_action? ? :as_anyone : :as_member
-      authorize_action_for resource, community: @community, campus: @campus, context: context
+      perspective = is_perspective_action? ? :as_anyone : :as_member
+      authorize_action_for resource, community: @community, campus: @campus, perspective: perspective
     end
 
     def ensure_campus
-      @campus = @gathering.campus if @campus.blank? && @gathering.present?
-      @campus = current_member.active_campuses.first.group if @campus.blank? && current_member.active_campuses.present?
-      redirect_to member_root_path if @campus.blank?
+      @campus ||= @gathering.campus if @gathering.present?
+      @campus ||= current_member.default_campus
     end
 
     def ensure_community
-      @community = @campus.community if @community.blank? || @community != @campus.community
+      @community ||= @gathering.community if @gathering.present?
+      @community ||= @campus.community if @campus.present?
+      @community ||= current_member.default_community
     end
 
     def ensure_gathering
@@ -109,7 +115,10 @@ class GatheringsController < ApplicationController
         @gathering.community = @community
         @gathering.campus = @campus
       end
-      redirect_to member_root_path unless @gathering.campus = @campus
+    end
+
+    def ensure_group
+      @group = @campus || @community
     end
 
     def set_campus
@@ -124,7 +133,7 @@ class GatheringsController < ApplicationController
     end
 
     def gathering_params
-      params.permit(:campus_id, :community_id, gathering: Gathering::FORM_FIELDS)
+      params.permit(:campus_id, :community_id, :format, gathering: Gathering::FORM_FIELDS)
     end
 
 end

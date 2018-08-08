@@ -32,7 +32,6 @@ class AssignedOverseer < ApplicationRecord
   scope :for_community, lambda{|community| joins(:gathering).where("gatherings.community_id = ?", community.id)}
   scope :for_gathering, lambda{|gathering| where(gathering_id: gathering.id)}
 
-  scope :for_active_member, lambda{|member| for_member(member).active_on(DateTime.current)}
   scope :for_member, lambda{|member| joins(:membership).where(memberships: {member: member})}
   scope :for_membership, lambda{|membership| where(membership: membership)}
 

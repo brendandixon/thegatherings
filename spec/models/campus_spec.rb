@@ -37,7 +37,7 @@ describe Campus, type: :model do
     end
 
     it 'rejects short names' do
-      @campus.name = "short"
+      @campus.name = "a"
       expect(@campus).to be_invalid
       expect(@campus.errors).to have_key(:name)
     end

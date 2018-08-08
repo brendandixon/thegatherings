@@ -27,7 +27,7 @@ class CommunityAuthorizer < ApplicationAuthorizer
   protected
 
     def for_community_resource?
-      resource.is_a?(RoleName) || resource.is_a?(Tag) || resource.is_a?(TagSet)
+      resource.is_a?(RoleName) || resource.is_a?(Tag) || resource.is_a?(Category)
     end
 
 end

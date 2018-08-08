@@ -10,8 +10,8 @@ def add_factories
   include FactoryBot::Syntax::Methods
 end
 
-def apply_tags!(o, tag_set, *tags)
-  o.add_tags!(tag_set => tags)
+def apply_tags!(o, category, *tags)
+  o.add_tags!(category => tags)
 end
 
 def ts(ts)
@@ -68,12 +68,20 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       after(:create) {|o| apply_tags!(o, :demographics, *%w(twenties thirties)) }
     end
 
+    trait :adults do
+      after(:create) {|o| apply_tags!(o, :demographics, *%w(twenties thirties forties)) }
+    end
+
     trait :boomers do
       after(:create) {|o| apply_tags!(o, :demographics, *%w(forties fifties sixties)) }
     end
 
+    trait :seniors do
+      after(:create) {|o| apply_tags!(o, :demographics, *%w(sixties plus)) }
+    end
+
     trait :mixed_ages do
-      after(:create) {|o| apply_tags!(o, :demographics, *%w(twenties thirties forties fifties sixties)) }
+      after(:create) {|o| apply_tags!(o, :demographics, *%w(twenties thirties forties fifties sixties plus)) }
     end
 
     # Gender Mix
@@ -107,12 +115,20 @@ Time.use_zone TheGatherings::Application.default_time_zone do
     end
 
     # Relational Status Mix
+    trait :any_relationship do
+      after(:create) {|o| apply_tags!(o, :relationships, *%w(single young_married early_family established_family empty_nester divorced)) }
+    end
+
     trait :singles do
       after(:create) {|o| apply_tags!(o, :relationships, *%w(single)) }
     end
 
     trait :young_marrieds do
       after(:create) {|o| apply_tags!(o, :relationships, *%w(young_married)) }
+    end
+
+    trait :single_married do
+      after(:create) {|o| apply_tags!(o, :relationships, *%w(single young_married)) }
     end
 
     trait :families do
@@ -130,6 +146,10 @@ Time.use_zone TheGatherings::Application.default_time_zone do
     # Topic Mix
     trait :family_life do
       after(:create) {|o| apply_tags!(o, :topics, *%w(family marriage)) }
+    end
+
+    trait :single_life do
+      after(:create) {|o| apply_tags!(o, :topics, *%w(singleness bible topical)) }
     end
 
     trait :mens_issues do
@@ -204,9 +224,9 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       member
 
       active_on 6.months.ago
-      role ApplicationAuthorizer::MEMBER
+      role RoleContext::MEMBER
 
-      ApplicationAuthorizer::ROLES.each do |r|
+      RoleContext::ROLES.each do |r|
         trait "as_#{r}".to_sym do
           role r
         end
@@ -229,7 +249,7 @@ Time.use_zone TheGatherings::Application.default_time_zone do
     factory :role_name do
       community
 
-      role ApplicationAuthorizer::LEADER
+      role RoleContext::LEADER
       name { I18n.t(role, scope: :roles) }
       group_type Community.to_s
     end
@@ -239,16 +259,16 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       membership { create(:membership, :as_overseer, group: gathering.campus) }
     end
 
-    factory :tag_set do
+    factory :category do
       community
 
-      sequence(:name) {|n| "tagset#{n}"}
+      sequence(:name) {|n| "category#{n}"}
     end
 
     factory :tag do
-      tag_set
+      category
 
-      sequence(:name) {|n| "#{tag_set}_tag#{n}"}
+      sequence(:name) {|n| "#{category}_tag#{n}"}
     end
 
     factory :tagging do

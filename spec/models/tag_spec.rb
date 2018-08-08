@@ -3,7 +3,7 @@
 # Table name: tags
 #
 #  id         :bigint(8)        unsigned, not null, primary key
-#  tag_set_id :bigint(8)        not null
+#  category_id :bigint(8)        not null
 #  name       :string(255)
 #  prompt     :string(255)
 #  created_at :datetime         not null
@@ -12,7 +12,7 @@
 
 require 'rails_helper'
 
-describe TagSet, type: :model do
+describe Category, type: :model do
 
   before :example do
     @tag = build(:tag)
@@ -24,9 +24,9 @@ describe TagSet, type: :model do
   end
 
   it 'requires a tag set' do
-    @tag.tag_set = nil
+    @tag.category = nil
     expect(@tag).to be_invalid
-    expect(@tag.errors).to have_key(:tag_set)
+    expect(@tag.errors).to have_key(:category)
   end
 
   it 'requires a name' do
@@ -84,7 +84,7 @@ describe TagSet, type: :model do
   it 'disallows duplicate names in a tag set' do
     @tag.save!
 
-    tag = build(:tag, name: @tag.name, tag_set: @tag.tag_set)
+    tag = build(:tag, name: @tag.name, category: @tag.category)
     expect(tag).to be_invalid
     expect(tag.errors).to have_key(:name)
   end

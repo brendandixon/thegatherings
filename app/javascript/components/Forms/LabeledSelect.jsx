@@ -9,6 +9,7 @@ import Option from './Option'
 export default class LabeledSelect extends BaseComponent {
     static propTypes = {
         hasFocus: PropTypes.bool,
+        disabled: PropTypes.bool,
         id: PropTypes.string.isRequired,
         label: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
@@ -22,7 +23,8 @@ export default class LabeledSelect extends BaseComponent {
                                 ]).isRequired,
                         label: PropTypes.string.isRequired
                     }).isRequired
-                ).isRequired
+                ).isRequired,
+        onChange: PropTypes.func
     }
 
     constructor(props) {
@@ -31,6 +33,7 @@ export default class LabeledSelect extends BaseComponent {
         this.state = {
             value: this.props.value
         }
+
         this.handleChange = this.handleChange.bind(this)
     }
 
@@ -49,7 +52,15 @@ export default class LabeledSelect extends BaseComponent {
     }
 
     handleChange(event) {
-        this.setState({value: event.target.value})
+        this.setState({
+            value: event.target.value
+        })
+
+        if (this.props.onChange) {
+            let json = {}
+            json[this.props.name] = event.target.value
+            this.props.onChange(json)
+        }
     }
 
     renderOptions() {
@@ -73,7 +84,8 @@ export default class LabeledSelect extends BaseComponent {
                 <select
                     id={this.props.id}
                     name={this.props.name}
-                    className='custom-select'
+                    className='form-control custom-select'
+                    disabled={this.props.disabled}
                     ref={c => (this._select = c)}
                     size={this.props.size || '1'}
                     value={this.state.value}

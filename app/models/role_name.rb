@@ -22,13 +22,13 @@ class RoleName < ApplicationRecord
     def add_defaults!(community)
       return if community.blank?
       RoleName.transaction do
-        ApplicationAuthorizer::COMMUNITY_ROLES.each do |role|
+        RoleContext::COMMUNITY_ROLES.each do |role|
           community.role_names.create!(role: role, name: I18n.t(role, scope: :roles), group_type: Community)
         end
-        ApplicationAuthorizer::CAMPUS_ROLES.each do |role|
+        RoleContext::CAMPUS_ROLES.each do |role|
           community.role_names.create!(role: role, name: I18n.t(role, scope: :roles), group_type: Campus)
         end
-        ApplicationAuthorizer::GATHERING_ROLES.each do |role|
+        RoleContext::GATHERING_ROLES.each do |role|
           community.role_names.create!(role: role, name: I18n.t(role, scope: :roles), group_type: Gathering)
         end
       end
@@ -40,7 +40,7 @@ class RoleName < ApplicationRecord
 
   validates :community, belonging: {models: [Community]}
 
-  validates_inclusion_of :role, in: ApplicationAuthorizer::ROLES
+  validates_inclusion_of :role, in: RoleContext::ROLES
   validates_inclusion_of :group_type, in: ApplicationHelper::GROUP_TYPES
   validates_length_of :name, in: 4..255
 

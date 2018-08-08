@@ -20,9 +20,11 @@ describe Tagging, type: :model do
     @g = create(:gathering, campus: @ca)
     @m = create(:member)
     @p = create(:preference, community: @c, member: @m)
-    @ts = create(:tag_set, community: @c)
-    @tags = (0..6).inject([]) {|tags, i| tags << create(:tag, tag_set: @ts); tags }
-    @tagging = build(:tagging, tag: @tags.first, taggable: @g)
+    @ts1 = create(:category, community: @c)
+    @ts2 = create(:category, community: @c, singleton: true)
+    @tags1 = (0..6).inject([]) {|tags, i| tags << create(:tag, category: @ts1); tags }
+    @tags2 = (0..6).inject([]) {|tags, i| tags << create(:tag, category: @ts2); tags }
+    @tagging = build(:tagging, tag: @tags1.first, taggable: @g)
   end
 
   it 'validates' do
@@ -56,6 +58,20 @@ describe Tagging, type: :model do
 
   it 'rejects taggables that are not a Gathering or Membership' do
     expect { @tagging.taggable = build(:campus) }.to raise_error(ActiveRecord::InverseOfAssociationNotFoundError)
+  end
+
+  it 'allows multiple tags from the same tag set' do
+    @tagging.save!
+    @tagging = build(:tagging, tag: @tags1.second, taggable: @g)
+    expect(@tagging).to be_valid
+    expect(@tagging.errors).to be_empty
+  end
+
+  it 'rejects multiple singleton tags' do
+    create(:tagging, tag: @tags2.first, taggable: @g)
+    @tagging = build(:tagging, tag: @tags2.second, taggable: @g)
+    expect(@tagging).to_not be_valid
+    expect(@tagging.errors).to have_key(:tag)
   end
 
 end

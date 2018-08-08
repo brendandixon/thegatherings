@@ -20,17 +20,17 @@ describe Joinable, type: :concern do
     @participants = [@leader, @assistant, @member, @overseer, @visitor]
     @visitors = [@visitor]
 
-    ApplicationAuthorizer::roles_allowed_for(@community).each do |role|
+    RoleContext::roles_allowed_for(@community).each do |role|
       member = self.instance_variable_get("@#{role}")
       create(:membership, "as_#{role}".to_sym, group: @community, member: member)
     end
 
-    ApplicationAuthorizer::roles_allowed_for(@campus).each do |role|
+    RoleContext::roles_allowed_for(@campus).each do |role|
       member = self.instance_variable_get("@#{role}")
       create(:membership, "as_#{role}".to_sym, group: @campus, member: member)
     end
 
-    ApplicationAuthorizer::roles_allowed_for(@gathering).each do |role|
+    RoleContext::roles_allowed_for(@gathering).each do |role|
       member = self.instance_variable_get("@#{role}")
       create(:membership, "as_#{role}".to_sym, group: @gathering, member: member)
     end

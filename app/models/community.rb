@@ -26,7 +26,7 @@ class Community < ApplicationRecord
   has_many :preferences, inverse_of: :community, dependent: :destroy
 
   has_many :role_names, dependent: :destroy
-  has_many :tag_sets, dependent: :destroy
+  has_many :categories, dependent: :destroy
 
   validates_length_of :name, within: 10..255
 
@@ -37,32 +37,32 @@ class Community < ApplicationRecord
     RoleName.add_defaults!(self)
   end
 
-  def add_default_tag_sets!(*tag_sets)
-    self.tag_sets.delete_all
-    TagSet.add_defaults!(self)
+  def add_default_categories!(*categories)
+    self.categories.delete_all
+    Category.add_defaults!(self)
   end
 
-  def remove_tag_sets!(*tag_sets)
-    if tag_sets.empty? || tag_sets.blank?
-      self.tag_sets.delete_all
+  def remove_categories!(*categories)
+    if categories.empty? || categories.blank?
+      self.categories.delete_all
     else
-      return unless tag_sets.all?{|tag_set| tag_set.is_a?(TagSet)}
+      return unless categories.all?{|category| category.is_a?(Category)}
       Community.transaction do
-        self.tag_sets.delete(tag_sets)
+        self.categories.delete(categories)
       end
     end
   end
 
   def community_role_names
-    role_names_for(ApplicationAuthorizer::COMMUNITY_ROLES, Community)
+    role_names_for(RoleContext::COMMUNITY_ROLES, Community)
   end
 
   def campus_role_names
-    role_names_for(ApplicationAuthorizer::CAMPUS_ROLES, Campus)
+    role_names_for(RoleContext::CAMPUS_ROLES, Campus)
   end
 
   def gathering_role_names
-    role_names_for(ApplicationAuthorizer::GATHERING_ROLES, Gathering)
+    role_names_for(RoleContext::GATHERING_ROLES, Gathering)
   end
 
   def campus
@@ -81,10 +81,10 @@ class Community < ApplicationRecord
       id = c['id']
       c['path'] = community_path(id, format: :json)
       c['campuses_path'] = community_campuses_path(id, format: :json)
+      c['categories_path'] = community_categories_path(id, format: :json)
       c['gatherings_path'] = community_gatherings_path(id, format: :json)
       c['memberships_path'] = community_memberships_path(id, format: :json)
       c['preferences_path'] = community_preferences_path(id, format: :json)
-      c['tag_sets_path'] = community_tag_sets_path(id, format: :json)
     end
   end
 
