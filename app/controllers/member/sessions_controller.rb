@@ -26,7 +26,7 @@ class Member::SessionsController < Devise::SessionsController
           flash[:notice] = 'Ignored signout request'
           redirect_back fallback_location: member_root_path, status: :unauthorized
         }
-        format.json { render json: {errors: {base: 'Ignored signout request'}}, status: :unauthorized}
+        format.json { render json: {errors: {base: 'Ignored signout request'}}, status: :ok}
       end
     end
   end

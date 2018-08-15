@@ -12,6 +12,10 @@ gem 'mysql2', '~> 0.5.2'                    # MySQL
 # http://sass-lang.com
 gem 'sassc-rails', '~> 1.3.0'               # Use SCSS for stylesheets
 
+# https://github.com/ai/autoprefixer-rails
+# - Rails processes the CSS (vs. ReactJS / Webpack)
+gem 'autoprefixer-rails', '~> 9.1.1'        # Use autoprefixer to append browser dependent CSS
+
 # http://slim-lang.com
 gem 'slim', '~> 3.0.9'                      # Use Slim for views
 

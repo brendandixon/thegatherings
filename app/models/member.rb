@@ -73,10 +73,10 @@ class Member < ApplicationRecord
   has_many :communities, through: :memberships, source: :group, source_type: "Community"
   has_many :campuses, through: :memberships, source: :group, source_type: "Campus"
   has_many :gatherings, through: :memberships, source: :group, source_type: "Gathering"
-  has_many :preferences, inverse_of: :member, dependent: :destroy
-  
   has_many :attendance_records, through: :memberships, dependent: :destroy
-  has_many :requests, inverse_of: :member, dependent: :destroy
+  has_many :preferences, through: :memberships, dependent: :destroy
+  has_many :request_owners, through: :memberships, dependent: :nullify
+  has_many :requests, through: :memberships, dependent: :destroy
 
   before_validation :ensure_password
 
@@ -211,11 +211,12 @@ class Member < ApplicationRecord
     self.id == member.id
   end
 
-  def as_json(*)
+  def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |m|
-      id = m['id']
-      m['path'] = member_path(id, format: :json)
-      m['signout_path'] = signout_path(format: :json)
+      m['memberships'] = self.memberships.as_json if options[:deep]
+      m['requests'] = self.requests.as_json(deep: true) if options[:deep]
+      m['path'] = member_path(self)
+      m['signout_path'] = signout_path
     end
   end
 

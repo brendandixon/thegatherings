@@ -11,7 +11,7 @@
 - Search for Groups by location, tag words, name, leader, day / time, child-friendly, target ages
 - Easy / secure login via Facebook, Google, and other major OAuth2 providers
 - Secure management of personal information
-- Send group inquries (e.g., ask about a group, ask for an inviation)
+- Send group enquiries (e.g., ask about a group, ask for an invitation)
 - Easy on-board for new Members
 - Mobile access
 - Optional reminder text or email messages
@@ -22,8 +22,8 @@
 ## For Leaders
 
 - Secure invitations for new Members
-- Easy rollcall and historical reporting
-- Healthcards
+- Easy roll call and historical reporting
+- HealthCards
 - Health survey for group members
 - Calendar with location for notes, topics, special events, meeting days / times, iCal support
 - Delegate authority to Members
@@ -39,7 +39,7 @@
 - Reports of groups by location, topics, target ages, attendance patterns
 - Easy communication to all or selected Leaders / Groups / Members
 - Delegate authority to other Leaders
-- Healthcards
+- HealthCards
 - Health survey for group members
 - Manage Leaders / Coaches
 - Tag clouds overviews of descriptions and reports
@@ -60,8 +60,7 @@
 
 ### v0.1 - Bethany Ballard
 
-Goal: Enable Bethany Ballard to engage their entire community in gatherings, to easily identify
-major gaps, and to have a basic idea of gathering health.
+Goal: Enable Bethany Ballard to engage their entire community in gatherings, to easily identify major gaps, and to have a basic idea of gathering health.
 
 - Bethany members can join theGatherings
 - Bethany helpers can quickly sign-up others to theGatherings
@@ -95,3 +94,22 @@ major gaps, and to have a basic idea of gathering health.
 - Members can affiliate with a Community
 - Members can use theGathering from their cell phones
 - Community and Gathering Leaders can share Resource information
+
+## Competitive Analysis
+
+### GroupVitals.com
+
+- Dashboard (looks very nice): Emerging
+- Online Signups: Yes, theGatherings also allows an easy flow-into model
+- Easy Attendance: Not yet
+- Text & Email (staff & leaders to members): Not yet
+- Easy Roster Updates: Occurs as a by-product of other activities
+- Ministry Health Metrics: Emerging, more robust with better metrics
+- Track Signups: Emerging
+- Ministry Activity (timeline of involvement): Not considered
+- Easy Leader Access (aka they can login): Yes
+- Flexible Group Tracking (aka search): Yes
+- Coaching Leadership (see who's managing what): Emerging
+- Group Health Surveys: Emerging...and much, better
+- Multi-Campus: Yes
+- Custom Email with template values (e.g., first name)

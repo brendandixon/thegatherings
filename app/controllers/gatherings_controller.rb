@@ -3,7 +3,7 @@ class GatheringsController < ApplicationController
 
   COLLECTION_ACTIONS = COLLECTION_ACTIONS + %w(search)
 
-  authority_actions gather: :read, search: :read
+  authority_actions attendees: :read, gather: :read, search: :read
 
   before_action :set_campus
   before_action :set_community
@@ -18,11 +18,15 @@ class GatheringsController < ApplicationController
     @gatherings = @group.present? ? @group.gatherings : []
     respond_to do |format|
       format.html { render }
-      format.json { render json:@gatherings.as_json }
+      format.json { render json:@gatherings.as_json(deep: true) }
     end
   end
 
   def show
+    respond_to do |format|
+      format.html { render }
+      format.json { render json:@gathering.as_json(deep: true) }
+    end
   end
 
   def new
@@ -60,6 +64,14 @@ class GatheringsController < ApplicationController
     end
   end
 
+  def attendees
+    @gatherings = @gathering.present? ? [@gathering] : (@group.present? ? @group.gatherings : [])
+    attendees = @gatherings.inject(0){|total, g| total += g.members.count}
+    respond_to do |format|
+      format.json { render json:{ attendees: attendees, average: (attendees / @gatherings.length).round }.as_json }
+    end
+  end
+
   def search
     @gatherings = Gathering
     
@@ -91,10 +103,17 @@ class GatheringsController < ApplicationController
   protected
 
     def ensure_authorized
-      raise Authority::SecurityViolation.new(current_member, "the #{@gathering.name} Gathering") unless @gathering.blank? || @gathering.belongs_to?(@campus)
+      # TODO: Generalize how to determine when to use leader perspective
+      if self.action_name == 'attendees'
+        resource = @gathering || @group
+        perspective = :as_leader
+      else
+        resource = is_collection_action? ? @group : @gathering
+        perspective = is_perspective_action? ? :as_anyone : :as_member
+        
+        raise Authority::SecurityViolation.new(current_member, "the #{@gathering.name} Gathering") if !is_collection_action? && @gathering.present? && !@gathering.belongs_to?(@campus)
+      end
 
-      resource = is_collection_action? ? @campus : @gathering
-      perspective = is_perspective_action? ? :as_anyone : :as_member
       authorize_action_for resource, community: @community, campus: @campus, perspective: perspective
     end
 
@@ -110,10 +129,10 @@ class GatheringsController < ApplicationController
     end
 
     def ensure_gathering
-      if @gathering.blank?
-        @gathering = Gathering.new(gathering_params[:gathering])
-        @gathering.community = @community
-        @gathering.campus = @campus
+      if self.action_name != 'attendees'
+        @gathering ||= Gathering.new(gathering_params[:gathering])
+        @gathering.community ||= @community
+        @gathering.campus ||= @campus
       end
     end
 
@@ -130,10 +149,11 @@ class GatheringsController < ApplicationController
 
     def set_gathering
       @gathering = Gathering.find(params[:id]) rescue nil if params[:id].present?
+      @gathering ||= Gathering.find(params[:gathering_id]) rescue nil if params[:gathering_id].present?
     end
 
     def gathering_params
-      params.permit(:campus_id, :community_id, :format, gathering: Gathering::FORM_FIELDS)
+      params.permit(:campus_id, :community_id, :format, :gathering_id, gathering: Gathering::FORM_FIELDS)
     end
 
 end

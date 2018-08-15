@@ -1,3 +1,4 @@
+import React from 'react'
 import jQuery from 'jquery'
 
 import BaseChart from './BaseChart'
@@ -40,13 +41,32 @@ export default class Attendance extends BaseChart {
                 position: 'average'
             }
         }
+        this.state = {
+            average_absent: null,
+            average_present: null,
+            total_meetings: null
+        }
         this.verb = 'attendance'
     }
 
     transformData(data) {
         if (jQuery.isEmptyObject(data) || jQuery.isEmptyObject(data.attendance)) {
+            this.setState({
+                subtitle: null
+            })
             return null
         }
+
+
+        this.setState({
+            subtitle: (
+                <div className='lead text-muted'>
+                    <div>Average Absent: {(data['averages'] || {})['absent'] || 'N/A'}</div>
+                    <div>Average Present: {(data['averages'] || {})['present'] || 'N/A'}</div>
+                    <div>Total Meetings: {data['meetings'] || 'N/A'}</div>
+                </div>
+            )
+        })
 
         let labels = []
         let present = []

@@ -30,8 +30,9 @@ describe RequestAuthorizer, type: :authorizer do
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @community, member: member)
       end
-      create(:membership, :as_member, group: @campus, member: @affiliate)
-      @request = build(:request, campus: @campus, gathering: @gathering, member: @member)
+      @membership = create(:membership, :as_member, group: @campus, member: @member)
+      @affiliate_membership = create(:membership, :as_member, group: @campus, member: @affiliate)
+      @request = build(:request, community: @community, campus: @campus, gathering: @gathering, membership: @membership)
     end
 
     after :context do
@@ -86,45 +87,45 @@ describe RequestAuthorizer, type: :authorizer do
         end
 
         it 'allows updating if not completed' do
-          @request.unanswer!
+          @request.unanswered!
           expect(@request.authorizer).to be_updatable_by(@member)
 
-          @request.answer!
+          @request.inprocess!
           expect(@request.authorizer).to be_updatable_by(@member)
         end
 
         it 'disallows updating if accepted' do
-          @request.accept!
+          @request.accepted!
           expect(@request.authorizer).to_not be_updatable_by(@member)
         end
 
         it 'disallows updating if dismissed' do
-          @request.dismiss!
+          @request.dismissed!
           expect(@request.authorizer).to_not be_updatable_by(@member)
         end
 
         it 'allows deletion if not completed' do
-          @request.unanswer!
+          @request.unanswered!
           expect(@request.authorizer).to be_deletable_by(@member)
 
-          @request.answer!
+          @request.inprocess!
           expect(@request.authorizer).to be_deletable_by(@member)
         end
 
         it 'disallows deletion if accepted' do
-          @request.accept!
+          @request.accepted!
           expect(@request.authorizer).to_not be_deletable_by(@member)
         end
 
         it 'disallows deletion if dismissed' do
-          @request.dismiss!
+          @request.dismissed!
           expect(@request.authorizer).to_not be_deletable_by(@member)
         end
       end
 
       context 'For Others' do
         before do
-          @request.member = @affiliate
+          @request.membership = @affiliate_membership
         end
         
         it 'allows creation' do
@@ -186,11 +187,13 @@ describe RequestAuthorizer, type: :authorizer do
 
     before :context do
       RoleContext::CAMPUS_ROLES.each do |affiliation|
+        next if affiliation == RoleContext::MEMBER
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @campus, member: member)
       end
-      create(:membership, :as_member, group: @campus, member: @affiliate)
-      @request = build(:request, campus: @campus, gathering: @gathering, member: @member)
+      @membership = create(:membership, :as_member, group: @campus, member: @member)
+      @affiliate_membership = create(:membership, :as_member, group: @campus, member: @affiliate)
+      @request = build(:request, community: @community, campus: @campus, gathering: @gathering, membership: @membership)
     end
 
     after :context do
@@ -245,45 +248,45 @@ describe RequestAuthorizer, type: :authorizer do
         end
 
         it 'allows updating if not completed' do
-          @request.unanswer!
+          @request.unanswered!
           expect(@request.authorizer).to be_updatable_by(@member)
 
-          @request.answer!
+          @request.inprocess!
           expect(@request.authorizer).to be_updatable_by(@member)
         end
 
         it 'disallows updating if accepted' do
-          @request.accept!
+          @request.accepted!
           expect(@request.authorizer).to_not be_updatable_by(@member)
         end
 
         it 'disallows updating if dismissed' do
-          @request.dismiss!
+          @request.dismissed!
           expect(@request.authorizer).to_not be_updatable_by(@member)
         end
 
         it 'allows deletion if not completed' do
-          @request.unanswer!
+          @request.unanswered!
           expect(@request.authorizer).to be_deletable_by(@member)
 
-          @request.answer!
+          @request.inprocess!
           expect(@request.authorizer).to be_deletable_by(@member)
         end
 
         it 'disallows deletion if accepted' do
-          @request.accept!
+          @request.accepted!
           expect(@request.authorizer).to_not be_deletable_by(@member)
         end
 
         it 'disallows deletion if dismissed' do
-          @request.dismiss!
+          @request.dismissed!
           expect(@request.authorizer).to_not be_deletable_by(@member)
         end
       end
 
       context 'For Others' do
         before do
-          @request.member = @affiliate
+          @request.membership = @affiliate_membership
         end
         
         it 'allows creation' do
@@ -375,8 +378,9 @@ describe RequestAuthorizer, type: :authorizer do
         member = self.instance_variable_get("@#{affiliation}")
         create(:membership, "as_#{affiliation}".to_sym, group: @gathering, member: member)
       end
-      create(:membership, :as_member, group: @campus, member: @affiliate)
-      @request = build(:request, campus: @campus, gathering: @gathering, member: @member)
+      @membership = create(:membership, :as_member, group: @campus, member: @member)
+      @affiliate_membership = create(:membership, :as_member, group: @campus, member: @affiliate)
+      @request = build(:request, community: @community, campus: @campus, gathering: @gathering, membership: @membership)
     end
 
     after :context do
@@ -432,45 +436,45 @@ describe RequestAuthorizer, type: :authorizer do
         end
 
         it 'allows updating if not completed' do
-          @request.unanswer!
+          @request.unanswered!
           expect(@request.authorizer).to be_updatable_by(@member)
 
-          @request.answer!
+          @request.inprocess!
           expect(@request.authorizer).to be_updatable_by(@member)
         end
 
         it 'disallows updating if accepted' do
-          @request.accept!
+          @request.accepted!
           expect(@request.authorizer).to_not be_updatable_by(@member)
         end
 
         it 'disallows updating if dismissed' do
-          @request.dismiss!
+          @request.dismissed!
           expect(@request.authorizer).to_not be_updatable_by(@member)
         end
 
         it 'allows deletion if not completed' do
-          @request.unanswer!
+          @request.unanswered!
           expect(@request.authorizer).to be_deletable_by(@member)
 
-          @request.answer!
+          @request.inprocess!
           expect(@request.authorizer).to be_deletable_by(@member)
         end
 
         it 'disallows deletion if accepted' do
-          @request.accept!
+          @request.accepted!
           expect(@request.authorizer).to_not be_deletable_by(@member)
         end
 
         it 'disallows deletion if dismissed' do
-          @request.dismiss!
+          @request.dismissed!
           expect(@request.authorizer).to_not be_deletable_by(@member)
         end
       end
 
       context 'For Others' do
         before do
-          @request.member = @affiliate
+          @request.membership = @affiliate_membership
         end
         
         it 'allows creation' do

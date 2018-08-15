@@ -76,7 +76,6 @@ class Gathering < ApplicationRecord
   scope :for_campus, lambda{|campus| where(campus_id: campus.id)}
   scope :for_campuses, lambda{|*campuses| where(campus_id: campuses)}
   scope :for_community, lambda{|community| where(community_id: community)}
-  scope :for_member, lambda{|member| joins(:memberships).where('memberships.member_id = ?', member)}
 
   scope :is_open, lambda{|f = true| where(open: f)}
 
@@ -116,12 +115,12 @@ class Gathering < ApplicationRecord
     (group.is_a?(Campus) && self.campus == group) || (group.is_a?(Community) && self.community == group)
   end
 
-  def active_overseers
-    self.assigned_overseers.active_on(DateTime.current)
+  def active_assigned_overseers(dt = DateTime.current)
+    self.assigned_overseers.active_on(dt)
   end
 
-  def is_active_overseer?(member)
-    active_overseers.for_member(member).exists?
+  def is_active_assigned_overseer?(member, dt = DateTime.current)
+    self.active_assigned_overseers(dt).for_member(member).exists?
   end
 
   def meeting_starts=(v)
@@ -142,14 +141,6 @@ class Gathering < ApplicationRecord
 
   def ended_by?(dt = DateTime.current)
     self.meeting_ends.present? && dt >= self.meeting_ends
-  end
-
-  def leaders_on(dt)
-    dt = self.prior_meeting(dt.end_of_day)
-  end
-
-  def memberships_on(dt)
-    dt = self.prior_meeting(dt.end_of_day)
   end
 
   def first_meeting
@@ -237,12 +228,14 @@ class Gathering < ApplicationRecord
     pm
   end
 
-  def as_json(*)
+  def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |g|
       id = g['id']
-      g['path'] = campus_path(id, format: :json)
-      g['campus_path'] = campus_path(g['campus_id'], format: :json)
-      g['community_path'] = community_path(g['community_id'], format: :json)
+      g['memberships'] = self.memberships.as_json(deep: true) if options[:deep]
+      g['path'] = campus_path(self)
+      g['campus_path'] = campus_path(self.campus)
+      g['community_path'] = community_path(self.community)
+      g['requests_path'] = gathering_requests_path(self)
     end
   end
 

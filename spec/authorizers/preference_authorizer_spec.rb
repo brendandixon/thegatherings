@@ -14,8 +14,9 @@ describe PreferenceAuthorizer, type: :authorizer do
     @visitor = create(:member)
 
     @affiliated = create(:member)
+    @membership = create(:membership, :as_member, group: @community, member: @affiliated)
 
-    @preferences = build(:preference, community: @community, member: @affiliated)
+    @preferences = build(:preference, community: @community, membership: @membership)
   end
 
   after :context do

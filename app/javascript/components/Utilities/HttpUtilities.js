@@ -14,6 +14,32 @@ export class HttpRailsError extends HttpError {
     }
 }
 
+export const addGroupsQuery = (path, props) => {
+    if (!path) {
+        return null
+    }
+
+    let queryString = []
+    
+    if (props.community) {
+        queryString.push(`community_id=${props.community.id}`)
+    }
+
+    if (props.campus) {
+        queryString.push(`campus_id=${props.campus.id}`)
+    }
+
+    if (props.gathering) {
+        queryString.push(`gathering_id=${props.gathering.id}`)
+    }
+
+    return (
+        queryString.length <= 0
+            ? path
+            : path + '?' + queryString.join('&')
+    )
+}
+
 export const readJSONResponse = (response) => {
     return response
         .json()

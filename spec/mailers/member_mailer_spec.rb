@@ -10,7 +10,7 @@ describe MemberMailer, type: :mailer do
     @member = create(:member)
     
     create(:membership, :as_member, group: @campus, member: @leader)
-    create(:membership, :as_member, group: @campus, member: @member)
+    @membership = create(:membership, :as_member, group: @campus, member: @member)
     create(:membership, :as_leader, group: @gathering, member: @leader)
   end
 
@@ -24,8 +24,8 @@ describe MemberMailer, type: :mailer do
   describe "answer_request" do
 
     before :each do
-      @request = create(:request, campus: @campus, member: @member, gathering: @gathering)
-      @request.answer!
+      @request = create(:request, campus: @campus, membership: @membership, gathering: @gathering)
+      @request.accepted!
       @mail = MemberMailer.answer_request(@leader, @request, "You may join")
     end
 

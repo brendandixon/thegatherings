@@ -3,8 +3,8 @@
 # Table name: attendance_records
 #
 #  id            :bigint(8)        not null, primary key
-#  meeting_id    :bigint(8)
-#  membership_id :bigint(8)
+#  meeting_id    :bigint(8)        not null
+#  membership_id :bigint(8)        not null
 #  attended      :boolean          default(FALSE), not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
@@ -83,7 +83,7 @@ class AttendanceRecord < ApplicationRecord
 
     def is_gathering_member
       return if self.errors.has_key?(:membership) || self.errors.has_key?(:meeting)
-      return if self.membership.to?(self.meeting.gathering) && self.membership.active?(self.meeting.datetime)
+      return if self.membership.to?(self.meeting.gathering) && self.membership.active?(self.meeting.occurs)
       self.errors.add(:membership, "#{self.membership.member.full_name} is not a member of #{self.gathering}")
     end
 

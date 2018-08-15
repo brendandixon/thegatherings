@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180815000000) do
+ActiveRecord::Schema.define(version: 20180905000000) do
 
   create_table "assigned_overseers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.references "membership", null: false
@@ -27,8 +27,8 @@ ActiveRecord::Schema.define(version: 20180815000000) do
   end
 
   create_table "attendance_records", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "meeting"
-    t.references "membership"
+    t.references "meeting", null: false
+    t.references "membership", null: false
 
     t.boolean "attended", default: false, null: false
     t.timestamps
@@ -63,6 +63,23 @@ ActiveRecord::Schema.define(version: 20180815000000) do
     t.index ["state"], name: "index_campus_on_state"
     t.index ["email"], name: "index_campus_on_email"
     t.index ["phone"], name: "index_campus_on_phone"
+  end
+
+  create_table "categories", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "community", null: true
+
+    t.string "name"
+    t.string "single"
+    t.string "plural"
+    t.boolean "singleton"
+    t.string "prompt"
+    t.string "all_prompt"
+    t.timestamps
+
+    t.index ["id"], name: "index_categories_on_id", unique: true
+    t.index ["name"], name: "index_categories_on_name"
+    t.index ["community_id"], name: "index_categories_on_community"
+    t.index ["name", "community_id"], name: "index_categories_on_name_and_community", unique: true
   end
 
   create_table "communities", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -111,14 +128,16 @@ ActiveRecord::Schema.define(version: 20180815000000) do
   create_table "meetings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.references "gathering", null: false
 
-    t.datetime "datetime", null: false
+    t.datetime "occurs", null: false
     t.boolean "canceled", default: false, null: false
+    t.integer "number_present"
+    t.integer "number_absent"
     t.timestamps
 
     t.index ["id"], name: "index_meetings_on_id", unique: true
-    t.index ["datetime"], name: "index_meetings_on_datetime"
+    t.index ["occurs"], name: "index_meetings_on_occurs"
     t.index ["gathering_id"], name: "index_meetings_on_gathering"
-    t.index ["gathering_id", "datetime"], name: "index_meetings_on_gathering_datetime", unique: true
+    t.index ["gathering_id", "occurs"], name: "index_meetings_on_gathering_occurs", unique: true
   end
 
   create_table "members", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -189,23 +208,40 @@ ActiveRecord::Schema.define(version: 20180815000000) do
   end
 
   create_table "preferences", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "member"
-    t.references "community"
+    t.references "community", null: false
     t.references "campus"
     t.references "gathering"
+    t.references "membership", null: false
+    t.boolean "host"
+    t.boolean "lead"
     t.timestamps
     
     t.index ["id"], name: "index_preferences_on_id", unique: true
     t.index ["campus_id"], name: "index_preferences_on_campus"
     t.index ["community_id"], name: "index_preferences_on_community"
-    t.index ["community_id", "member_id"], name: "index_preferences_on_community_and_member", unique: true
+    t.index ["community_id", "membership_id"], name: "index_preferences_on_community_and_membership", unique: true
     t.index ["gathering_id"], name: "index_preferences_on_gathering"
-    t.index ["member_id"], name: "index_preferences_on_member"
+    t.index ["membership_id"], name: "index_preferences_on_membership"
+  end
+
+  create_table "request_owners", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "membership", null: false
+    t.references "request", null: false
+
+    t.datetime "active_on", null: false
+    t.datetime "inactive_on"
+    t.timestamps
+
+    t.index ["id"], name: "index_owners_on_id", unique: true
+    t.index ["membership_id"], name: "index_owners_on_membership"
+    t.index ["request_id"], name: "index_owners_on_request", unique: true
+    t.index ["membership_id", "request_id"], name: "index_owners_on_membership_and_request", unique: true
   end
 
   create_table "requests", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "member", null: false
+    t.references "community", null: false
     t.references "campus", null: false
+    t.references "membership", null: false
     t.references "gathering"
 
     t.datetime "sent_on", null: false
@@ -216,16 +252,17 @@ ActiveRecord::Schema.define(version: 20180815000000) do
     t.timestamps
 
     t.index ["id"], name: "index_requests_on_id", unique: true
+    t.index ["community_id"], name: "index_requests_on_community"
     t.index ["campus_id"], name: "index_requests_on_campus"
     t.index ["gathering_id"], name: "index_requests_on_gathering"
-    t.index ["id", "member_id", "gathering_id"], name: "index_id_member_gathering", unique: true
-    t.index ["member_id"], name: "index_requests_on_member"
+    t.index ["id", "membership_id", "gathering_id"], name: "index_id_membership_gathering", unique: true
+    t.index ["membership_id"], name: "index_requests_on_membership"
     t.index ["responded_on"], name: "index_requests_on_responded_on"
     t.index ["status"], name: "index_requests_on_status"
   end
 
   create_table "role_names", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "community"
+    t.references "community", null: false
 
     t.string "group_type", null: false
     t.string "role"
@@ -238,25 +275,8 @@ ActiveRecord::Schema.define(version: 20180815000000) do
     t.index ["role"], name: "index_role_names_on_role"
   end
 
-  create_table "categories", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "community", null: true
-
-    t.string "name"
-    t.string "single"
-    t.string "plural"
-    t.boolean "singleton"
-    t.string "prompt"
-    t.string "all_prompt"
-    t.timestamps
-
-    t.index ["id"], name: "index_categories_on_id", unique: true
-    t.index ["name"], name: "index_categories_on_name"
-    t.index ["community_id"], name: "index_categories_on_community"
-    t.index ["name", "community_id"], name: "index_categories_on_name_and_community", unique: true
-  end
-
   create_table "taggings", id: :bigint, unsigned: true, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.references "tag"
+    t.references "tag", null: false
 
     t.bigint "taggable_id", null: false, unsigned: true
     t.string "taggable_type", null: false

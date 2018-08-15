@@ -1,5 +1,7 @@
 class RoleContext
 
+  CONTEXTS = [:admin, :gathering, :member]
+
   LEADER = "leader"
   ASSISTANT = "assistant"
   OVERSEER = "overseer"
@@ -119,13 +121,21 @@ class RoleContext
       @community_membership = member.active_member_of?(@community)
       @campus_membership = member.active_member_of?(@campus)
       @gathering_membership = member.active_member_of?(@gathering)
-      @is_assigned_overseer = @gathering.present? && @gathering.is_active_overseer?(@member)
+      @is_assigned_overseer = @gathering.present? && @gathering.is_active_assigned_overseer?(@member)
+    end
+
+    ROLES.each do |role|
+      class_eval <<-METHODS, __FILE__, __LINE__ + 1
+        def is_#{role}?(membership)
+          membership.present? && membership.as_#{role}?
+        end
+      METHODS
     end
 
     COMMUNITY_ROLES.each do |role|
       class_eval <<-METHODS, __FILE__, __LINE__ + 1
         def is_community_#{role}?
-          @community_membership.present? && @community_membership.as_#{role}?
+          is_#{role}?(@community_membership)
         end
       METHODS
     end
@@ -133,7 +143,7 @@ class RoleContext
     CAMPUS_ROLES.each do |role|
       class_eval <<-METHODS, __FILE__, __LINE__ + 1
         def is_campus_#{role}?
-          @campus_membership.present? && @campus_membership.as_#{role}?
+          is_#{role}?(@campus_membership)
         end
       METHODS
     end
@@ -141,7 +151,7 @@ class RoleContext
     GATHERING_ROLES.each do |role|
       class_eval <<-METHODS, __FILE__, __LINE__ + 1
         def is_gathering_#{role}?
-          @gathering_membership.present? && @gathering_membership.as_#{role}?
+          is_#{role}?(@gathering_membership)
         end
       METHODS
     end

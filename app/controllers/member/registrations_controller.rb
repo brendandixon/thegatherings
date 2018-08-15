@@ -46,13 +46,22 @@ class Member::RegistrationsController < Devise::RegistrationsController
   # end
 
   def signup
+    @campus = Campus.find(params[:campus_id]) rescue nil if params[:campus_id].present?
+    @community = Community.find(params[:community_id]) rescue nil if params[:community_id].present?
+    @community ||= @campus.community if @campus.present?
     @completed_path = signup_params[:mode] == 'single' ? request.referrer : nil
+  end
+
+  # Override Devise automatic sign-in after registration
+  def sign_up(resource_name, resource)
+    sign_in(resource_name, resource) unless current_member.present?
   end
 
   protected
 
     # The path used after sign up.
     def after_sign_up_path_for(resource)
+      logger.debug "HERE!!!! #{resource.inspect} -- #{member_path(resource)}"
       member_path(resource)
     end
 
@@ -72,7 +81,7 @@ class Member::RegistrationsController < Devise::RegistrationsController
     end
 
     def signup_params
-      params.permit(:mode)
+      params.permit(:campus_id, :community_id, :mode)
     end
 
 end

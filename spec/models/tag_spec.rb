@@ -2,12 +2,12 @@
 #
 # Table name: tags
 #
-#  id         :bigint(8)        unsigned, not null, primary key
+#  id          :bigint(8)        unsigned, not null, primary key
 #  category_id :bigint(8)        not null
-#  name       :string(255)
-#  prompt     :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  name        :string(255)
+#  prompt      :string(255)
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 
 require 'rails_helper'

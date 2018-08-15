@@ -1,0 +1,9 @@
+- props = { \
+  community: @community.as_json, \
+  campus: @campus.as_json, \
+  gathering: @gathering.as_json, \
+  member: current_member.as_json(deep: true), \
+  routes: controller.routes.as_json, \
+  tab: @tab \
+}
+= react_component "Dashboard/#{@mode.to_s.capitalize}", props

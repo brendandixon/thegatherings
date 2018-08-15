@@ -164,6 +164,7 @@ en:
       disallowed_participant: "%{group} does not allow participating as a %{participant}."
       disallowed_role: "%{group} does not allow members to have the %{role} role."
     request:
+      invalid_owner: "Owner is not associated with the Campus."
       unknown_member: "Member is not associated with the Community."
       already_member: "Member is already a member in the Gathering."
     phone:

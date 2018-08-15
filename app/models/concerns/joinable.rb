@@ -3,6 +3,35 @@ module Joinable
 
   included do
     has_many :memberships, as: :group, dependent: :destroy
+
+    if self < ApplicationRecord
+      scope :for_member, lambda{|member| joins(:memberships).where('memberships.member_id = ?', member)}
+    end
+
+  end
+
+  def active_leaders(dt = DateTime.current)
+    self.memberships.active_on(dt).as_leader
+  end
+
+  def is_active_leader?(member, dt = DateTime.current)
+    self.active_leaders(dt).for_member(member).exists?
+  end
+
+  def active_members(dt = DateTime.current)
+    self.memberships.active_on(dt)
+  end
+
+  def is_active_member?(member, dt = DateTime.current)
+    self.active_members.for_member(member).exists?
+  end
+
+  def active_overseers(dt = DateTime.current)
+    self.memberships.active_on(dt).as_overseer
+  end
+
+  def is_active_overseer?(member, dt = DateTime.current)
+    self.active_overseers(dt).for_member(member).exists?
   end
 
   def assistants

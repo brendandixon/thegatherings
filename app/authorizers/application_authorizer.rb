@@ -116,4 +116,8 @@ class ApplicationAuthorizer < Authority::Authorizer
       resource.member_id == member.id
     end
 
+    def for_self_membership?(member)
+      resource.membership.member_id == member.id
+    end
+
 end

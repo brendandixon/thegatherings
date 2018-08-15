@@ -2,17 +2,18 @@
 #
 # Table name: requests
 #
-#  id           :bigint(8)        not null, primary key
-#  member_id    :bigint(8)        not null
-#  campus_id    :bigint(8)        not null
-#  gathering_id :bigint(8)
-#  sent_on      :datetime         not null
-#  expires_on   :datetime         not null
-#  message      :text(65535)
-#  responded_on :datetime
-#  status       :string(25)
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id            :bigint(8)        not null, primary key
+#  community_id  :bigint(8)        not null
+#  campus_id     :bigint(8)        not null
+#  membership_id :bigint(8)        not null
+#  gathering_id  :bigint(8)
+#  sent_on       :datetime         not null
+#  expires_on    :datetime         not null
+#  message       :text(65535)
+#  responded_on  :datetime
+#  status        :string(25)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 
 require 'rails_helper'
@@ -23,7 +24,7 @@ describe Request, type: :model do
     @campus = create(:campus)
     @gathering = create(:gathering, campus: @campus)
     @member = create(:member)
-    @join_campus = create(:membership, :as_member, group: @campus, member: @member)
+    @membership = create(:membership, :as_member, group: @campus, member: @member)
   end
 
   after :context do
@@ -34,7 +35,7 @@ describe Request, type: :model do
   end
 
   before do
-    @request = build(:request, campus: @campus, member: @member, gathering: @gathering)
+    @request = build(:request, campus: @campus, membership: @membership, gathering: @gathering)
   end
 
   it 'requires a campus' do
@@ -45,10 +46,10 @@ describe Request, type: :model do
     expect(@request.errors).to_not have_key(:gathering)
   end
 
-  it 'requires a member' do
-    @request.member = nil
+  it 'requires a membership' do
+    @request.membership = nil
     expect(@request).to be_invalid
-    expect(@request.errors).to have_key(:member)
+    expect(@request.errors).to have_key(:membership)
   end
 
   it 'accepts a missing gathering' do
@@ -60,7 +61,7 @@ describe Request, type: :model do
   it 'rejects members participating in the Gathering' do
     @join_gathering = create(:membership, :as_member, group: @gathering, member: @member)
     expect(@request).to be_invalid
-    expect(@request.errors).to have_key(:member)
+    expect(@request.errors).to have_key(:membership)
     @join_gathering.delete
   end
 
@@ -123,10 +124,16 @@ describe Request, type: :model do
     expect(@request).to be_valid
   end
 
-  it 'requires a responded on date if status exists' do
+  it 'rejects a responded on date if status is unanswered' do
+    @request.status = 'unanswered'
+    @request.responded_on = DateTime.current
+    expect(@request).to_not be_valid
+  end
+
+  it 'requires a responded on date if status is not unanswered' do
     @request.responded_on = nil
-    Request::STATES.each do |state|
-      @request.status = state
+    (Request::STATUSES - ['unanswered']).each do |status|
+      @request.status = status
       expect(@request).to_not be_valid
     end
   end
@@ -154,16 +161,16 @@ describe Request, type: :model do
       expect(@request.errors).to have_key(:expires_on)
     end
 
-    it 'can be answered' do
-      @request.answer!
+    it 'can be inprocess' do
+      @request.inprocess!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
-      expect(@request).to be_answered
+      expect(@request).to be_inprocess
       expect(@request.responded_on).to be_acts_like(:time)
     end
 
-    it 'answered requests are not completed' do
-      @request.answer!
+    it 'inprocess requests are not completed' do
+      @request.inprocess!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to_not be_completed
@@ -171,7 +178,7 @@ describe Request, type: :model do
     end
 
     it 'can be accepted' do
-      @request.accept!
+      @request.accepted!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to be_accepted
@@ -179,7 +186,7 @@ describe Request, type: :model do
     end
 
     it 'accepted requests are completed' do
-      @request.accept!
+      @request.accepted!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to be_completed
@@ -187,7 +194,7 @@ describe Request, type: :model do
     end
 
     it 'can be dismissed' do
-      @request.dismiss!
+      @request.dismissed!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to be_dismissed
@@ -195,7 +202,7 @@ describe Request, type: :model do
     end
 
     it 'dismissed requests are completed' do
-      @request.dismiss!
+      @request.dismissed!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to be_completed
@@ -203,10 +210,10 @@ describe Request, type: :model do
     end
 
     it 'a dismissed request can be accepted' do
-      @request.dismiss!
+      @request.dismissed!
       expect(@request).to be_dismissed
 
-      @request.accept!
+      @request.accepted!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to be_accepted
@@ -214,42 +221,42 @@ describe Request, type: :model do
     end
 
     it 'an accepted request can be dismissed' do
-      @request.accept!
+      @request.accepted!
       expect(@request).to be_accepted
 
-      @request.dismiss!
+      @request.dismissed!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to be_dismissed
       expect(@request.responded_on).to be_acts_like(:time)
     end
 
-    it 'answering does not change an accepted request' do
-      @request.accept!
-      @request.answer!
+    it 'reverting to inprocess resets an accepted request' do
+      @request.accepted!
+      @request.inprocess!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
-      expect(@request).to be_accepted
+      expect(@request).to be_inprocess
       expect(@request.responded_on).to be_acts_like(:time)
     end
 
-    it 'answering resets a dismissed request' do
-      @request.dismiss!
+    it 'reverting to inprocess resets a dismissed request' do
+      @request.dismissed!
       expect(@request).to be_dismissed
 
-      @request.answer!
+      @request.inprocess!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to_not be_dismissed
-      expect(@request).to be_answered
+      expect(@request).to be_inprocess
       expect(@request.responded_on).to be_acts_like(:time)
     end
 
     it 'can be unanswered' do
-      @request.accept!
+      @request.accepted!
       expect(@request).to be_accepted
 
-      @request.unanswer!
+      @request.unanswered!
       expect(@request).to_not be_changed
       expect(@request).to be_valid
       expect(@request).to_not be_dismissed

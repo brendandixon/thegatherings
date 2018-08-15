@@ -7,7 +7,7 @@ import SubmitButton from './SubmitButton'
 
 export default class ClientSideForm extends BaseComponent {
     static propTypes = {
-        onSuccess: PropTypes.func.isRequired
+        onSubmit: PropTypes.func
     }
 
     constructor(props) {
@@ -18,12 +18,14 @@ export default class ClientSideForm extends BaseComponent {
 
     handleSubmit(event) {
         event.preventDefault()
-        let form = document.getElementById(this.id)
-        let jsonData = {}
-        for (let item of (new FormData(form))) {
-            jsonData[item[0]] = item[1]
+        if (this.props.onSubmit) {
+            let form = document.getElementById(this.id)
+            let json = {}
+            for (let item of (new FormData(form))) {
+                json[item[0]] = item[1]
+            }
+            this.props.onSubmit(json)
         }
-        this.props.onSuccess(jsonData)
     }
 
     render() {

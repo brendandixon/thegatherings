@@ -23,7 +23,10 @@ class Membership < ApplicationRecord
   belongs_to :member, inverse_of: :memberships
   
   has_many :attendance_records, inverse_of: :membership, dependent: :destroy
-  has_many :assigned_overseers, dependent: :destroy
+  has_many :assigned_overseers, inverse_of: :membership, dependent: :destroy
+
+  has_one :preference, inverse_of: :membership, dependent: :destroy
+  has_many :requests, inverse_of: :membership, dependent: :destroy
 
   validates :member, belonging: {models: [Member]}
   validates :group, belonging: {models: [Community, Campus, Gathering]}
@@ -152,13 +155,13 @@ class Membership < ApplicationRecord
     self.group.is_a?(Gathering) ? self.group : nil
   end
 
-  def as_json(*)
+  def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |m|
-      id = m['id']
-      m['path'] = membership_path(id, format: :json)
-      m['community_path'] = community_path(self.community, format: :json)
-      m['campus_path'] = self.campus.present? ? campus_path(self.campus, format: :json) : nil
-      m['gathering_path'] = self.gathering.present? ? gathering_path(self.gathering, format: :json) : nil
+      m['member'] = self.member.as_json
+      m['path'] = membership_path(self)
+      m['community_path'] = community_path(self.community)
+      m['campus_path'] = self.campus.present? ? campus_path(self.campus) : nil
+      m['gathering_path'] = self.gathering.present? ? gathering_path(self.gathering) : nil
     end
   end
 

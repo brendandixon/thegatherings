@@ -15,6 +15,14 @@ class ApplicationController < ActionController::Base
   around_action :set_timezone
 
   helper_method :controller_name
+
+  # TODO: Figure out how to return a JSON error when the CSRF token expires
+  # def handle_unverified_request
+  #   respond_to do |format|
+  #     format.html { flash[:alert] = 'Please signin again.'; redirect_to signin_path }
+  #     format.json { render json:{error: {base: 'User is not signed in.'}}.as_json }
+  #   end
+  # end
   
   def authority_forbidden(error)
     Authority.logger.warn(error.message)

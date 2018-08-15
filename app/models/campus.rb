@@ -45,8 +45,6 @@ class Campus < ApplicationRecord
   validates_length_of :name, within: 4..255
 
   scope :for_community, lambda{|community| where(community: community)}
-  scope :for_member, lambda{|member| joins(:memberships).where('memberships.member_id = ?', member)}
-
 
   def campus
     self
@@ -56,14 +54,14 @@ class Campus < ApplicationRecord
     Meeting.for_campus(self)
   end
 
-  def as_json(*)
+  def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |c|
-      id = c['id']
-      c['path'] = campus_path(id, format: :json)
-      c['community_path'] = community_path(c['community_id'], format: :json)
-      c['gatherings_path'] = campus_gatherings_path(id, format: :json)
-      c['memberships_path'] = campus_memberships_path(id, format: :json)
-      c['requests_path'] = campus_requests_path(id, format: :json)
+      c['gatherings'] = self.gatherings.as_json if options[:deep]
+      c['path'] = campus_path(self)
+      c['community_path'] = community_path(self.community)
+      c['gatherings_path'] = campus_gatherings_path(self)
+      c['memberships_path'] = campus_memberships_path(self)
+      c['requests_path'] = campus_requests_path(self)
     end
   end
 

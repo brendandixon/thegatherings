@@ -13,7 +13,7 @@ class TaggingsController < ApplicationController
     @taggings = @resource.taggings
     respond_to do |format|
       format.html { render }
-      format.json { render json: @taggings.as_json }
+      format.json { render json: @taggings.as_json(deep: true) }
     end
   end
 

@@ -9,14 +9,14 @@ class CategoriesController < ApplicationController
     @categories = @community.categories
     respond_to do |format|
       format.html { render }
-      format.json { render json: @categories.as_json }
+      format.json { render json: @categories.as_json(deep: true) }
     end
   end
 
   def show
     respond_to do |format|
       format.html { render }
-      format.json { render json: @category.as_json }
+      format.json { render json: @category.as_json(deep: true) }
     end
   end
 

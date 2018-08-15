@@ -15,6 +15,7 @@ export default class ButtonRadioGroup extends BaseComponent {
             }).isRequired
         ).isRequired,
         name: PropTypes.string.isRequired,
+        orientation: PropTypes.oneOf(['horizontal', 'vertical']),
         onChange: PropTypes.func
     }
 
@@ -84,10 +85,13 @@ export default class ButtonRadioGroup extends BaseComponent {
 
     render() {
         if (this.props.options && this.props.options.length > 0) {
+            let classes = (this.props.orientation || 'horizontal') == 'horizontal'
+                ? 'btn-group btn-group-toggle'
+                : 'btn-group-vertical btn-group-toggle'
             return (
                 <Fragment>
                     <Label className='mb-0 text-muted' for={this.props.id} value={this.props.label} />
-                    <div className='btn-group btn-group-toggle' id={this.props.id}>
+                    <div className={classes} id={this.props.id}>
                         {this.renderOptions()}
                     </div>
                 </Fragment>

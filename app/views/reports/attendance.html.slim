@@ -1,9 +1,0 @@
-section
-  div class='container'
-    div class='row align-items-center'
-      div class='col'
-        = react_component 'Charts/Attendance', data: @data, url: attendance_community_reports_url(@community, format: :json)
-
-    div class='row align-items-center'
-      div class='col text-center'
-        = link_to t(:title, scope: [:gatherings]), community_path(@community), class: 'btn btn-primary'

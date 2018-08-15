@@ -19,18 +19,18 @@ class Community < ApplicationRecord
 
   has_many :campuses, inverse_of: :community, dependent: :restrict_with_exception
   has_many :gatherings, through: :campuses
+  has_many :requests, through: :campuses
 
   has_many :memberships, as: :group, dependent: :destroy
   has_many :members, through: :memberships
 
   has_many :preferences, inverse_of: :community, dependent: :destroy
+  has_many :requests, inverse_of: :community, dependent: :destroy
 
   has_many :role_names, dependent: :destroy
   has_many :categories, dependent: :destroy
 
   validates_length_of :name, within: 10..255
-
-  scope :for_member, lambda{|member| joins(:memberships).where('memberships.member_id = ?', member)}
 
   def add_default_role_names!
     self.role_names.delete_all
@@ -76,15 +76,17 @@ class Community < ApplicationRecord
     Meeting.for_community(self)
   end
 
-  def as_json(*)
+  def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |c|
-      id = c['id']
-      c['path'] = community_path(id, format: :json)
-      c['campuses_path'] = community_campuses_path(id, format: :json)
-      c['categories_path'] = community_categories_path(id, format: :json)
-      c['gatherings_path'] = community_gatherings_path(id, format: :json)
-      c['memberships_path'] = community_memberships_path(id, format: :json)
-      c['preferences_path'] = community_preferences_path(id, format: :json)
+      c['campuses'] = self.campuses.as_json if options[:deep]
+      c['path'] = community_path(self)
+      c['campuses_path'] = community_campuses_path(self)
+      c['categories_path'] = community_categories_path(self)
+      c['gatherings_path'] = community_gatherings_path(self)
+      c['memberships_path'] = community_memberships_path(self)
+      c['preferences_path'] = community_preferences_path(self)
+      c['requests_path'] = community_requests_path(self)
+      c['attendee_path'] = attendees_community_gatherings_path(self)
     end
   end
 

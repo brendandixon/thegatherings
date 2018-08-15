@@ -7,14 +7,14 @@ class CommunitiesController < ApplicationController
     @communities = Community.all
     respond_to do |format|
       format.html { render }
-      format.json { render json: @communities.as_json }
+      format.json { render json: @communities.as_json(deep: true) }
     end
   end
 
   def show
     respond_to do |format|
       format.html { render }
-      format.json { render json: @community.as_json }
+      format.json { render json: @community.as_json(deep: true) }
     end
   end
 

@@ -3,7 +3,7 @@
 # Table name: taggings
 #
 #  id            :bigint(8)        unsigned, not null, primary key
-#  tag_id        :bigint(8)
+#  tag_id        :bigint(8)        not null
 #  taggable_id   :bigint(8)        unsigned, not null
 #  taggable_type :string(255)      not null
 #  created_at    :datetime         not null

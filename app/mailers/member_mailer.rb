@@ -6,8 +6,8 @@ class MemberMailer < ApplicationMailer
   #   en.member_mailer.answer_request.subject
   #
   def answer_request(responder, request, answer)
-    return unless responder.present? && request.present? && request.answered?
-    
+    return unless responder.present? && request.present? && request.accepted?
+
     @responder = responder
     @request = request
     @answer = answer

@@ -30,9 +30,6 @@ export default class LabeledSelect extends BaseComponent {
     constructor(props) {
         super(props)
         this._select = null
-        this.state = {
-            value: this.props.value
-        }
 
         this.handleChange = this.handleChange.bind(this)
     }
@@ -52,10 +49,6 @@ export default class LabeledSelect extends BaseComponent {
     }
 
     handleChange(event) {
-        this.setState({
-            value: event.target.value
-        })
-
         if (this.props.onChange) {
             let json = {}
             json[this.props.name] = event.target.value
@@ -79,16 +72,16 @@ export default class LabeledSelect extends BaseComponent {
 
     render() {
         return (
-            <div className='form-group'>
+            <div className={`form-group ${this.props.className}`}>
                 <Label className='mb-0' for={this.props.id} value={this.props.label} />
                 <select
                     id={this.props.id}
                     name={this.props.name}
-                    className='form-control custom-select'
+                    className='custom-select'
                     disabled={this.props.disabled}
                     ref={c => (this._select = c)}
                     size={this.props.size || '1'}
-                    value={this.state.value}
+                    value={this.props.value}
                     onChange={this.handleChange}
                 >
                     {this.renderOptions()}

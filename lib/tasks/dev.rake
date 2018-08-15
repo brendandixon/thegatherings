@@ -185,7 +185,7 @@ namespace :dev do
             n = one_of(*(4..12))
             puts "...Creating #{n} Members for Gathering #{gathering} at #{campus} "
             create_list(:member, n).each_with_index do |member, i|
-              create(:membership, :as_member, group: community, member: member)
+              community_membership = create(:membership, :as_member, group: community, member: member)
               create(:membership, :as_member, group: campus, member: member)
 
               role =  case i
@@ -195,7 +195,7 @@ namespace :dev do
                       end
               create(:membership, role, group: gathering, member: member)
 
-              p = create(:preference, campus: campus, community: community, member: member)
+              p = create(:preference, campus: campus, community: community, membership: community_membership)
               p.add_tags!(gathering.tags)
             end
           end
@@ -207,12 +207,13 @@ namespace :dev do
           campus.gatherings.each do |gathering|
             puts "...Adding meetings to Gathering #{gathering} at #{campus}"
             gathering.meetings_since(3.months.ago.beginning_of_month).each do |mt|
-              meeting = create(:meeting, gathering: gathering, datetime: mt)
+              meeting = create(:meeting, gathering: gathering, occurs: mt)
               meeting.ensure_attendees
               meeting.attendance_records.each do |ar|
                 next if @@generator.rand(0..100) > 65
                 ar.attend!
               end
+              meeting.settle_attendance!
             end
           end
         end
@@ -223,11 +224,13 @@ namespace :dev do
         community = Community.first
 
         community.campuses.each do |campus|
-          one_of(*(5..20)).times do |n|
+          one_of(*(2..10)).times do |n|
             member = create(:member)
-            create(:membership, :as_member, group: community, member: member)
-            create(:membership, :as_member, group: campus, member: member)
-            create(:preference, *one_of(*@@seeks), community: community, campus: campus, member: member)
+            community_membership = create(:membership, :as_member, group: community, member: member)
+            campus_membership = create(:membership, :as_member, group: campus, member: member)
+            create(:preference, *one_of(*@@seeks), community: community, campus: campus, membership: community_membership)
+            r = create(:request, campus: campus, membership: campus_membership)
+            r.respond!(one_of(*Request::STATUSES))
           end
         end
       end

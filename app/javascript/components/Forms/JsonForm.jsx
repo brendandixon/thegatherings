@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import BaseComponent from '../BaseComponent'
+import fetchTimeout from '../Utilities/FetchTimeout'
 import { evaluateJSONResponse, readJSONResponse } from '../Utilities/HttpUtilities'
+import { formToJSON } from '../Utilities/RailsUtilities'
 
 import RailsAuthenticator from './RailsAuthenticator'
 
@@ -21,16 +23,20 @@ export default class JsonForm extends BaseComponent {
 
     handleSubmit(event) {
         event.preventDefault()
-        let data = new FormData(event.target)
-        fetch(this.props.action, {
+
+        fetchTimeout(this.props.action, {
             credentials: 'same-origin',
             method: this.props.method,
-            body: data
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            body: formToJSON(event.target)
         })
-        .then(readJSONResponse)
-        .then(evaluateJSONResponse)
-        .then(json => this.props.onSuccess(json))
-        .catch(error => this.props.onError(error))
+            .then(readJSONResponse)
+            .then(evaluateJSONResponse)
+            .then(json => this.props.onSuccess(json))
+            .catch(error => this.props.onError(error))
     }
 
     render() {

@@ -9,14 +9,14 @@ class TagsController < ApplicationController
     @tags = @category.tags
     respond_to do |format|
       format.html { render }
-      format.json { render json: @tags.as_json }
+      format.json { render json: @tags.as_json(deep: true) }
     end
   end
 
   def show
     respond_to do |format|
       format.html { render }
-      format.json { render json: @tag.as_json }
+      format.json { render json: @tag.as_json(deep: true) }
     end
   end
 

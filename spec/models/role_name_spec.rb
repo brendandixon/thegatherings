@@ -3,7 +3,7 @@
 # Table name: role_names
 #
 #  id           :bigint(8)        not null, primary key
-#  community_id :bigint(8)
+#  community_id :bigint(8)        not null
 #  group_type   :string(255)      not null
 #  role         :string(255)
 #  name         :string(255)

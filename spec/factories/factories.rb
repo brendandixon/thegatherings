@@ -209,7 +209,7 @@ Time.use_zone TheGatherings::Application.default_time_zone do
     factory :meeting do
       gathering
 
-      datetime { gathering.prior_meeting }
+      occurs { gathering.prior_meeting }
     end
 
     factory :attendance_record do
@@ -234,16 +234,21 @@ Time.use_zone TheGatherings::Application.default_time_zone do
     end
 
     factory :request do
-      gathering
-      member
+      campus
+      membership { create(:membership, :as_member, group: campus) }
 
       sent_on 2.weeks.ago
-      expires_on 1.week.from_now
+      expires_on 6.weeks.from_now
+    end
+
+    factory :request_owner do
+      request
+      membership { create(:membership, :as_overseer, group: request.campus) }
     end
 
     factory :preference do
       community
-      member
+      membership { create(:membership, :as_member, group: community) }
     end
 
     factory :role_name do

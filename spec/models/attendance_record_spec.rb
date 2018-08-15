@@ -3,8 +3,8 @@
 # Table name: attendance_records
 #
 #  id            :bigint(8)        not null, primary key
-#  meeting_id    :bigint(8)
-#  membership_id :bigint(8)
+#  meeting_id    :bigint(8)        not null
+#  membership_id :bigint(8)        not null
 #  attended      :boolean          default(FALSE), not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null

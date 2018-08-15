@@ -3,7 +3,7 @@
 # Table name: taggings
 #
 #  id            :bigint(8)        unsigned, not null, primary key
-#  tag_id        :bigint(8)
+#  tag_id        :bigint(8)        not null
 #  taggable_id   :bigint(8)        unsigned, not null
 #  taggable_type :string(255)      not null
 #  created_at    :datetime         not null
@@ -32,7 +32,7 @@ class Tagging < ApplicationRecord
   scope :for_tags, lambda{|tags| where(tag: tags)}
   scope :from_set, lambda{|category| joins(:tag).where(tags: { category: category })}
 
-  def as_json(*)
+  def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |p|
       p['tag'] = self.tag.as_json
     end

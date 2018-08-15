@@ -1,14 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-class BaseComponent extends React.Component {
+export default class BaseComponent extends React.Component {
+    static propTypes = {
+        class: PropTypes.string
+    }
+
     constructor(props) {
         super(props)
     }
 }
-
-BaseComponent.propTypes = {
-    class: PropTypes.string
-}
-
-export default BaseComponent

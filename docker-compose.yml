@@ -44,7 +44,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
     healthcheck:
-      test: ["CMD", "mysql", "-u", "root", "-e", "select 1"]
+      test: ["CMD", "mysql", "--user=root", "--password=root", "--execute='select 1;'"]
       interval: 1s
       timeout: 1s
       retries: 300

@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import Chart from 'chart.js'
 import jQuery from 'jquery'
 
 import BaseComponent from '../BaseComponent'
+import fetchTimeout from '../Utilities/FetchTimeout'
 import { evaluateJSONResponse, readJSONResponse } from '../Utilities/HttpUtilities'
 
 export default class BaseChart extends BaseComponent {
@@ -11,14 +12,22 @@ export default class BaseChart extends BaseComponent {
         data: PropTypes.object,
         reportsPath: PropTypes.string.isRequired,
         queryString: PropTypes.string,
-        onSuccess: PropTypes.func
+        onError: PropTypes.func,
+        onReady: PropTypes.func
     }
 
     constructor(props) {
         super(props)
+        
+        let chartData = jQuery.isEmptyObject(this.props.data)
+            ? {}
+            : this.transformData(this.props.data)
+
         this.state = {
             data: this.props.data,
-            chartData: this.transformData(this.props.data)
+            chartData: chartData,
+            subtitle: null,
+            errorMessage: null
         }
 
         this.chartType = 'line'
@@ -28,7 +37,6 @@ export default class BaseChart extends BaseComponent {
         this.bindData = this.bindData.bind(this)
         this.fetchData = this.fetchData.bind(this)
         this.handleError = this.handleError.bind(this)
-        this.handleSuccess = this.handleSuccess.bind(this)
         this.transformData = this.transformData.bind(this)
     }
 
@@ -46,6 +54,13 @@ export default class BaseChart extends BaseComponent {
         }
     }
 
+    componentWillUnmount() {
+        // TODO: Add code to "cancel" outstanding fetch
+        // - This can either be by wrapping the Promise to track a canceled state or
+        //   by hoisting the fetch up a level (or two) and using a token to track / cancel
+        //   as needed
+    }
+
     bindData(chartData) {
         if (!jQuery.isEmptyObject(chartData)) {
             new Chart(this._container.current, {
@@ -61,44 +76,56 @@ export default class BaseChart extends BaseComponent {
         if (this.props.queryString && this.props.queryString.length > 0) {
             path += '?' + this.props.queryString
         }
-        fetch(path, {
+
+        if (this.props.onReady) {
+            this.props.onReady(false)
+        }
+
+        fetchTimeout(path, {
             credentials: 'same-origin',
             method: 'GET',
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json; charset=utf-8'
             }
 
         })
             .then(readJSONResponse)
             .then(evaluateJSONResponse)
-            .then(json => this.handleSuccess(json))
+            .then(json => {
+                if (jQuery.isArray(json) && json.length > 0) {
+                    json = json[0]
+                }
+
+                let chartData = this.transformData(json)
+                this.bindData(chartData)
+                this.setState({
+                    data: json,
+                    chartData: chartData,
+                    errorMessage: null
+                })
+            })
+            .then(() => {
+                if (this.props.onReady) {
+                    this.props.onReady(true)
+                }
+            })
             .catch(error => this.handleError(error))
     }
 
     handleError(error) {
-        // console.log('CHART ERROR')
-        // console.log(error)
+        console.log(error)
         this.setState({
             data: {},
-            chartData: {}
+            chartData: {},
+            errorMessage: 'Unable to retrieve data'
         })
-    }
 
-    handleSuccess(json) {
-        // console.log('CHART SUCCESS')
-        // console.log(json)
-        if (jQuery.isArray(json) && json.length > 0) {
-            json = json[0]
+        if (this.props.onError) {
+            this.props.onError()
         }
-
-        let chartData = this.transformData(json)
-        this.bindData(chartData)
-        this.setState({
-            data: json,
-            chartData: chartData
-        })
-        if (this.props.onSuccess) {
-            this.props.onSuccess()
+        if (this.props.onReady) {
+            this.props.onReady(true)
         }
     }
 
@@ -107,11 +134,20 @@ export default class BaseChart extends BaseComponent {
     }
 
     render() {
+        let state = this.state
+        let classes = this.props.className ? this.props.className : ''
+        let errorMessage = state.errorMessage
         return (
-            <canvas
-                ref={this._container}
-                className={this.props.className}
-            />
+            <Fragment>
+                <div className={`display-3 text-center text-muted pt-4 ${errorMessage ? 'd-block' : 'd-none'}`}>
+                    {errorMessage}
+                </div>
+                <canvas
+                    ref={this._container}
+                    className={`${classes} ${errorMessage ? 'd-none' : 'd-block'}`}
+                />
+                {state.subtitle}
+            </Fragment>
         );
     }
 }

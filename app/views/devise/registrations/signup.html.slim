@@ -1,10 +1,11 @@
 - props = { \
-    registrationPath: member_registration_path(format: :json), \
-    communitiesPath: communities_path(format: :json), \
+    community: @community.as_json, \
+    campus: @campus.as_json, \
+    registrationPath: member_registration_path, \
+    communitiesPath: communities_path, \
   }
 - if @complete_path.present?
 -   props[:completedPath] = @complete_path
--   props[:skipWelcome] = true
 body
   .welcome.w-100.h-100.pt-4
     .container.w-100.h-100
@@ -16,4 +17,4 @@ body
                 img.w-50 src=asset_path('full-white.svg')
             .row.justify-content-center
               .col-8
-                .mt-3= react_component 'SignUp/SignUp', props
+                .mt-3= react_component 'SignUpProcess/SignUpProcess', props

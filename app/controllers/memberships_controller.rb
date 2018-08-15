@@ -30,10 +30,10 @@ class MembershipsController < ApplicationController
     respond_to do |format|
       if @membership.save
         format.html { redirect_to :back, notice: 'Membership was successfully created.'}
-        format.json { render json:@membership.as_json }
+        format.json { render json:@membership.as_json(deep: true) }
       else
         format.html { redirect_to :back, notice: 'Unable to create Membership.'}
-        format.json { render json:@membership.as_json }
+        format.json { render json:@membership.as_json(deep: true) }
       end
     end
   end
@@ -44,10 +44,10 @@ class MembershipsController < ApplicationController
     respond_to do |format|
       if @membership.save
         format.html { redirect_to :back, notice: 'Membership was successfully updated.'}
-        format.json { render json:@membership.as_json }
+        format.json { render json:@membership.as_json(deep: true) }
       else
         format.html { render :edit }
-        format.json { render json:@membership.as_json }
+        format.json { render json:@membership.as_json(deep: true) }
       end
     end
   end
@@ -64,7 +64,7 @@ class MembershipsController < ApplicationController
     @membership.destroy
     respond_to do |format|
       format.html { redirect_to url, notice: 'Membership was successfully destroyed.' }
-      format.json { render json:@membership.as_json }
+      format.json { render json:@membership.as_json(deep: true) }
     end
   end
 

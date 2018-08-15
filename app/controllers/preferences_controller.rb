@@ -8,8 +8,10 @@ class PreferencesController < ApplicationController
   before_action :set_preference, except: COLLECTION_ACTIONS
   before_action :set_community
   before_action :set_member
-  before_action :ensure_community
+  before_action :set_membership
   before_action :ensure_member
+  before_action :ensure_community
+  before_action :ensure_membership
   before_action :ensure_preference
   before_action :ensure_authorized
 
@@ -17,14 +19,14 @@ class PreferencesController < ApplicationController
     @preferences = @community.preferences
     respond_to do |format|
       format.html { render }
-      format.json { render json: @preferences.as_json }
+      format.json { render json: @preferences.as_json(deep: true) }
     end
   end
 
   def show
     respond_to do |format|
       format.html { render }
-      format.json { render json: @preference.as_json }
+      format.json { render json: @preference.as_json(deep: true) }
     end
   end
 
@@ -38,10 +40,10 @@ class PreferencesController < ApplicationController
     respond_to do |format|
       if @preference.save
         format.html { render }
-        format.json { render json:@preference.as_json }
+        format.json { render json:@preference.as_json(deep: true) }
       else
         format.html { redirect_to :back }
-        format.json { render json:@preference.as_json }
+        format.json { render json:@preference.as_json(deep: true) }
       end
     end
   end
@@ -52,10 +54,10 @@ class PreferencesController < ApplicationController
     respond_to do |format|
       if @preference.save
         format.html { render }
-        format.json { render json:@preference.as_json }
+        format.json { render json:@preference.as_json(deep: true) }
       else
         format.html { render :edit }
-        format.json { render json:@preference.as_json }
+        format.json { render json:@preference.as_json(deep: true) }
       end
     end
   end
@@ -64,7 +66,7 @@ class PreferencesController < ApplicationController
     @preference.destroy
     respond_to do |format|
       format.html { redirect_to member_path(@member), notice: 'Preference was successfully destroyed.' }
-      format.json { render json:@preference.as_json }
+      format.json { render json:@preference.as_json(deep: true) }
     end
   end
 
@@ -74,7 +76,7 @@ class PreferencesController < ApplicationController
     @preferences = @preferences.for_member(@member) if @member.present?
     respond_to do |format|
       format.html { render :index }
-      format.json { render json:@preferences.as_json }
+      format.json { render json:@preferences.as_json(deep: true) }
     end
   end
 
@@ -88,13 +90,22 @@ class PreferencesController < ApplicationController
 
     def ensure_community
       @community ||= @preference.community if @preference.present?
+      @community ||= @member.default_community if @member.present?
+    end
+
+    def ensure_member
+      @member ||= current_member
+    end
+
+    def ensure_membership
+      @membership ||= @member.memberships.for_community(@community).take if @member.present?
     end
 
     def ensure_preference
       if @preference.blank?
         @preference = Preference.new(preferences_params[:preference])
         @preference.community = @community unless @preference.community.present?
-        @preference.member = @member unless @preference.member.present?
+        @preference.membership = @membership unless @preference.membership.present?
       end
     end
 
@@ -106,12 +117,16 @@ class PreferencesController < ApplicationController
       @member = Member.find(params[:member_id]) rescue nil if params[:member_id].present?
     end
 
+    def set_membership
+      @membership = Membership.find(params[:membership_id]) rescue nil if params[:membership_id].present?
+    end
+
     def set_preference
       @preference = Preference.find(params[:id]) rescue nil if params[:id].present?
     end
 
     def preferences_params
-      params.permit(:community_id, :format, :member_id, preference: Preference::FORM_FIELDS)
+      params.permit(:community_id, :format, :member_id, :membership_id, preference: Preference::FORM_FIELDS)
     end
 
 end

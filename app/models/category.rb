@@ -175,13 +175,12 @@ class Category < ApplicationRecord
     possible_tags.compact
   end
 
-  def as_json(*)
-    super.except(*JSON_EXCLUDES).tap do |ts|
-      id = ts['id']
-      ts['tags'] = self.tags
-      ts['path'] = category_path(id, format: :json)
-      ts['community_path'] = community_path(ts['community_id'], format: :json)
-      ts['tags_path'] = category_tags_path(id, format: :json)
+  def as_json(*args, **options)
+    super.except(*JSON_EXCLUDES).tap do |c|
+      c['tags'] = self.tags.as_json if options[:deep]
+      c['path'] = category_path(self)
+      c['community_path'] = community_path(self.community)
+      c['tags_path'] = category_tags_path(self)
     end
   end
 

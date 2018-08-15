@@ -2,12 +2,12 @@
 #
 # Table name: tags
 #
-#  id         :bigint(8)        unsigned, not null, primary key
+#  id          :bigint(8)        unsigned, not null, primary key
 #  category_id :bigint(8)        not null
-#  name       :string(255)
-#  prompt     :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  name        :string(255)
+#  prompt      :string(255)
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 
 class Tag < ApplicationRecord
@@ -36,10 +36,10 @@ class Tag < ApplicationRecord
   scope :from_set, lambda{|category| where(category: category)}
   scope :with_name, lambda{|name| where(name: name)}
 
-  def as_json(*)
+  def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |p|
-      p['path'] = tag_path(p['id'], format: :json)
-      p['category_path'] = category_path(p['category_id'], format: :json)
+      p['path'] = tag_path(self)
+      p['category_path'] = category_path(self.category)
     end
   end
 

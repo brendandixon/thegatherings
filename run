@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+rm -drf public/packs 1>/dev/null 2>&1
+docker-compose run -p 3000:3000 -p 3035:3035 server
