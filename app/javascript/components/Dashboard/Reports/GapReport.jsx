@@ -92,7 +92,7 @@ export default class GapReport extends BaseComponent {
     renderPanes(state, queryString) {
         return state.categories.map((category, i) => {
             let id = `pane-${category.name}`
-            let classes = `border border-top-0 border-gray-light tab-pane fade${i == state.activeTab ? ' show active' : ''}`
+            let classes = `border border-top-0 border-gray-300 tab-pane fade${i == state.activeTab ? ' show active' : ''}`
             let categoryQuery = queryString && queryString.length > 0
                 ? `${queryString}&categories=${category.name}`
                 : `categories=${category.name}`

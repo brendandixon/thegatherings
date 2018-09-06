@@ -22,7 +22,7 @@ class Request < ApplicationRecord
 
   STATUSES = %w(unanswered inprocess accepted dismissed)
 
-  FORM_FIELDS = [:member_id, :request_id, :message]
+  FORM_FIELDS = [:membership_id, :request_id, :message]
 
   belongs_to :community, inverse_of: :requests
   belongs_to :campus, inverse_of: :requests
@@ -92,7 +92,6 @@ class Request < ApplicationRecord
   end
 
   def as_json(*args, **options)
-    logger.debug self.inspect
     super.except(*JSON_EXCLUDES).tap do |r|
       r['campus'] = self.campus.as_json if options[:deep] && self.campus.present?
       r['gathering'] = self.gathering.as_json if options[:deep] && self.gathering.present?
@@ -102,6 +101,7 @@ class Request < ApplicationRecord
       r['campus_path'] = campus_path(self.campus)
       r['community_path'] = community_path(self.community)
       r['gathering_path'] = self.gathering.present? ? gathering_path(self.gathering) : nil
+      r['matches_path'] = request_matches_path(self)
       r['member_path'] = member_path(self.member)
       r['membership_path'] = membership_path(self.membership)
       r['respond_path'] = respond_request_path(self)
@@ -147,7 +147,6 @@ class Request < ApplicationRecord
     end
 
     def normalize_dates
-      self.sent_on = self.sent_on.beginning_of_day if self.sent_on.acts_like?(:time)
       self.expires_on = self.expires_on.end_of_day if self.expires_on.acts_like?(:time)
     end
 

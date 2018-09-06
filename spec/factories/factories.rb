@@ -174,11 +174,6 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       email_address
       phone_number
     end
-  
-    factory :community do
-      sequence(:name) {|n| "The #{n.ordinalize} Church" }
-      active
-    end
 
     factory :campus do
       community
@@ -189,6 +184,15 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       address
       email_address
       phone_number
+    end
+  
+    factory :community do
+      sequence(:name) {|n| "The #{n.ordinalize} Church" }
+      active
+    end
+
+    factory :checkup do
+      gathering
     end
 
     factory :gathering do
@@ -233,6 +237,11 @@ Time.use_zone TheGatherings::Application.default_time_zone do
       end
     end
 
+    factory :preference do
+      community
+      membership { create(:membership, :as_member, group: community) }
+    end
+
     factory :request do
       campus
       membership { create(:membership, :as_member, group: campus) }
@@ -244,11 +253,6 @@ Time.use_zone TheGatherings::Application.default_time_zone do
     factory :request_owner do
       request
       membership { create(:membership, :as_overseer, group: request.campus) }
-    end
-
-    factory :preference do
-      community
-      membership { create(:membership, :as_member, group: community) }
     end
 
     factory :role_name do

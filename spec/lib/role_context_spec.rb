@@ -105,9 +105,9 @@ describe RoleContext, type: :lib do
         expect(rc).to_not be_acts_as_campus_leader
       end
 
-      it 'is a campus member' do
+      it 'is not a campus member' do
         rc = RoleContext.context_for(@member, community: @community, campus: @campuses.first)
-        expect(rc).to be_acts_as_campus_member
+        expect(rc).to_not be_acts_as_campus_member
       end
 
       it 'is not a campus overseer' do

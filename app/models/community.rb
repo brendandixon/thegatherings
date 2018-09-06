@@ -20,12 +20,14 @@ class Community < ApplicationRecord
   has_many :campuses, inverse_of: :community, dependent: :restrict_with_exception
   has_many :gatherings, through: :campuses
   has_many :requests, through: :campuses
+  has_many :checkups, inverse_of: :community, through: :gatherings
 
   has_many :memberships, as: :group, dependent: :destroy
   has_many :members, through: :memberships
 
   has_many :preferences, inverse_of: :community, dependent: :destroy
   has_many :requests, inverse_of: :community, dependent: :destroy
+  has_many :request_owners, through: :requests, inverse_of: :community, dependent: :destroy
 
   has_many :role_names, dependent: :destroy
   has_many :categories, dependent: :destroy
@@ -85,8 +87,9 @@ class Community < ApplicationRecord
       c['gatherings_path'] = community_gatherings_path(self)
       c['memberships_path'] = community_memberships_path(self)
       c['preferences_path'] = community_preferences_path(self)
+      c['attendees_path'] = attendees_community_path(self)
+      c['health_path'] = health_community_path(self)
       c['requests_path'] = community_requests_path(self)
-      c['attendee_path'] = attendees_community_gatherings_path(self)
     end
   end
 

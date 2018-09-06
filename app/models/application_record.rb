@@ -9,4 +9,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   JSON_EXCLUDES = ['created_at', 'updated_at']
 
+  scope :in_order, lambda{ order_by }
+  scope :order_by, lambda{|field = 'id', direction = 'ASC'| order("#{field} #{direction}")}
+
   end

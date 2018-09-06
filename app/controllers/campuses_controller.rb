@@ -1,7 +1,9 @@
 class CampusesController < ApplicationController
+  include Health
 
   before_action :set_campus, except: COLLECTION_ACTIONS
   before_action :set_community
+  before_action :ensure_campus, except: COLLECTION_ACTIONS
   before_action :ensure_community
   before_action :ensure_authorized
 
@@ -63,22 +65,27 @@ class CampusesController < ApplicationController
       authorize_action_for resource, community: @community, perspective: perspective
     end
 
+    def ensure_campus
+      @campus ||= Campus.new(campus_params[:campus]) if params[:campus].present?
+      @campus ||= current_member.default_campus
+      @campus.community ||= current_member.default_community
+    end
+
     def ensure_community
       @community ||= @campus.community if @campus.present?
-      redirect_to member_root_path if @community.blank? || (@campus.present? && @community.id != @campus.community_id)
+      @community ||= current_member.default_community
     end
 
     def set_campus
-      @campus = Campus.find(params[:id]) rescue nil if params[:id].present?
-      @campus ||= Campus.new(campus_params[:campus])
+      @campus ||= Campus.find(params[:id]) rescue nil if params[:id].present?
+      @campus ||= Campus.find(params[:campus_id]) rescue nil if params[:campus_id].present?
     end
 
     def set_community
       @community = Community.find(params[:community_id]) rescue nil if params[:community_id].present?
-      @campus.community ||= @community if @campus.present?
     end
 
     def campus_params
-      params.permit(campus: Campus::FORM_FIELDS)
+      params.permit(:campus_is, :community_id, :format, campus: Campus::FORM_FIELDS)
     end
 end

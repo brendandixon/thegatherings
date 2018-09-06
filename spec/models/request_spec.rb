@@ -102,14 +102,6 @@ describe Request, type: :model do
     expect(@request.errors).to have_key(:expires_on)
   end
 
-  it 'ensures the sent on date is set to the beginning of the day' do
-    t = DateTime.current.beginning_of_day
-    @request.sent_on = t + 5.hours
-    expect(@request).to be_valid
-    expect(@request.sent_on).to eq(t)
-    expect(@request.errors).to_not have_key(:sent_on)
-  end
-
   it 'ensures the expires on date is set to the end of the day' do
     t = DateTime.current.end_of_day
     @request.expires_on = t - 5.hours

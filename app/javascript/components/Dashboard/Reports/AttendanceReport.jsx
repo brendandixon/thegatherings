@@ -32,7 +32,6 @@ export default class AttendanceReport extends BaseComponent {
     }
 
     render() {
-        console.log(this.props)
         let group = this.props.gathering
                         ? this.props.gathering.name
                         : this.props.campus

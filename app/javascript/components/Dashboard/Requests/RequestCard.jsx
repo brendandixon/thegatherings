@@ -9,29 +9,21 @@ export default class RequestsCard extends BaseComponent {
         id: PropTypes.string.isRequired,
         campus: PropTypes.object,
         gathering: PropTypes.object,
-        request: PropTypes.object.isRequired
+        request: PropTypes.object.isRequired,
+        onClick: PropTypes.func,
     }
 
     constructor(props) {
         super(props)
 
         this.formatDate = this.formatDate.bind(this)
+        this.handleClick = this.handleClick.bind(this)
     }
 
-    isAccepted() {
-        return this.props.request.status == 'accepted'
-    }
-
-    isDismissed() {
-        return this.props.request.status == 'dismissed'
-    }
-
-    isInprocess() {
-        return this.props.request.status == 'inprocess'
-    }
-
-    isUnanswered() {
-        return this.props.request.status == 'unanswered'
+    handleClick() {
+        if (this.props.onClick) {
+            this.props.onClick(this.props.request)
+        }
     }
 
     formatDate(verb, d) {
@@ -81,25 +73,27 @@ export default class RequestsCard extends BaseComponent {
         let request = this.props.request
         let owner = request['owner']
         let member = owner ? owner['member'] : null
-        if (member)
-            return (
-                <div className='section'>
-                    <div className='section-title'>Owner</div>
-                    <div>`${member['first_name']} ${member['last_name']}`</div>
-                </div>
-            )
-        else
-            return (
-                <div className='section'>
-                    <div className='section-title'>Owner</div>
-                    <div className='text-danger'>Unassigned</div>
-                </div>
-            )
+        return (
+            <div className='section'>
+                <div className='section-title'>Owner</div>
+                { member
+                    ? (
+                        <div>{`${member['first_name']} ${member['last_name']}`}</div>
+                    )
+                    : (
+                        <div className='text-danger'>Unassigned</div>
+                    )
+                }
+            </div>
+        )
     }
 
     render() {
         return (
-            <div className='card p-0 mb-2'>
+            <div
+                className='card p-0 mb-2'
+                onClick={this.handleClick}
+            >
                 <div className='card-body p-0 text-muted request'>
                     <div className='details'>
                         <div className={this.props.request.status}>

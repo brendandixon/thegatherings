@@ -214,6 +214,12 @@ namespace :dev do
                 ar.attend!
               end
               meeting.settle_attendance!
+
+              gs = (meeting.attendance.first.to_f / meeting.attendance.last.to_f) * 100.0
+              as = @@generator.rand(30...100)
+              ss = @@generator.rand(45...100)
+              rs = @@generator.rand(0...100)
+              create(:checkup, gathering: gathering, week_of: mt, gather_score: gs, adopt_score: as, shape_score: ss, reflect_score: rs)
             end
           end
         end
@@ -229,7 +235,9 @@ namespace :dev do
             community_membership = create(:membership, :as_member, group: community, member: member)
             campus_membership = create(:membership, :as_member, group: campus, member: member)
             create(:preference, *one_of(*@@seeks), community: community, campus: campus, membership: community_membership)
-            r = create(:request, campus: campus, membership: campus_membership)
+            gathering = @@generator.rand(0..100) > 66 ? one_of(*campus.gatherings) : nil
+            r = create(:request, campus: campus, gathering: gathering, membership: campus_membership)
+            create(:request_owner, membership: one_of(*campus.all_leaders), request: r) if @@generator.rand(0..100) > 33
             r.respond!(one_of(*Request::STATUSES))
           end
         end

@@ -40,7 +40,7 @@ export default class AttendeesCard extends BaseComponent {
                 id={this.props.id}
                 campus={this.props.campus}
                 gathering={this.props.gathering}
-                path={this.props.community.attendee_path}
+                path={this.props.community.attendees_path}
                 title='Attendees'
                 onReceive={this.handleReceive}
                 onReady={this.props.onReady}

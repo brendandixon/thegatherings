@@ -1,0 +1,1127 @@
+[
+    {
+        "gathering": {
+            "id": 11,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Step by Step",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1013 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98117",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/11",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/11/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 0,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 12,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Encounter",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1014 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98119",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/12",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/12/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 2,
+                "misaligned": 1,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 13,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Redeemed",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1015 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98199",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/13",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/13/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 0,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 14,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Leisure Timers",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1016 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98103",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/14",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/14/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 15,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Proud Parents",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1017 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98105",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/15",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/15/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 2,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 16,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "reKindled",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1018 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98107",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/16",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/16/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 2,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 2,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 17,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Morning Risers",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1019 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98112",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/17",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/17/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 18,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Pillars",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1020 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98115",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/18",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/18/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 0,
+                "misaligned": 1,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 3,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 0,
+                "misaligned": 1,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 19,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Angled Mirrors",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1021 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98117",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/19",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/19/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 0,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 20,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Rescued Servants",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1022 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98119",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/20",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/20/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 0,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 21,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Friends \u0026 Family",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1023 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98199",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/21",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/21/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 0,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 22,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "New Seedlings",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1024 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98103",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/22",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/22/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 2,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 23,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Reproduced",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1025 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98105",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/23",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/23/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 2,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 24,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Friends \u0026 Family",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1026 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98107",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/24",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/24/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 0,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 6,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    },
+    {
+        "gathering": {
+            "id": 25,
+            "community_id": 1,
+            "campus_id": 3,
+            "name": "Rooted",
+            "description": "Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "street_primary": "1027 56th Avenue",
+            "street_secondary": null,
+            "city": "Seattle",
+            "state": "WA",
+            "country": "US",
+            "postal_code": "98112",
+            "time_zone": "Pacific Time (US \u0026 Canada)",
+            "meeting_starts": "2017-09-04T00:00:00.000-07:00",
+            "meeting_ends": "2019-09-06T23:59:59.000-07:00",
+            "meeting_day": 1,
+            "meeting_time": 68400,
+            "meeting_duration": 5400,
+            "minimum": 6,
+            "maximum": 12,
+            "open": true,
+            "path": "/campuses/25",
+            "campus_path": "/campuses/3",
+            "community_path": "/communities/1",
+            "requests_path": "/gatherings/25/requests"
+        },
+        "matches": [
+            {
+                "desired": 6,
+                "aligned": 2,
+                "misaligned": 0,
+                "single": "Demographic",
+                "plural": "Demographics",
+                "singleton": false,
+                "total": 7
+            },
+            {
+                "desired": 1,
+                "aligned": 1,
+                "misaligned": 0,
+                "single": "Gender",
+                "plural": "Genders",
+                "singleton": true,
+                "total": 3
+            },
+            {
+                "desired": 0,
+                "aligned": 0,
+                "misaligned": 2,
+                "single": "Life Stage",
+                "plural": "Life Stages",
+                "singleton": false,
+                "total": 5
+            },
+            {
+                "desired": 6,
+                "aligned": 2,
+                "misaligned": 0,
+                "single": "Enjoying Singleness",
+                "plural": "Relationships",
+                "singleton": false,
+                "total": 6
+            },
+            {
+                "desired": 3,
+                "aligned": 3,
+                "misaligned": 0,
+                "single": "Topic",
+                "plural": "Topics",
+                "singleton": false,
+                "total": 8
+            }
+        ]
+    }
+]

@@ -35,31 +35,43 @@ module Joinable
   end
 
   def assistants
-    self.memberships.as_assistant.map{|m| m.member}
+    self.memberships.as_assistant.to_a
   end
 
   def leaders
-    self.memberships.as_leader.map{|m| m.member}
+    self.memberships.as_leader.to_a
   end
 
   def members
     return [] unless RoleContext::is_role_allowed?(self, RoleContext::MEMBER)
-    self.memberships.as_member.map{|m| m.member}
+    self.memberships.as_member.to_a
   end
 
   def overseers
     return [] unless RoleContext::is_role_allowed?(self, RoleContext::OVERSEER)
-    self.memberships.as_overseer.map{|m| m.member}
+    self.memberships.as_overseer.to_a
   end
 
   def participants
     return [] unless RoleContext::is_role_allowed?(self, RoleContext::MEMBER)
-    self.memberships.as_participant.map{|m| m.member}
+    self.memberships.as_participant.to_a
   end
 
   def visitors
     return [] unless RoleContext::is_role_allowed?(self, RoleContext::VISITOR)
-    self.memberships.as_visitor.map{|m| m.member}
+    self.memberships.as_visitor.to_a
+  end
+
+  def all_leaders
+    self.leaders + self.assistants + self.overseers
+  end
+
+  def all_members
+    self.all_leaders + self.members
+  end
+
+  def all_participants
+    self.all_members + self.participants
   end
 
 end

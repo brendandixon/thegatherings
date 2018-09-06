@@ -92,7 +92,7 @@ describe Community, type: :model do
 
   end
 
-  context 'Tag Sets' do
+  context 'Categories' do
 
     before :example do
       @c.save
@@ -103,7 +103,7 @@ describe Community, type: :model do
       @c.destroy
     end
 
-    it 'adds default tag sets' do
+    it 'adds default categories' do
       dts = Category::DEFAULT_CATEGORIES.keys
       expect(@c.categories.size).to eq(dts.length)
 
@@ -114,7 +114,7 @@ describe Community, type: :model do
       end
     end
 
-    it 'removes tag sets' do
+    it 'removes categories' do
       ts1 = @c.categories.first
       ts2 = @c.categories.second
       prior = @c.categories.size

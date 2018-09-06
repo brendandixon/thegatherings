@@ -48,12 +48,12 @@ export default class Navigation extends BaseComponent {
     renderAccount() {
         let adminPath = this.props.routes.admin_mode_path
             ? (
-                <a className='dropdown-item' href={this.props.routes.admin_mode_path}>Admin</a>
+                <a className='dropdown-item' href={this.props.routes.admin_mode_path} target='_self'>Admin</a>
             )
             : null
         let gatheringPath = this.props.routes.gathering_mode_path
             ? (
-                <a className='dropdown-item' href={this.props.routes.gathering_mode_path}>Gatherings</a>
+                <a className='dropdown-item' href={this.props.routes.gathering_mode_path} target='_self'>Gatherings</a>
             )
             : null
         return (
@@ -64,7 +64,7 @@ export default class Navigation extends BaseComponent {
                         {`${this.props.member.first_name} ${this.props.member.last_name}`}
                     </a>
                     <div className='dropdown-menu'>
-                        <a className='dropdown-item' href={this.props.routes.member_mode_path}>Account</a>
+                        <a className='dropdown-item' href={this.props.routes.member_mode_path} target='_self'>Account</a>
                         {adminPath}
                         {gatheringPath}
                         <a className='dropdown-item' href={this.props.member['signout_path']} data-method='delete'>Sign Out</a>

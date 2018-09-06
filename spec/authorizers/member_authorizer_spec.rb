@@ -43,10 +43,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to be_creatable_by(@assistant, campus: @campus)
       end
 
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@assistant, campus: @campus, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
           expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, perspective: :as_member)
@@ -87,10 +83,6 @@ describe MemberAuthorizer, type: :authorizer do
     context 'Leader' do
       it 'allows creation' do
         expect(@new_member.authorizer).to be_creatable_by(@leader, campus: @campus)
-      end
-
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@leader, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
@@ -135,10 +127,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to be_creatable_by(@member, campus: @campus)
       end
 
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@member, campus: @campus, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
           expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, perspective: :as_member)
@@ -181,10 +169,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to_not be_creatable_by(@overseer, campus: @campus)
       end
 
-      it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@overseer, campus: @campus, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'disallows reading the full profile' do
           expect(@affiliated.authorizer).to_not be_readable_by(@overseer, campus: @campus, perspective: :as_member)
@@ -225,10 +209,6 @@ describe MemberAuthorizer, type: :authorizer do
     context 'Visitor' do
       it 'disallows creation' do
         expect(@new_member.authorizer).to_not be_creatable_by(@visitor, campus: @campus)
-      end
-
-      it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
@@ -288,10 +268,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to be_creatable_by(@assistant, campus: @campus)
       end
 
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@assistant, campus: @campus, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
           expect(@affiliated.authorizer).to be_readable_by(@assistant, campus: @campus, perspective: :as_member)
@@ -332,10 +308,6 @@ describe MemberAuthorizer, type: :authorizer do
     context 'Leader' do
       it 'allows creation' do
         expect(@new_member.authorizer).to be_creatable_by(@leader, campus: @campus)
-      end
-
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@leader, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
@@ -380,10 +352,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to be_creatable_by(@member, campus: @campus)
       end
 
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@member, campus: @campus, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
           expect(@affiliated.authorizer).to be_readable_by(@member, campus: @campus, perspective: :as_member)
@@ -426,10 +394,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to be_creatable_by(@overseer, campus: @campus)
       end
 
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@overseer, campus: @campus, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
           expect(@affiliated.authorizer).to be_readable_by(@overseer, campus: @campus, perspective: :as_member)
@@ -470,10 +434,6 @@ describe MemberAuthorizer, type: :authorizer do
     context 'Visitor' do
       it 'disallows creation' do
         expect(@new_member.authorizer).to_not be_creatable_by(@visitor, campus: @campus)
-      end
-
-      it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, campus: @campus, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
@@ -533,10 +493,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to be_creatable_by(@assistant, gathering: @gathering)
       end
 
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@assistant, gathering: @gathering, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
           expect(@affiliated.authorizer).to be_readable_by(@assistant, gathering: @gathering, perspective: :as_member)
@@ -577,10 +533,6 @@ describe MemberAuthorizer, type: :authorizer do
     context 'Leader' do
       it 'allows creation' do
         expect(@new_member.authorizer).to be_creatable_by(@leader, gathering: @gathering)
-      end
-
-      it 'allows creating signups' do
-        expect(@new_member.authorizer).to be_creatable_by(@leader, gathering: @gathering, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do
@@ -625,10 +577,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to_not be_creatable_by(@member, gathering: @gathering)
       end
 
-      it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@member, gathering: @gathering, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'allows reading the full profile' do
           expect(@affiliated.authorizer).to be_readable_by(@member, gathering: @gathering, perspective: :as_member)
@@ -671,10 +619,6 @@ describe MemberAuthorizer, type: :authorizer do
         expect(@new_member.authorizer).to_not be_creatable_by(@overseer, gathering: @gathering)
       end
 
-      it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@overseer, gathering: @gathering, perspective: :as_signup)
-      end
-
       context 'with affiliated Members' do
         it 'disallows reading the full profile' do
           expect(@affiliated.authorizer).to_not be_readable_by(@overseer, gathering: @gathering, perspective: :as_member)
@@ -715,10 +659,6 @@ describe MemberAuthorizer, type: :authorizer do
     context 'Visitor' do
       it 'disallows creation' do
         expect(@new_member.authorizer).to_not be_creatable_by(@visitor, gathering: @gathering)
-      end
-
-      it 'disallows creating signups' do
-        expect(@new_member.authorizer).to_not be_creatable_by(@visitor, gathering: @gathering, perspective: :as_signup)
       end
 
       context 'with affiliated Members' do

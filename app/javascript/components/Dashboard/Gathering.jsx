@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import BaseComponent from '../BaseComponent'
 
 import Navigation from './Navigation'
+import Health from './Health/Health'
 import Overview from './Overview/Overview'
 import Reports from './Reports/Reports'
 import Requests from './Requests/Requests'
@@ -64,6 +65,19 @@ export default class Gathering extends BaseComponent {
     renderSection() {
         let state = this.state
         switch (state.activeTab) {
+
+            case 'health':
+                return (
+                    <Health
+                        community={this.props.community}
+                        campus={state.campus}
+                        campuses={state.campuses}
+                        gathering={state.gathering}
+                        gatherings={state.gatherings}
+                        routes={this.props.routes}
+                        onChange={this.handleChange}
+                    />
+                )
 
             case 'overview':
                 return (

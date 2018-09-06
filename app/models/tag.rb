@@ -33,7 +33,7 @@ class Tag < ApplicationRecord
   validates_length_of :prompt, within: 3..255
   validates_format_of :prompt, with: REGEX_PHRASE, unless: Proc.new{|t| t.errors.has_key?(:prompt)}
 
-  scope :from_set, lambda{|category| where(category: category)}
+  scope :for_category, lambda{|category| where(category: category)}
   scope :with_name, lambda{|name| where(name: name)}
 
   def as_json(*args, **options)

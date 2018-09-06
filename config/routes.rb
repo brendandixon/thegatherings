@@ -78,6 +78,7 @@
 #          request_request_owners GET    /requests/:request_id/request_owners(.:format)                                           request_owners#index
 #                                 POST   /requests/:request_id/request_owners(.:format)                                           request_owners#create
 #       new_request_request_owner GET    /requests/:request_id/request_owners/new(.:format)                                       request_owners#new
+#                 request_matches GET    /requests/:request_id/matches(.:format)                                                  requests#matches
 #                        requests GET    /requests(.:format)                                                                      requests#index
 #                                 POST   /requests(.:format)                                                                      requests#create
 #                     new_request GET    /requests/new(.:format)                                                                  requests#new
@@ -116,7 +117,8 @@
 #                                 PATCH  /meetings/:id(.:format)                                                                  meetings#update
 #                                 PUT    /meetings/:id(.:format)                                                                  meetings#update
 #                                 DELETE /meetings/:id(.:format)                                                                  meetings#destroy
-#     attendees_campus_gatherings GET    /campuses/:campus_id/gatherings/attendees(.:format)                                      gatherings#attendees
+#             attendees_gathering GET    /gatherings/:id/attendees(.:format)                                                      gatherings#attendees
+#                health_gathering GET    /gatherings/:id/health(.:format)                                                         gatherings#health
 #           gathering_memberships GET    /gatherings/:gathering_id/memberships(.:format)                                          memberships#index
 #                                 POST   /gatherings/:gathering_id/memberships(.:format)                                          memberships#create
 #        new_gathering_membership GET    /gatherings/:gathering_id/memberships/new(.:format)                                      memberships#new
@@ -152,6 +154,8 @@
 #                 campus_requests GET    /campuses/:campus_id/requests(.:format)                                                  requests#index
 #                                 POST   /campuses/:campus_id/requests(.:format)                                                  requests#create
 #              new_campus_request GET    /campuses/:campus_id/requests/new(.:format)                                              requests#new
+#                attendees_campus GET    /campuses/:id/attendees(.:format)                                                        campuses#attendees
+#                   health_campus GET    /campuses/:id/health(.:format)                                                           campuses#health
 #              campus_memberships GET    /campuses/:campus_id/memberships(.:format)                                               memberships#index
 #                                 POST   /campuses/:campus_id/memberships(.:format)                                               memberships#create
 #           new_campus_membership GET    /campuses/:campus_id/memberships/new(.:format)                                           memberships#new
@@ -185,10 +189,15 @@
 #                                 PATCH  /categories/:id(.:format)                                                                categories#update
 #                                 PUT    /categories/:id(.:format)                                                                categories#update
 #                                 DELETE /categories/:id(.:format)                                                                categories#destroy
-#  attendees_community_gatherings GET    /communities/:community_id/gatherings/attendees(.:format)                                gatherings#attendees
-#     search_community_gatherings GET    /communities/:community_id/gatherings/search(.:format)                                   gatherings#search
+#              gathering_checkups GET    /gatherings/:gathering_id/checkups(.:format)                                             checkups#index
+#                                 POST   /gatherings/:gathering_id/checkups(.:format)                                             checkups#create
+#           new_gathering_checkup GET    /gatherings/:gathering_id/checkups/new(.:format)                                         checkups#new
+#                    edit_checkup GET    /checkups/:id/edit(.:format)                                                             checkups#edit
+#                         checkup GET    /checkups/:id(.:format)                                                                  checkups#show
+#                                 PATCH  /checkups/:id(.:format)                                                                  checkups#update
+#                                 PUT    /checkups/:id(.:format)                                                                  checkups#update
+#                                 DELETE /checkups/:id(.:format)                                                                  checkups#destroy
 #            community_gatherings GET    /communities/:community_id/gatherings(.:format)                                          gatherings#index
-#    search_community_preferences GET    /communities/:community_id/preferences/search(.:format)                                  preferences#search
 #           community_preferences GET    /communities/:community_id/preferences(.:format)                                         preferences#index
 #                                 POST   /communities/:community_id/preferences(.:format)                                         preferences#create
 #        new_community_preference GET    /communities/:community_id/preferences/new(.:format)                                     preferences#new
@@ -197,6 +206,8 @@
 #                                 PATCH  /preferences/:id(.:format)                                                               preferences#update
 #                                 PUT    /preferences/:id(.:format)                                                               preferences#update
 #                                 DELETE /preferences/:id(.:format)                                                               preferences#destroy
+#             attendees_community GET    /communities/:id/attendees(.:format)                                                     communities#attendees
+#                health_community GET    /communities/:id/health(.:format)                                                        communities#health
 #           community_memberships GET    /communities/:community_id/memberships(.:format)                                         memberships#index
 #                                 POST   /communities/:community_id/memberships(.:format)                                         memberships#create
 #        new_community_membership GET    /communities/:community_id/memberships/new(.:format)                                     memberships#new
@@ -224,7 +235,11 @@
 Rails.application.routes.draw do
 
   concern :attended do
-    get 'attendees', on: :collection
+    get 'attendees', on: :member
+  end
+
+  concern :health do
+    get 'health', on: :member
   end
 
   concern :joinable do
@@ -291,13 +306,14 @@ Rails.application.routes.draw do
   resources :preferences, concerns: [:searchable, :taggable]
   resources :requests do
     resources :request_owners, shallow: true, only: [:index, :create, :new]
+    get 'matches'
   end
   resources :request_owners
 
-  resources :communities, concerns: [:joinable, :requestable] do
+  resources :communities, concerns: [:attended, :health, :joinable, :requestable] do
 
-    resources :campuses, shallow: true, concerns: [:joinable] do
-      resources :gatherings, shallow: true, concerns: [:attended, :joinable, :requestable, :searchable, :taggable] do
+    resources :campuses, shallow: true, concerns: [:attended, :health, :joinable] do
+      resources :gatherings, shallow: true, concerns: [:attended, :health, :joinable, :requestable, :searchable, :taggable] do
         resources :assigned_overseers, shallow: true
         resources :meetings, shallow: true, except: [:create, :new] do
           resources :attendance_records, path: :attendance
@@ -311,8 +327,10 @@ Rails.application.routes.draw do
     resources :categories, shallow: true do
       resources :tags
     end
-    resources :gatherings, shallow: true, only: [:index], concerns: [:attended, :searchable]
-    resources :preferences, shallow: true, concerns: [:searchable]
+    resources :gatherings, shallow: true, only: [:index] do
+      resources :checkups
+    end
+    resources :preferences, shallow: true
 
   end
 

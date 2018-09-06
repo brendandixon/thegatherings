@@ -71,7 +71,7 @@ class RoleContext
   end
 
   def acts_as_campus_member?
-    is_campus_member? || acts_as_community_member?
+    is_campus_member? || acts_as_campus_overseer?
   end
 
   def acts_as_campus_overseer?
@@ -114,9 +114,9 @@ class RoleContext
 
     def initialize(member, community, campus, gathering)
       @member = member
-      @community = community
-      @campus = campus
       @gathering = gathering
+      @campus = campus || (@gathering.present? ? @gathering.campus : nil)
+      @community = community || (@campus.present? ? @campus.community : nil)
 
       @community_membership = member.active_member_of?(@community)
       @campus_membership = member.active_member_of?(@campus)

@@ -94,16 +94,16 @@ module Taggable
   end
 
   def categories
-    self.community.present? ? self.community.categories.to_a : []
+    self.community.present? ? self.community.categories.in_order.to_a : []
   end
 
-  def tags_from_set(category)
+  def tags_for(category)
     return [] unless self.community.present?
 
     category = normalize_category(category)
     return [] unless category.is_a?(Category)
 
-    category.tags.to_a
+    self.tags.for_category(category).in_order.to_a
   end
 
   protected

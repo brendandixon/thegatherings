@@ -44,10 +44,6 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'allows creation' do
           expect(@join_community.authorizer).to be_creatable_by(@assistant, community: @community)
         end
-
-        it 'allows creating signups' do
-          expect(@join_community.authorizer).to be_creatable_by(@assistant, community: @community, perspective: :as_signup)
-        end
         
         it 'allows reading' do
           expect(@join_community.authorizer).to be_readable_by(@assistant, community: @community)
@@ -66,10 +62,6 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'allows creation' do
           expect(@join_campus.authorizer).to be_creatable_by(@assistant, community: @community)
         end
-
-        it 'allows creating signups' do
-          expect(@join_campus.authorizer).to be_creatable_by(@assistant, community: @community, perspective: :as_signup)
-        end
         
         it 'allows reading' do
           expect(@join_campus.authorizer).to be_readable_by(@assistant, community: @community)
@@ -87,10 +79,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'allows creation' do
           expect(@join_gathering.authorizer).to be_creatable_by(@assistant, community: @community)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_gathering.authorizer).to be_creatable_by(@assistant, community: @community, perspective: :as_signup)
         end
         
         it 'allows reading' do
@@ -113,10 +101,6 @@ describe MembershipAuthorizer, type: :authorizer do
           expect(@join_community.authorizer).to be_creatable_by(@leader, community: @community)
         end
 
-        it 'allows creating signups' do
-          expect(@join_community.authorizer).to be_creatable_by(@leader, community: @community, perspective: :as_signup)
-        end
-
         it 'allows reading' do
           expect(@join_community.authorizer).to be_readable_by(@leader, community: @community)
         end
@@ -133,10 +117,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Campus Membership' do
         it 'allows creation' do
           expect(@join_campus.authorizer).to be_creatable_by(@leader, community: @community)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_campus.authorizer).to be_creatable_by(@leader, community: @community, perspective: :as_signup)
         end
         
         it 'allows reading' do
@@ -155,10 +135,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'allows creation' do
           expect(@join_gathering.authorizer).to be_creatable_by(@leader, community: @community)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_gathering.authorizer).to be_creatable_by(@leader, community: @community, perspective: :as_signup)
         end
 
         it 'allows reading' do
@@ -180,10 +156,6 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'disallows creation' do
           expect(@join_community.authorizer).to_not be_creatable_by(@member, community: @community)
         end
-
-        it 'allows creating signups' do
-          expect(@join_community.authorizer).to be_creatable_by(@member, community: @community, perspective: :as_signup)
-        end
         
         it 'allows reading' do
           expect(@join_community.authorizer).to be_readable_by(@member, community: @community)
@@ -202,13 +174,9 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'disallows creation' do
           expect(@join_campus.authorizer).to_not be_creatable_by(@member, community: @community)
         end
-
-        it 'allows creating signups' do
-          expect(@join_campus.authorizer).to be_creatable_by(@member, community: @community, perspective: :as_signup)
-        end
         
-        it 'allows reading' do
-          expect(@join_campus.authorizer).to be_readable_by(@member, community: @community)
+        it 'disallows reading' do
+          expect(@join_campus.authorizer).to_not be_readable_by(@member, community: @community)
         end
 
         it 'disallows updating' do
@@ -223,10 +191,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'disallows creation' do
           expect(@join_gathering.authorizer).to_not be_creatable_by(@member, community: @community)
-        end
-
-        it 'disallows creating signups' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@member, community: @community, perspective: :as_signup)
         end
 
         it 'disallows reading' do
@@ -249,10 +213,6 @@ describe MembershipAuthorizer, type: :authorizer do
           expect(@join_community.authorizer).to_not be_creatable_by(@overseer, community: @community)
         end
 
-        it 'disallows creating signups' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@overseer, community: @community, perspective: :as_signup)
-        end
-
         it 'disallows reading' do
           expect(@join_community.authorizer).to_not be_readable_by(@overseer, community: @community)
         end
@@ -269,10 +229,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Campus Membership' do
         it 'disallows creation' do
           expect(@join_campus.authorizer).to_not be_creatable_by(@overseer, community: @community)
-        end
-
-        it 'disallows creating signups' do
-          expect(@join_campus.authorizer).to_not be_creatable_by(@overseer, community: @community, perspective: :as_signup)
         end
         
         it 'disallows reading' do
@@ -291,10 +247,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'disallows creation' do
           expect(@join_gathering.authorizer).to_not be_creatable_by(@overseer, community: @community)
-        end
-
-        it 'disallows creating signups' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@overseer, community: @community, perspective: :as_signup)
         end
         
         it 'disallows reading' do
@@ -316,10 +268,6 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'disallows creation' do
           expect(@join_community.authorizer).to_not be_creatable_by(@visitor, community: @community)
         end
-
-        it 'disallows creating signups' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@visitor, community: @community, perspective: :as_signup)
-        end
         
         it 'disallows reading' do
           expect(@join_community.authorizer).to_not be_readable_by(@visitor, community: @community)
@@ -339,10 +287,6 @@ describe MembershipAuthorizer, type: :authorizer do
           expect(@join_campus.authorizer).to_not be_creatable_by(@visitor, community: @community)
         end
 
-        it 'disallows creating signups' do
-          expect(@join_campus.authorizer).to_not be_creatable_by(@visitor, community: @community, perspective: :as_signup)
-        end
-
         it 'disallows reading' do
           expect(@join_campus.authorizer).to_not be_readable_by(@visitor, community: @community)
         end
@@ -359,10 +303,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'disallows creation' do
           expect(@join_gathering.authorizer).to_not be_creatable_by(@visitor, community: @community)
-        end
-
-        it 'disallows creating signups' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@visitor, community: @community, perspective: :as_signup)
         end
         
         it 'disallows reading' do
@@ -398,13 +338,9 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'disallows creation' do
           expect(@join_community.authorizer).to_not be_creatable_by(@assistant, campus: @campus)
         end
-
-        it 'disallows creating signups' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@assistant, campus: @campus, perspective: :as_signup)
-        end
         
-        it 'allows reading' do
-          expect(@join_community.authorizer).to be_readable_by(@assistant, campus: @campus)
+        it 'disallows reading' do
+          expect(@join_community.authorizer).to_not be_readable_by(@assistant, campus: @campus)
         end
 
         it 'disallows updating' do
@@ -419,10 +355,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Campus Membership' do
         it 'allows creation' do
           expect(@join_campus.authorizer).to be_creatable_by(@assistant, campus: @campus)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_campus.authorizer).to be_creatable_by(@assistant, campus: @campus, perspective: :as_signup)
         end
         
         it 'allows reading' do
@@ -441,10 +373,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'allows creation' do
           expect(@join_gathering.authorizer).to be_creatable_by(@assistant, campus: @campus)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_gathering.authorizer).to be_creatable_by(@assistant, campus: @campus, perspective: :as_signup)
         end
 
         it 'allows reading' do
@@ -467,12 +395,8 @@ describe MembershipAuthorizer, type: :authorizer do
           expect(@join_community.authorizer).to_not be_creatable_by(@leader, campus: @campus)
         end
 
-        it 'disallows creating signups' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@leader, campus: @campus, perspective: :as_signup)
-        end
-
-        it 'allows reading' do
-          expect(@join_community.authorizer).to be_readable_by(@leader, campus: @campus)
+        it 'disallows reading' do
+          expect(@join_community.authorizer).to_not be_readable_by(@leader, campus: @campus)
         end
 
         it 'disallows updating' do
@@ -487,10 +411,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Campus Membership' do
         it 'allows creation' do
           expect(@join_campus.authorizer).to be_creatable_by(@leader, campus: @campus)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_campus.authorizer).to be_creatable_by(@leader, campus: @campus, perspective: :as_signup)
         end
         
         it 'allows reading' do
@@ -509,10 +429,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'allows creation' do
           expect(@join_gathering.authorizer).to be_creatable_by(@leader, campus: @campus)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_gathering.authorizer).to be_creatable_by(@leader, campus: @campus, perspective: :as_signup)
         end
 
         it 'allows reading' do
@@ -534,13 +450,9 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'disallows creation' do
           expect(@join_community.authorizer).to_not be_creatable_by(@member, campus: @campus)
         end
-
-        it 'disallows creating signups' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@member, campus: @campus, perspective: :as_signup)
-        end
         
-        it 'allows reading' do
-          expect(@join_community.authorizer).to be_readable_by(@member, campus: @campus)
+        it 'disallows reading' do
+          expect(@join_community.authorizer).to_not be_readable_by(@member, campus: @campus)
         end
 
         it 'disallows updating' do
@@ -555,10 +467,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Campus Membership' do
         it 'disallows creation' do
           expect(@join_campus.authorizer).to_not be_creatable_by(@member, campus: @campus)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_campus.authorizer).to be_creatable_by(@member, campus: @campus, perspective: :as_signup)
         end
         
         it 'allows reading' do
@@ -577,10 +485,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'disallows creation' do
           expect(@join_gathering.authorizer).to_not be_creatable_by(@member, campus: @campus)
-        end
-
-        it 'disallows creating signups' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@member, campus: @campus, perspective: :as_signup)
         end
 
         it 'disallows reading' do
@@ -603,12 +507,8 @@ describe MembershipAuthorizer, type: :authorizer do
           expect(@join_community.authorizer).to_not be_creatable_by(@overseer, campus: @campus)
         end
 
-        it 'disallows creating signups' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@overseer, campus: @campus, perspective: :as_signup)
-        end
-
-        it 'allows reading' do
-          expect(@join_community.authorizer).to be_readable_by(@overseer, campus: @campus)
+        it 'disallows reading' do
+          expect(@join_community.authorizer).to_not be_readable_by(@overseer, campus: @campus)
         end
 
         it 'disallows updating' do
@@ -623,10 +523,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Campus Membership' do
         it 'disallows creation' do
           expect(@join_campus.authorizer).to_not be_creatable_by(@overseer, campus: @campus)
-        end
-
-        it 'allows creating signups' do
-          expect(@join_campus.authorizer).to be_creatable_by(@overseer, campus: @campus, perspective: :as_signup)
         end
 
         it 'allows reading' do
@@ -645,10 +541,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'disallows creation' do
           expect(@join_gathering.authorizer).to_not be_creatable_by(@overseer, campus: @campus)
-        end
-
-        it 'disallows creating signups' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@overseer, campus: @campus, perspective: :as_signup)
         end
 
         it 'disallows reading' do
@@ -680,8 +572,8 @@ describe MembershipAuthorizer, type: :authorizer do
           expect(@join_community.authorizer).to_not be_creatable_by(@overseer, campus: @campus)
         end
         
-        it 'allows reading' do
-          expect(@join_community.authorizer).to be_readable_by(@overseer, campus: @campus)
+        it 'disallows reading' do
+          expect(@join_community.authorizer).to_not be_readable_by(@overseer, campus: @campus)
         end
 
         it 'disallows updating' do
@@ -735,10 +627,6 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'disallows creation' do
           expect(@join_community.authorizer).to_not be_creatable_by(@visitor, campus: @campus)
         end
-
-        it 'disallows creating signups' do
-          expect(@join_community.authorizer).to_not be_creatable_by(@visitor, campus: @campus, perspective: :as_signup)
-        end
         
         it 'disallows reading' do
           expect(@join_community.authorizer).to_not be_readable_by(@visitor, campus: @campus)
@@ -757,10 +645,6 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'disallows creation' do
           expect(@join_campus.authorizer).to_not be_creatable_by(@visitor, campus: @campus)
         end
-
-        it 'disallows creating signups' do
-          expect(@join_campus.authorizer).to_not be_creatable_by(@visitor, campus: @campus, perspective: :as_signup)
-        end
         
         it 'disallows reading' do
           expect(@join_campus.authorizer).to_not be_readable_by(@visitor, campus: @campus)
@@ -778,10 +662,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'disallows creation' do
           expect(@join_gathering.authorizer).to_not be_creatable_by(@visitor, campus: @campus)
-        end
-
-        it 'disallows creating signups' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@visitor, campus: @campus, perspective: :as_signup)
         end
 
         it 'disallows reading' do
@@ -1098,10 +978,6 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'allows creation' do
           expect(@join_community.authorizer).to be_creatable_by(@affiliate)
         end
-
-        it 'allows creating signups' do
-          expect(@join_community.authorizer).to be_creatable_by(@affiliate, perspective: :as_signup)
-        end
         
         it 'allows reading' do
           expect(@join_community.authorizer).to be_readable_by(@affiliate)
@@ -1120,10 +996,6 @@ describe MembershipAuthorizer, type: :authorizer do
         it 'allows creation' do
           expect(@join_campus.authorizer).to be_creatable_by(@affiliate)
         end
-
-        it 'allows creating signups' do
-          expect(@join_campus.authorizer).to be_creatable_by(@affiliate, perspective: :as_signup)
-        end
         
         it 'allows reading' do
           expect(@join_campus.authorizer).to be_readable_by(@affiliate)
@@ -1141,10 +1013,6 @@ describe MembershipAuthorizer, type: :authorizer do
       context 'with a Gathering Membership' do
         it 'disallows creation' do
           expect(@join_gathering.authorizer).to_not be_creatable_by(@affiliate)
-        end
-
-        it 'disallows creating signups' do
-          expect(@join_gathering.authorizer).to_not be_creatable_by(@affiliate, perspective: :as_signup)
         end
 
         it 'allows reading' do

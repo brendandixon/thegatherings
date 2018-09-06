@@ -1,6 +1,9 @@
 class CommunitiesController < ApplicationController
+  include Attendees
+  include Health
 
   before_action :set_community, except: COLLECTION_ACTIONS
+  before_action :ensure_community, except: COLLECTION_ACTIONS
   before_action :ensure_authorized
 
   def index
@@ -62,10 +65,13 @@ class CommunitiesController < ApplicationController
       authorize_action_for resource, community: @community, perspective: perspective
     end
 
-    def set_community
-      id = params[:id] || params[:community_id]
-      @community = Community.find(id) rescue nil if id.present?
+    def ensure_community
       @community ||= Community.new(community_params[:community])
+    end
+
+    def set_community
+      @community ||= Community.find(params[:id]) rescue nil if params[:id].present?
+      @community ||= Community.find(params[:community_id]) rescue nil if params[:community_id].present?
     end
 
     def community_params

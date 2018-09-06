@@ -41,7 +41,8 @@ class Gathering < ApplicationRecord
 
   belongs_to :community
   belongs_to :campus
-  
+
+  has_many :checkups, inverse_of: :gathering, dependent: :destroy
   has_many :meetings, inverse_of: :gathering, dependent: :destroy
 
   has_many :memberships, as: :group, dependent: :destroy
@@ -230,11 +231,12 @@ class Gathering < ApplicationRecord
 
   def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |g|
-      id = g['id']
       g['memberships'] = self.memberships.as_json(deep: true) if options[:deep]
       g['path'] = campus_path(self)
       g['campus_path'] = campus_path(self.campus)
       g['community_path'] = community_path(self.community)
+      g['attendees_path'] = attendees_gathering_path(self)
+      g['health_path'] = health_gathering_path(self)
       g['requests_path'] = gathering_requests_path(self)
     end
   end

@@ -8,17 +8,9 @@ import { addGroupsQuery, evaluateJSONResponse, readJSONResponse } from '../../Ut
 
 import SelectContext from '../SelectContext'
 
-import RequestCard from './RequestCard'
-import RequestModal from './RequestModal'
+import HealthRecord from './HealthRecord'
 
-const statuses = [
-    { value: 'unanswered', name: 'Unanswered' },
-    { value: 'inprocess', name: 'In Process' },
-    { value: 'accepted', name: 'Accepted' },
-    { value: 'dismissed', name: 'Dismissed' }
-]
-
-export default class Requests extends BaseComponent {
+export default class Health extends BaseComponent {
     static propTypes = {
         community: PropTypes.object.isRequired,
         campus: PropTypes.object,
@@ -38,15 +30,10 @@ export default class Requests extends BaseComponent {
             gathering: this.props.gathering,
             gatherings: this.props.gatherings || [],
             disabled: false,
-            requests: {},
-            activeRequest: null,
-            showModal: false,
+            healthRecords: []
         }
 
-        this.setRequests = this.setRequests.bind(this)
-        this.ensureRequests = this.ensureRequests.bind(this)
-        this.handleClick = this.handleClick.bind(this)
-        this.handleClose = this.handleClose.bind(this) 
+        this.ensureHealth = this.ensureHealth.bind(this)
         this.handleContextChange = this.handleContextChange.bind(this)
         this.handleError = this.handleError.bind(this)
         this.onChange = this.onChange.bind(this)
@@ -54,16 +41,18 @@ export default class Requests extends BaseComponent {
     }
 
     componentDidMount() {
-        this.ensureRequests(this.state)
+        this.ensureHealth(this.state)
     }
 
-    ensureRequests(state) {
+    ensureHealth(state) {
         let props = this.props
-        let path = addGroupsQuery(props.community.requests_path, state)
+        let group = state.campus || props.community
 
         this.onReady(false)
 
-        fetchTimeout(path, {
+        console.log(state)
+        console.log(group)
+        fetchTimeout(group.health_path, {
             credentials: 'same-origin',
             method: 'GET',
             headers: {
@@ -74,43 +63,9 @@ export default class Requests extends BaseComponent {
         })
             .then(readJSONResponse)
             .then(evaluateJSONResponse)
-            .then(json => this.setRequests(json || []))
+            .then(json => this.setState({ healthRecords: json || []}))
             .then(() => this.onReady(true))
             .catch(error => this.handleError(error))
-    }
-
-    setRequests(json) {
-        let requests = {
-            all: [],
-            unanswered: [],
-            inprocess: [],
-            accepted: [],
-            dismissed: []
-        }
-
-        for (let request of json) {
-            requests.all.push(request)
-            requests[request.status].push(request)
-        }
-
-        this.setState({
-            requests: requests
-        })
-    }
-
-    handleClick(request) {
-        if (request) {
-            this.setState({
-                activeRequest: request,
-                showModal: true
-            })
-        }
-    }
-
-    handleClose() {
-        this.setState({
-            showModal: false
-        })
     }
 
     handleContextChange(json) {
@@ -147,7 +102,7 @@ export default class Requests extends BaseComponent {
                 gatherings: state.gatherings
             })
         }
-        this.ensureRequests(state)
+        this.ensureHealth(state)
         this.setState(state)
     }
 
@@ -157,50 +112,28 @@ export default class Requests extends BaseComponent {
         })
     }
 
-    renderRequests(state, status) {
-        let requests = state.requests[status.value] || []
-        let cards = requests.map(request => {
-            let campus = state.campuses.find(c => c.id == request.campus_id)
-            let gathering = state.gatherings.find(g => g.id == request.gathering_id)
+    renderHealth(state) {
+        return state.healthRecords.map(healthRecord => {
             return (
-                <RequestCard
-                    id={Date.now().toString()}
-                    key={`request-${request.id}`}
-                    className='mb-1'
-                    campus={campus}
-                    gathering={gathering}
-                    request={request}
-                    onClick={this.handleClick}
-                />
+                <div
+                    className='row justify-content-left pt-1'
+                    key={`health-record-${healthRecord.gathering.id}`}
+                >
+                    <div className='col-12'>
+                        <HealthRecord
+                            id={Date.now().toString()}
+                            healthRecord={healthRecord}
+                        />
+                    </div>
+                </div>
             )
         })
-        return (
-            <Fragment>
-                <div className='display-6 text-muted text-center mb-4'>{status.name}</div>
-                {cards}
-            </Fragment>
-        )
     }
 
     render() {
         let state = this.state
-        let activeRequest = state.activeRequest
-        let columns = statuses.map(status => {
-            return (
-                <div key={status.value} className='col-3'>
-                    {this.renderRequests(state, status)}
-                </div>
-            )
-        })
         return (
             <Fragment>
-                <RequestModal
-                    id={`request-modal-${activeRequest ? activeRequest.id : ''}`}
-                    request={activeRequest}
-                    show={state.showModal}
-                    onClose={this.handleClose}
-                    onSave={this.handleClose}
-                />
                 <div className='row'>
                     <div className='col-2 bg-light'>
                         <div className='p-2'>
@@ -216,7 +149,7 @@ export default class Requests extends BaseComponent {
                                             gathering={state.gathering}
                                             gatherings={state.gatherings}
                                             routes={this.props.routes}
-                                            enableGatherings={true}
+                                            enableGatherings={false}
                                             disabled={state.disabled}
                                             onChange={this.handleContextChange}
                                         />
@@ -227,9 +160,11 @@ export default class Requests extends BaseComponent {
                     </div>
                     <div className='col-10 align-self-center h-100 p-3'>
                         <div className='container'>
-                            <div className='row justify-content-center pt-2 requests'>
-                                {columns}
+                            <div className='row justify-content-left pt-2 pb-1 text-muted'>
+                                <div className='col-3'><span class='h4'>Gathering</span></div>
+                                <div className='col-9 text-center'><span class='h4'>Scores</span></div>
                             </div>
+                            {this.renderHealth(state)}
                         </div>
                     </div>
                 </div>

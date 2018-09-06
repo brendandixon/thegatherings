@@ -37,13 +37,14 @@
             text-align: center;
         }
         .member {
-            font-size: 1.5rem;
+            font-size: 1.26rem;
             font-weight: 500;
             line-height: 1.2;
             margin-bottom: 0.5rem;
         }
         .section {
-            line-height: 1.3;
+            font-size: 92%;
+            line-height: 1.2;
             margin-bottom: 0.5rem;
         }
         .section-title {
@@ -52,7 +53,6 @@
         .section-dates {
             font-size: 80%;
             line-height: 1.1;
-            margin-bottom: 0.5rem;
         }
         .outline {
             outline: 1px solid red;
@@ -60,9 +60,130 @@
     </style>
 </head>
 <body>
+    <div class='modal fade' id='requestModal' role='dialog'>
+        <div class='modal-dialog modal-lg p-4' role='document'>
+            <div class='modal-content text-muted'>
+                <div class='modal-header'>
+                    <div>
+                        <div class='small'>Member</div>
+                        <div class='h5 modal-title'>Jimmy Bob</div>
+                    </div>
+                    <button type='button' class='close' data-dismiss='modal'>
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class='modal-body'>
+                    <div class='container'>
+                        <div class='row justify-content-left pb-2'>
+                            <div class='col-5'>
+                                <div class='small'>Campus</div>
+                                <div>Ballard</div>
+                            </div>
+                            <div class='col-5'>
+                                <div class='small'>Requested Gathering</div>
+                                <div>Sitting Saints</div>
+                            </div>
+                        </div>
+                        <div class='row justify-content-left pb-2'>
+                            <div class='col-10'>
+                                <div class='small'>Owner</div>
+                                <div class='text-danger'>Unassigned</div>
+                            </div>
+                        </div>
+                        <div class='row justify-content-left pb-2'>
+                            <div class='col-4'>
+                                <div class='small'>Received</div>
+                                <div class='small'>16 hours ago (9/06/2018)</div>
+                            </div>
+                            <div class='col-4'>
+                                <div class='small'>Last Response</div>
+                                <div class='small'>2 days ago (9/04/2018)</div>
+                            </div>
+                            <div class='col-4'>
+                                <div class='small'>Expires</div>
+                                <div class='small'>in a month (10/05/2018)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='modal-body border-top' style='border-color: #e9ecef;'>
+                    <div class='container'>
+                        <div class='row justify-content-left'>
+                            <div class='col-12'>
+                                <div class='small pb-1'>Possible Gatherings</div>
+                                <label class='d-block mb-1'>
+                                    <div class='row no-gutters'>
+                                        <div class='col-4'>
+                                            <input type='radio' name='rg' value='1' />
+                                            Tried &amp; True
+                                        </div>
+                                        <div class='col-8'>
+                                            <span class='small p-1 mr-1 border rounded border-success d-inline-block text-success'>Demographics</span>
+                                            <span class='small p-1 mr-1 border rounded border-danger d-inline-block text-danger'>Genders</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Life Stages</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Relationships</span>
+                                            <span class='small p-1 mr-1 border rounded border-success d-inline-block text-success'>Topics</span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class='d-block mb-1'>
+                                    <div class='row no-gutters'>
+                                        <div class='col-4'>
+                                            <input type='radio' name='rg' value='1' />
+                                            Dinner &amp; the Bible
+                                        </div>
+                                        <div class='col-8'>
+                                            <span class='small p-1 mr-1 border rounded border-success d-inline-block text-success'>Demographics</span>
+                                            <span class='small p-1 mr-1 border rounded border-success d-inline-block text-success'>Genders</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Life Stages</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Relationships</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Topics</span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class='d-block mb-1'>
+                                    <div class='row no-gutters'>
+                                        <div class='col-4'>
+                                            <input type='radio' name='rg' value='1' />
+                                            Sitting Saints
+                                        </div>
+                                        <div class='col-8'>
+                                            <span class='small p-1 mr-1 border rounded border-success d-inline-block text-success'>Demographics</span>
+                                            <span class='small p-1 mr-1 border rounded border-danger d-inline-block text-danger'>Genders</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Life Stages</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Relationships</span>
+                                            <span class='small p-1 mr-1 border rounded border-success d-inline-block text-success'>Topics</span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class='d-block mb-1'>
+                                    <div class='row no-gutters'>
+                                        <div class='col-4'>
+                                            <input type='radio' name='rg' value='1' />
+                                            Autumn Leaves
+                                        </div>
+                                        <div class='col-8'>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Demographics</span>
+                                            <span class='small p-1 mr-1 border rounded border-success d-inline-block text-success'>Genders</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Life Stages</span>
+                                            <span class='small p-1 mr-1 border rounded border-success d-inline-block text-success'>Relationships</span>
+                                            <span class='small p-1 mr-1 border rounded border-warning d-inline-block text-warning'>Topics</span>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-outline-secondary' data-dismiss='modal'>Close</button>
+                    <button type='button' class='btn btn-outline-primary' data-dismiss='modal'>Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class='container'>
-        <div class='row justify-content-center pt-2 requests'>
-
+        <div class='row justify-content-center pt-2 requests position-relative'>
             <div class='col-3'>
                 <div class='display-6 text-muted text-center mb-4'>Unanswered</div>
                 <div class='card p-0 mb-2'>
@@ -84,6 +205,7 @@
                                     <div>Responded 2 days ago (8/22/18)</div>
                                     <div>Expires in 6 days (8/28/18)</div>
                                 </div>
+                                <button type='button' class='btn btn-outline-primary' data-toggle='modal' data-target='#requestModal'>Edit</button>
                             </div>
                         </div>
                     </div>
@@ -315,6 +437,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
 </body>
 </html>

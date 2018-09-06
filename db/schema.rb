@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180905000000) do
+ActiveRecord::Schema.define(version: 20180910000000) do
 
   create_table "assigned_overseers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.references "membership", null: false
@@ -90,6 +90,24 @@ ActiveRecord::Schema.define(version: 20180905000000) do
 
     t.index ["id"], name: "index_communities_on_id", unique: true
     t.index ["name"], name: "index_communities_on_name"
+  end
+
+  create_table "checkups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.references "gathering", null: false
+    t.datetime "week_of", null: false
+
+    t.integer "gather_score"
+    t.integer "adopt_score"
+    t.integer "shape_score"
+    t.integer "reflect_score"
+    t.integer "total_score"
+
+    t.timestamps
+
+    t.index ["id"], name: "index_checkups_on_id", unique: true
+    t.index ["week_of"], name: "index_checkups_on_week_of"
+    t.index ["gathering_id"], name: "index_checkups_on_gathering"
+    t.index ["gathering_id", "week_of"], name: "index_checkups_on_gathering_week_of", unique: true
   end
 
   create_table "gatherings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

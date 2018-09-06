@@ -1,6 +1,6 @@
 class ApplicationAuthorizer < Authority::Authorizer
 
-  PERSPECTIVES = [:as_anyone, :as_assistant, :as_leader, :as_member, :as_signup, :as_visitor]
+  PERSPECTIVES = [:as_anyone, :as_assistant, :as_leader, :as_member, :as_visitor]
 
   class <<self
 
@@ -90,10 +90,6 @@ class ApplicationAuthorizer < Authority::Authorizer
 
     def as_participant?
       [:as_assistant, :as_leader, :as_overseer, :as_member, :as_visitor].include?(@perspective)
-    end
-
-    def as_signup?
-      [:as_signup].include?(@perspective)
     end
 
     def as_visitor?

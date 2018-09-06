@@ -37,6 +37,11 @@ class ApplicationController < ActionController::Base
       e.backtrace.each {|l| puts l}
     end
 
+    def handle_unverified_request
+      logger.warn "Stale authentication token detected"
+      redirect_back fallback_location: root_path, alert: "You may need to refresh this page and try again."
+    end
+
     def is_collection_action?
       self.class::COLLECTION_ACTIONS.include?(self.action_name)
     end
@@ -52,6 +57,9 @@ class ApplicationController < ActionController::Base
     def set_timezone(&block)
       time_zone = member_signed_in? ? current_member.time_zone : TheGatherings::Application.default_time_zone
       Time.use_zone(time_zone, &block)
+    rescue Exception => e
+      stack = e.backtrace.join('\n')
+      logger.warn "Unhandle Exception - #{e.inspect}\n#{stack}"
     end
 
 end

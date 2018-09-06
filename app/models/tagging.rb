@@ -30,7 +30,7 @@ class Tagging < ApplicationRecord
 
   scope :for_taggable, lambda{|taggable| where(taggable: taggable)}
   scope :for_tags, lambda{|tags| where(tag: tags)}
-  scope :from_set, lambda{|category| joins(:tag).where(tags: { category: category })}
+  scope :for_category, lambda{|category| joins(:tag).where(tags: { category: category })}
 
   def as_json(*args, **options)
     super.except(*JSON_EXCLUDES).tap do |p|
@@ -52,7 +52,7 @@ class Tagging < ApplicationRecord
 
     def singleton_tag
       return if self.category.blank? || !self.category.singleton?
-      return unless Tagging.from_set(self.category).for_taggable(self.taggable).exists?
+      return unless Tagging.for_category(self.category).for_taggable(self.taggable).exists?
       self.errors.add(:tag, "Only one tag from #{self.category.plural} may be applied at a time")
     end
 

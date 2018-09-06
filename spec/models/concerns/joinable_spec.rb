@@ -44,15 +44,15 @@ describe Joinable, type: :concern do
 
   context 'Community' do
     it 'returns the list of assistants' do
-      expect(@community.assistants).to match_array(@assistants)
+      expect(@community.assistants.map{|mb| mb.member}).to match_array(@assistants)
     end
 
     it 'returns the list of leaders' do
-      expect(@community.leaders).to match_array(@leaders)
+      expect(@community.leaders.map{|mb| mb.member}).to match_array(@leaders)
     end
 
     it 'returns the list of members' do
-      expect(@community.members).to match_array(@members - [@overseer])
+      expect(@community.members.map{|mb| mb.member}).to match_array(@members - [@overseer])
     end
 
     it 'returns the list of overseers' do
@@ -60,7 +60,7 @@ describe Joinable, type: :concern do
     end
 
     it 'returns the list of participants' do
-      expect(@community.participants).to match_array(@participants - [@overseer, @visitor])
+      expect(@community.participants.map{|mb| mb.member}).to match_array(@participants - [@overseer, @visitor])
     end
 
     it 'returns the list of visitors' do
@@ -70,23 +70,23 @@ describe Joinable, type: :concern do
 
   context 'Campus' do
     it 'returns the list of assistants' do
-      expect(@campus.assistants).to match_array(@assistants)
+      expect(@campus.assistants.map{|mb| mb.member}).to match_array(@assistants)
     end
 
     it 'returns the list of leaders' do
-      expect(@campus.leaders).to match_array(@leaders)
+      expect(@campus.leaders.map{|mb| mb.member}).to match_array(@leaders)
     end
 
     it 'returns the list of members' do
-      expect(@campus.members).to match_array(@members)
+      expect(@campus.members.map{|mb| mb.member}).to match_array(@members)
     end
 
     it 'returns the list of overseers' do
-      expect(@campus.overseers).to match_array(@overseers)
+      expect(@campus.overseers.map{|mb| mb.member}).to match_array(@overseers)
     end
 
     it 'returns the list of participants' do
-      expect(@campus.participants).to match_array(@participants - [@visitor])
+      expect(@campus.participants.map{|mb| mb.member}).to match_array(@participants - [@visitor])
     end
 
     it 'returns the list of visitors' do
@@ -96,15 +96,15 @@ describe Joinable, type: :concern do
 
   context 'Gathering' do
     it 'returns the list of assistants' do
-      expect(@gathering.assistants).to match_array(@assistants)
+      expect(@gathering.assistants.map{|mb| mb.member}).to match_array(@assistants)
     end
 
     it 'returns the list of leaders' do
-      expect(@gathering.leaders).to match_array(@leaders)
+      expect(@gathering.leaders.map{|mb| mb.member}).to match_array(@leaders)
     end
 
     it 'returns the list of members' do
-      expect(@gathering.members).to match_array(@members - [@overseer])
+      expect(@gathering.members.map{|mb| mb.member}).to match_array(@members - [@overseer])
     end
 
     it 'returns the list of overseers' do
@@ -112,11 +112,11 @@ describe Joinable, type: :concern do
     end
 
     it 'returns the list of participants' do
-      expect(@gathering.participants).to match_array(@participants - [@overseer])
+      expect(@gathering.participants.map{|mb| mb.member}).to match_array(@participants - [@overseer])
     end
 
     it 'returns the list of visitors' do
-      expect(@gathering.visitors).to match_array(@visitors)
+      expect(@gathering.visitors.map{|mb| mb.member}).to match_array(@visitors)
     end
   end
 

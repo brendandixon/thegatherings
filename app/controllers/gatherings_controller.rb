@@ -1,4 +1,6 @@
 class GatheringsController < ApplicationController
+  include Attendees
+  include Health
   include QueryHelpers
 
   COLLECTION_ACTIONS = COLLECTION_ACTIONS + %w(search)
@@ -10,7 +12,7 @@ class GatheringsController < ApplicationController
   before_action :set_gathering, except: COLLECTION_ACTIONS
   before_action :ensure_campus
   before_action :ensure_community
-  before_action :ensure_gathering
+  before_action :ensure_gathering, except: COLLECTION_ACTIONS
   before_action :ensure_group
   before_action :ensure_authorized
 
@@ -61,14 +63,6 @@ class GatheringsController < ApplicationController
     @gathering.destroy
     respond_to do |format|
       format.html { redirect_to community_gatherings_path(@community), notice: 'Gathering was successfully destroyed.' }
-    end
-  end
-
-  def attendees
-    @gatherings = @gathering.present? ? [@gathering] : (@group.present? ? @group.gatherings : [])
-    attendees = @gatherings.inject(0){|total, g| total += g.members.count}
-    respond_to do |format|
-      format.json { render json:{ attendees: attendees, average: (attendees / @gatherings.length).round }.as_json }
     end
   end
 

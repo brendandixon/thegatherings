@@ -22,6 +22,8 @@ class RequestOwner < ApplicationRecord
   belongs_to :membership
   belongs_to :request
 
+  has_one :campus, inverse_of: :request_owners, through: :request
+  has_one :community, inverse_of: :request_owners, through: :request
   has_one :member, inverse_of: :request_owners, through: :membership
 
   validates :membership, belonging: {models: [Membership]}
@@ -65,7 +67,6 @@ class RequestOwner < ApplicationRecord
       r['path'] = request_owner_path(self)
       r['community_path'] = community_path(self.community)
       r['campus_path'] = self.campus.present? ? campus_path(self.campus) : nil
-      r['gathering_path'] = self.gathering.present? ? gathering_path(self.gathering) : nil
     end
   end
 

@@ -1,6 +1,6 @@
 class WelcomeController < ApplicationController
 
-  skip_before_action :authenticate_member!, only: [:index]
+  skip_before_action :authenticate_member!, only: [:show]
 
   def show
     if member_signed_in?

@@ -1,6 +1,6 @@
 class RequestsController < ApplicationController
 
-  authority_actions respond: :update
+  authority_actions matches: :read, respond: :update
 
   before_action :set_campus
   before_action :set_community
@@ -71,6 +71,13 @@ class RequestsController < ApplicationController
     @request.destroy
     respond_to do |format|
       format.html { redirect_to @request.for_member?(current_member) ? gathering_path(@gathering) : gathering_requests_path(@gathering), notice: 'Request was successfully destroyed.' }
+    end
+  end
+
+  def matches
+    matches = RequestMatch.matches_for(@request)
+    respond_to do |format|
+      format.json { render json: matches.as_json }
     end
   end
 
@@ -155,9 +162,10 @@ class RequestsController < ApplicationController
 
     def set_request
       @request = Request.find(params[:id]) rescue nil if params[:id].present?
+      @request ||= Request.find(params[:request_id]) rescue nil if params[:request_id].present?
     end
 
     def request_params
-      params.permit(:campus_id, :community_id, :format, :gathering_id, :member_id, :membership_id, :status, request: Request::FORM_FIELDS)
+      params.permit(:campus_id, :community_id, :format, :gathering_id, :member_id, :membership_id, :status, :request_id, request: Request::FORM_FIELDS)
     end
 end

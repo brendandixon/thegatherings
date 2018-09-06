@@ -33,12 +33,14 @@ class Campus < ApplicationRecord
   belongs_to :community, inverse_of: :campuses
 
   has_many :gatherings, inverse_of: :campus, dependent: :restrict_with_exception
+  has_many :checkups, inverse_of: :campus, through: :gatherings
 
   has_many :memberships, as: :group, dependent: :destroy
   has_many :members, through: :memberships
   has_many :assigned_overseers, through: :memberships
 
   has_many :preferences, inverse_of: :campus, dependent: :nullify
+  has_many :request_owners, inverse_of: :campus, dependent: :destroy
   has_many :requests, inverse_of: :campus, dependent: :destroy
 
   validates :community, belonging: {models: [Community]}
@@ -61,6 +63,8 @@ class Campus < ApplicationRecord
       c['community_path'] = community_path(self.community)
       c['gatherings_path'] = campus_gatherings_path(self)
       c['memberships_path'] = campus_memberships_path(self)
+      c['attendees_path'] = attendees_campus_path(self)
+      c['health_path'] = health_campus_path(self)
       c['requests_path'] = campus_requests_path(self)
     end
   end

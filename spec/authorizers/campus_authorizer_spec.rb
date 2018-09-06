@@ -91,8 +91,8 @@ describe CampusAuthorizer, type: :authorizer do
         expect(@campus.authorizer).to_not be_creatable_by(@member)
       end
 
-      it 'allows reading the member profile' do
-        expect(@campus.authorizer).to be_readable_by(@member, perspective: :as_member)
+      it 'disallows reading the member profile' do
+        expect(@campus.authorizer).to_not be_readable_by(@member, perspective: :as_member)
       end
 
       it 'allows reading the visitor profile' do

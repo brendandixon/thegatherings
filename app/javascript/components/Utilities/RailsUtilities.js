@@ -1,4 +1,9 @@
 import moment from 'moment'
+import jQuery from 'jquery'
+
+export const retrieveCSPNonce  = () => {
+    return jQuery('head > meta[name=csp-nonce]').attr('content')
+}
 
 export const errorsToMessages = (errors, defaultErrors = {}) => {
     let fullMessages = []

@@ -44,7 +44,7 @@ class Preference < ApplicationRecord
   scope :for_campuses, lambda{|*campuses| where(campus_id: campuses)}
   scope :for_community, lambda{|community| where(community: community)}
   scope :for_gathering, lambda{|gathering| where(gathering: gathering)}
-  scope :for_member, lambda{|member| joins(:membership).where("membership.member_id = ?", member.id)}
+  scope :for_member, lambda{|member| joins(:membership).where("memberships.member_id = ?", member.id)}
   scope :for_membership, lambda{|membership| where(membership: membership)}
 
   def as_json(*args, **options)
