@@ -162,7 +162,7 @@ export default class Health extends BaseComponent {
                         <div className='container'>
                             <div className='row justify-content-left pt-2 pb-1 text-muted'>
                                 <div className='col-3'><span class='h4'>Gathering</span></div>
-                                <div className='col-9 text-center'><span class='h4'>Scores</span></div>
+                                <div className='col-9'><span class='h4'>Scores</span></div>
                             </div>
                             {this.renderHealth(state)}
                         </div>

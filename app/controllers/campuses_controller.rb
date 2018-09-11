@@ -1,4 +1,5 @@
 class CampusesController < ApplicationController
+  include Attendees
   include Health
 
   before_action :set_campus, except: COLLECTION_ACTIONS

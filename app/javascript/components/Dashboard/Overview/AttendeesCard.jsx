@@ -35,12 +35,13 @@ export default class AttendeesCard extends BaseComponent {
 
     render() {
         let state = this.state
+        let path = (this.props.campus || this.props.community || {})['attendees_path']
         return (
             <DataCard
                 id={this.props.id}
                 campus={this.props.campus}
                 gathering={this.props.gathering}
-                path={this.props.community.attendees_path}
+                path={path}
                 title='Attendees'
                 onReceive={this.handleReceive}
                 onReady={this.props.onReady}

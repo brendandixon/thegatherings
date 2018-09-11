@@ -30,16 +30,16 @@ export default class HealthRecord extends BaseComponent {
         let healthRecord = this.props.healthRecord
         return (
             <Fragment>
-                <div className='col-6'>
-                    <div className='row'>
-                        <div className='col-3 text-left'><span className={this.scoreToClasses(healthRecord.gather_score)}>Gather &mdash; {healthRecord.gather_score}</span></div>
-                        <div className='col-3 text-left'><span className={this.scoreToClasses(healthRecord.adopt_score)}>Adopt &mdash; {healthRecord.adopt_score}</span></div>
-                        <div className='col-3 text-left'><span className={this.scoreToClasses(healthRecord.shape_score)}>Shape &mdash; {healthRecord.shape_score}</span></div>
-                        <div className='col-3 text-left'><span className={this.scoreToClasses(healthRecord.reflect_score)}>Reflect &mdash; {healthRecord.reflect_score}</span></div>
+                <div className='col-4'>
+                    <div className='row no-gutters'>
+                        <div className='col-3 small text-left'><span className={this.scoreToClasses(healthRecord.gather_score)}>Gather &mdash; {healthRecord.gather_score}</span></div>
+                        <div className='col-3 small text-left'><span className={this.scoreToClasses(healthRecord.adopt_score)}>Adopt &mdash; {healthRecord.adopt_score}</span></div>
+                        <div className='col-3 small text-left'><span className={this.scoreToClasses(healthRecord.shape_score)}>Shape &mdash; {healthRecord.shape_score}</span></div>
+                        <div className='col-3 small text-left'><span className={this.scoreToClasses(healthRecord.reflect_score)}>Reflect &mdash; {healthRecord.reflect_score}</span></div>
                     </div>
                 </div>
-                <div className='col-3 text-right'>
-                    <span className={this.scoreToClasses(healthRecord.total_score)}>Total &mdash; {healthRecord.total_score}</span>
+                <div className='col-2 small text-center'>
+                    <span className={this.scoreToClasses(healthRecord.total_score)}>Overall &mdash; {healthRecord.total_score}</span>
                 </div>
             </Fragment>
         )
@@ -49,13 +49,11 @@ export default class HealthRecord extends BaseComponent {
         let props = this.props
         let gathering = props.healthRecord.gathering
         return (
-            <div className='container'>
-                <div className='row'>
-                    <div className='col-3 text-muted'>
-                        {gathering.name}
-                    </div>
-                    {this.renderScores()}
+            <div className='row no-gutters'>
+                <div className='col-3 text-muted'>
+                    {gathering.name}
                 </div>
+                {this.renderScores()}
             </div>
         )
     }
