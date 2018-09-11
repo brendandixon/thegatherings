@@ -1,7 +1,9 @@
 body
   .welcome.w-100.h-100
     .container.w-100.h-100
-      .row.h-100.align-items-center
+      .row.h-100
         .col
-          .display-1= 'Welcome!'
-          = link_to 'Sign Out', signout_path, method: :delete
+          a href=signin_path
+            .display-3.mb-3.text-white
+              | Welcome to
+            img.w-50 src=asset_path('full-white.svg')

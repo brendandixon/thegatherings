@@ -130,6 +130,15 @@ $display7-weight:             300 !default;
   // background-image: linear-gradient($purple, $indigo);
   // background-color: $blue;
   // background-image: linear-gradient($cyan, $blue);
+
+  a {
+      display: block;
+      margin-top: 30%;
+
+      &:hover {
+          text-decoration: none;
+      }
+  }
 }
 
 .outline {
