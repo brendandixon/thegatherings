@@ -31,9 +31,7 @@ ENV RAILS_ENV=development \
     LANG=C.UTF-8
 
 WORKDIR ${ASSET_PATH}
-COPY Gemfile* ./
-COPY package.json ./
-COPY yarn.lock ./
+COPY Gemfile* *package.json *yarn.lock ./
 
 RUN yarn install
 RUN bundle install
